@@ -1,0 +1,814 @@
+{
+  "ui_000": {
+    "message": "$arg1$ · Edge local translation",
+    "description": "$1 · Edge 本地翻译",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_001": {
+    "message": "Retry",
+    "description": "重试"
+  },
+  "ui_002": {
+    "message": "Initialize local translation",
+    "description": "初始化本地翻译"
+  },
+  "ui_003": {
+    "message": "Model download $arg1$%",
+    "description": "模型下载 $1%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_004": {
+    "message": "Translating…",
+    "description": "正在翻译…"
+  },
+  "ui_005": {
+    "message": "Translation incomplete",
+    "description": "翻译未完成"
+  },
+  "ui_006": {
+    "message": "Translation failed. Refresh the page and try again.",
+    "description": "翻译失败，请刷新页面重试"
+  },
+  "ui_007": {
+    "message": "The local Translator API is unavailable in this Edge environment. Update Edge; if it remains unavailable, this local edition cannot run.",
+    "description": "当前 Edge 未开放本地 Translator API。请更新 Edge；若仍不支持，此本地版无法使用。"
+  },
+  "ui_008": {
+    "message": "Translation language changed. Try again.",
+    "description": "翻译语言已切换，请重试"
+  },
+  "ui_009": {
+    "message": "Edge does not support the selected language pair here. Check the extension settings.",
+    "description": "Edge 暂不支持所选语言对的本地模型，请在插件设置中检查。"
+  },
+  "ui_010": {
+    "message": "Download a language model first. Click Initialize local translation below or open the extension settings.",
+    "description": "需要先下载语言模型，请点击下方「初始化本地翻译」，或打开插件设置。"
+  },
+  "ui_011": {
+    "message": "Translation paused",
+    "description": "翻译已暂停"
+  },
+  "ui_012": {
+    "message": "Message is empty or exceeds 30,000 characters",
+    "description": "消息为空或超过 30000 字符"
+  },
+  "ui_013": {
+    "message": "Translation paused or language changed",
+    "description": "翻译已暂停或语言已切换"
+  },
+  "ui_014": {
+    "message": "The local model returned no translation",
+    "description": "本地模型未返回译文"
+  },
+  "ui_015": {
+    "message": "Translate",
+    "description": "翻译"
+  },
+  "ui_016": {
+    "message": "Could not read settings. You can still use this session.",
+    "description": "设置读取失败，可直接使用。"
+  },
+  "ui_017": {
+    "message": "Could not save the toggle. It still works for this session.",
+    "description": "开关状态未能保存，本次仍可使用。"
+  },
+  "ui_018": {
+    "message": "Click Translate or press Ctrl+Enter.",
+    "description": "点击翻译，或按 Ctrl+Enter。"
+  },
+  "ui_019": {
+    "message": "Language changed. Translate again.",
+    "description": "语言已切换，请重新翻译。"
+  },
+  "ui_020": {
+    "message": "Could not save the language. You can still translate this session.",
+    "description": "语言设置未能保存，本次仍可翻译。"
+  },
+  "ui_021": {
+    "message": "Translate up to 10,000 characters at a time.",
+    "description": "每次最多翻译 10000 字符。"
+  },
+  "ui_022": {
+    "message": "Source and target languages match. Original text kept.",
+    "description": "源语言与目标语言相同，已保留原文。"
+  },
+  "ui_023": {
+    "message": "Links and symbols kept unchanged.",
+    "description": "链接和符号已原样保留。"
+  },
+  "ui_024": {
+    "message": "Translating…",
+    "description": "翻译中…"
+  },
+  "ui_025": {
+    "message": "The local translation API is unavailable. Update Edge and try again.",
+    "description": "当前 Edge 未开放本地翻译 API。请更新 Edge 后重试。"
+  },
+  "ui_026": {
+    "message": "Preparing the model. A download may be needed the first time; keep this panel open…",
+    "description": "正在准备模型，首次可能需要下载，请保持面板打开…"
+  },
+  "ui_027": {
+    "message": "Translating on this device…",
+    "description": "正在本机翻译…"
+  },
+  "ui_028": {
+    "message": "Translation canceled",
+    "description": "翻译已取消"
+  },
+  "ui_029": {
+    "message": "The model returned no translation. Try again.",
+    "description": "模型没有返回译文，请重试。"
+  },
+  "ui_030": {
+    "message": "Translated · On this device",
+    "description": "翻译完成 · 本机处理"
+  },
+  "ui_031": {
+    "message": "Translation failed: $arg1$",
+    "description": "翻译失败：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_032": {
+    "message": "This language pair may not be supported. Check the model settings.",
+    "description": "该语言组合可能不受支持，请在设置中检查模型。"
+  },
+  "ui_033": {
+    "message": "Translation copied",
+    "description": "已复制译文"
+  },
+  "ui_034": {
+    "message": "Copy failed. Select and copy the translation manually.",
+    "description": "复制失败，请选中译文手动复制。"
+  },
+  "ui_035": {
+    "message": "Loaded messages only",
+    "description": "仅已加载"
+  },
+  "ui_036": {
+    "message": "Member navigation",
+    "description": "成员消息导航"
+  },
+  "ui_037": {
+    "message": "Select a member",
+    "description": "选择统计成员"
+  },
+  "ui_038": {
+    "message": "Last ",
+    "description": "最近 "
+  },
+  "ui_039": {
+    "message": "Number of recent days",
+    "description": "最近多少天"
+  },
+  "ui_040": {
+    "message": " days",
+    "description": " 天"
+  },
+  "ui_041": {
+    "message": "Refresh and load messages for the selected days",
+    "description": "刷新并加载指定天数的聊天记录"
+  },
+  "ui_042": {
+    "message": "Related message count",
+    "description": "相关信息总数"
+  },
+  "ui_043": {
+    "message": "Previous matching message",
+    "description": "上一条匹配消息"
+  },
+  "ui_044": {
+    "message": "Next matching message",
+    "description": "下一条匹配消息"
+  },
+  "ui_045": {
+    "message": "Account $arg1$",
+    "description": "账号 $1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_046": {
+    "message": "$arg1$ (me)",
+    "description": "$1（自己）",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_047": {
+    "message": "Me",
+    "description": "自己"
+  },
+  "ui_048": {
+    "message": "Enter another account ID…",
+    "description": "输入其他账号编号…"
+  },
+  "ui_049": {
+    "message": "Set my account…",
+    "description": "设置自己的账号…"
+  },
+  "ui_050": {
+    "message": "Selected member: $arg1$",
+    "description": "统计成员：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_051": {
+    "message": "My account: $arg1$",
+    "description": "统计自己：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_052": {
+    "message": "Not identified",
+    "description": "尚未识别"
+  },
+  "ui_053": {
+    "message": "Set my Chatwork account",
+    "description": "设置自己的 Chatwork 账号"
+  },
+  "ui_054": {
+    "message": "Choose a member",
+    "description": "指定统计成员"
+  },
+  "ui_055": {
+    "message": "Choose a loaded member",
+    "description": "选择已加载的成员"
+  },
+  "ui_056": {
+    "message": "Select…",
+    "description": "请选择"
+  },
+  "ui_057": {
+    "message": "Numeric account ID (from the TO tag)",
+    "description": "数字账号编号（TO 标记中的编号）"
+  },
+  "ui_058": {
+    "message": "OK",
+    "description": "确定"
+  },
+  "ui_059": {
+    "message": "Confirm member account",
+    "description": "确定成员账号"
+  },
+  "ui_060": {
+    "message": "Enter a numeric account ID and make sure you are signed in.",
+    "description": "请填写数字账号编号，并确认已登录。"
+  },
+  "ui_061": {
+    "message": "Cancel",
+    "description": "取消"
+  },
+  "ui_062": {
+    "message": "Cancel member settings",
+    "description": "取消设置成员"
+  },
+  "ui_063": {
+    "message": "Related: $arg1$",
+    "description": "相关信息：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_064": {
+    "message": "Unique TO, RE and SEND messages for the selected member. Use the arrows to navigate this combined list.",
+    "description": "所选成员的 TO、RE、SEND 消息合并去重后的总数；上下箭头在这些消息中跳转"
+  },
+  "ui_065": {
+    "message": "Could not identify you. Set your account in the member list.",
+    "description": "未识别自己，请在成员下拉框中设置自己的账号"
+  },
+  "ui_066": {
+    "message": "$arg1$. Unique messages from the last $arg2$ × 24 hours. Arrows navigate all matches, visiting each message only once.",
+    "description": "$1。按消息去重，最近 $2×24 小时；上下箭头在所有匹配消息中跳转，同一条消息仅经过一次。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "ui_067": {
+    "message": "$arg1$: $arg2$",
+    "description": "$1：$2",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "ui_068": {
+    "message": "Stop refreshing",
+    "description": "停止刷新"
+  },
+  "ui_069": {
+    "message": "Previous related message preview",
+    "description": "上一条相关信息预览"
+  },
+  "ui_070": {
+    "message": "Next related message preview",
+    "description": "下一条相关信息预览"
+  },
+  "ui_071": {
+    "message": "Previous related message",
+    "description": "上一条相关信息"
+  },
+  "ui_072": {
+    "message": "Next related message",
+    "description": "下一条相关信息"
+  },
+  "ui_073": {
+    "message": "Close message preview",
+    "description": "关闭消息预览"
+  },
+  "ui_074": {
+    "message": "This message is not loaded yet. Click Go to message, or refresh the history from the toolbar first.",
+    "description": "这条消息尚未加载。可点击“前往此消息”查看，或先用顶部刷新加载历史记录。"
+  },
+  "ui_075": {
+    "message": "Chat message",
+    "description": "聊天消息"
+  },
+  "ui_076": {
+    "message": "Translation",
+    "description": "中文翻译"
+  },
+  "ui_077": {
+    "message": "Go to message",
+    "description": "前往此消息"
+  },
+  "ui_078": {
+    "message": "Go to previewed message",
+    "description": "前往预览的消息"
+  },
+  "ui_079": {
+    "message": "Related message navigation",
+    "description": "相关信息快速跳转"
+  },
+  "ui_080": {
+    "message": "Preview",
+    "description": "预览"
+  },
+  "ui_081": {
+    "message": "Preview previous related message",
+    "description": "预览上一条相关信息"
+  },
+  "ui_082": {
+    "message": "Preview next related message",
+    "description": "预览下一条相关信息"
+  },
+  "ui_083": {
+    "message": "No replies",
+    "description": "无人回复"
+  },
+  "ui_084": {
+    "message": "Related $arg1$/$arg2$",
+    "description": "相关信息 $1/$2",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "ui_085": {
+    "message": "No explicit RE reply link was found in the loaded messages. Sharing a TO recipient does not mean replying to the same message. Refresh to load more history.",
+    "description": "当前已加载记录中未找到这条消息的明确 RE 回复关系；TO 同一个人不等于回复同一条消息。可用顶部刷新加载更多记录。"
+  },
+  "ui_086": {
+    "message": "Linked by RE reply chains in this room, including follow-ups and branches. Not limited by the member or day filters above. $arg1$",
+    "description": "按同一聊天室的 RE 回复链关联（含连续回复和分支），不受顶部成员和天数筛选限制。$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_087": {
+    "message": "Some original messages are not loaded. Arrows open their direct message links.",
+    "description": "部分原消息尚未加载，箭头会通过消息直达链接定位。"
+  },
+  "ui_088": {
+    "message": "Only loaded reply links are included. Refresh above to load more.",
+    "description": "仅包含网页已加载的回复关系，可用顶部刷新加载更多。"
+  },
+  "ui_089": {
+    "message": "Could not locate · Refresh history",
+    "description": "未能定位·请刷新历史"
+  },
+  "ui_090": {
+    "message": "Stopped · Loaded only",
+    "description": "已停止·仅已加载"
+  },
+  "ui_091": {
+    "message": "Chat scroll area not found",
+    "description": "未找到聊天滚动区"
+  },
+  "ui_092": {
+    "message": "Locating the latest messages",
+    "description": "正在定位最新消息"
+  },
+  "ui_093": {
+    "message": "Latest messages not ready · Loaded only",
+    "description": "最新记录未稳定·仅已加载"
+  },
+  "ui_094": {
+    "message": "Time range covered",
+    "description": "已覆盖时间范围"
+  },
+  "ui_095": {
+    "message": "Loading · $arg1$ messages",
+    "description": "加载中·$1条",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_096": {
+    "message": "Cannot load more · Loaded only",
+    "description": "无法继续·仅已加载"
+  },
+  "ui_097": {
+    "message": "Batch limit reached · Refresh to continue",
+    "description": "本轮到限·可继续加载"
+  },
+  "ui_098": {
+    "message": "Loading failed · Retry",
+    "description": "加载失败·可重试"
+  },
+  "ui_099": {
+    "message": "The translation service changed a name marker. Try again.",
+    "description": "姓名标记被翻译服务改写，请重试"
+  },
+  "ui_100": {
+    "message": "Chatwork · Edge local translation",
+    "description": "Chatwork Edge 本地翻译"
+  },
+  "ui_101": {
+    "message": "Chatwork Translator",
+    "description": "Chatwork 翻译"
+  },
+  "ui_102": {
+    "message": "Edge local edition · Translation below the original",
+    "description": "Edge 本地版 · 译文显示在原文下方"
+  },
+  "ui_103": {
+    "message": "Enable auto-translation",
+    "description": "开启自动翻译"
+  },
+  "ui_104": {
+    "message": "Reading settings…",
+    "description": "读取设置中…"
+  },
+  "ui_105": {
+    "message": "Model / Language",
+    "description": "模型 / 语言设置"
+  },
+  "ui_106": {
+    "message": "Manual translation",
+    "description": "手动翻译"
+  },
+  "ui_107": {
+    "message": "Enter text to translate into another language",
+    "description": "输入文字，翻译成另一种语言"
+  },
+  "ui_108": {
+    "message": "Source language",
+    "description": "原文语言"
+  },
+  "ui_109": {
+    "message": "Chinese (Simplified)",
+    "description": "中文（简体）"
+  },
+  "ui_110": {
+    "message": "Japanese",
+    "description": "日语"
+  },
+  "ui_111": {
+    "message": "English",
+    "description": "英语"
+  },
+  "ui_112": {
+    "message": "Korean",
+    "description": "韩语"
+  },
+  "ui_113": {
+    "message": "Enter text",
+    "description": "输入文本"
+  },
+  "ui_114": {
+    "message": "Target language",
+    "description": "译文语言"
+  },
+  "ui_115": {
+    "message": "Translation",
+    "description": "译文"
+  },
+  "ui_116": {
+    "message": "Copy translation",
+    "description": "复制译文"
+  },
+  "ui_117": {
+    "message": "Enter text, then click Translate or press Ctrl+Enter.",
+    "description": "输入文字后点击翻译，或按 Ctrl+Enter。"
+  },
+  "ui_118": {
+    "message": "Enabled · Return to Chatwork",
+    "description": "已开启 · 请返回 Chatwork"
+  },
+  "ui_119": {
+    "message": "Paused",
+    "description": "已暂停"
+  },
+  "ui_120": {
+    "message": "Could not read settings. Reopen the extension.",
+    "description": "读取失败，请重新打开插件"
+  },
+  "ui_121": {
+    "message": "Could not save. Try again.",
+    "description": "保存失败，请重试"
+  },
+  "ui_122": {
+    "message": "Could not read navigation settings. Reopen the extension.",
+    "description": "导航设置读取失败，请重新打开插件"
+  },
+  "ui_123": {
+    "message": "The translation model changed a protected marker",
+    "description": "翻译模型改写了保护标记"
+  },
+  "ui_124": {
+    "message": "Initialize Edge local translation",
+    "description": "初始化 Edge 本地翻译"
+  },
+  "ui_125": {
+    "message": "Prepare the language model",
+    "description": "先准备好语言模型"
+  },
+  "ui_126": {
+    "message": "Edge needs to download a model on first use. After setup, chat text is translated on this device, without sending it to a cloud translation service.",
+    "description": "首次使用需要 Edge 下载模型。准备完成后，聊天正文在本机翻译，不发送到云端翻译服务。"
+  },
+  "ui_127": {
+    "message": "Chat source language",
+    "description": "聊天原文语言"
+  },
+  "ui_128": {
+    "message": "Japanese → Simplified Chinese",
+    "description": "日语 → 简体中文"
+  },
+  "ui_129": {
+    "message": "English → Simplified Chinese",
+    "description": "英语 → 简体中文"
+  },
+  "ui_130": {
+    "message": "Korean → Simplified Chinese",
+    "description": "韩语 → 简体中文"
+  },
+  "ui_131": {
+    "message": "Choose the room's main language. This edition does not automatically detect mixed languages.",
+    "description": "按聊天室主要语言选择；此版本不自动识别混合语言。"
+  },
+  "ui_132": {
+    "message": "Check support",
+    "description": "检查支持情况"
+  },
+  "ui_133": {
+    "message": "Download / Initialize and test",
+    "description": "下载 / 初始化并测试"
+  },
+  "ui_134": {
+    "message": "Reading configuration…",
+    "description": "正在读取配置…"
+  },
+  "ui_135": {
+    "message": "Enable Chatwork auto-translation",
+    "description": "开启 Chatwork 自动翻译"
+  },
+  "ui_136": {
+    "message": "After setup, refresh Chatwork. If initialization is still requested, click Initialize local translation below a message.",
+    "description": "成功后刷新 Chatwork。若页面仍提示初始化，点击消息下方的「初始化本地翻译」。"
+  },
+  "ui_137": {
+    "message": "If the API or model is unavailable, update Edge and retry. If it remains unavailable, this environment is unsupported. This extension does not fall back to Google, paid APIs or private Edge APIs.",
+    "description": "若提示 API 或语言模型不可用，更新 Edge 后重试；仍不可用表示当前环境不支持此版本。此扩展不会改用 Google、付费 API 或调用 Edge 私有接口。"
+  },
+  "ui_138": {
+    "message": "Microsoft local translation API documentation",
+    "description": "微软本地翻译 API 说明"
+  },
+  "ui_139": {
+    "message": "Model ready. You can initialize and test it.",
+    "description": "模型已就绪，可以点击初始化并测试。"
+  },
+  "ui_140": {
+    "message": "Supported. Download the model first.",
+    "description": "支持此语言，需要先下载模型。"
+  },
+  "ui_141": {
+    "message": "Model downloading. Click Initialize and wait.",
+    "description": "模型正在下载，请点击初始化并等待。"
+  },
+  "ui_142": {
+    "message": "This Edge environment does not support this model.",
+    "description": "当前 Edge 不支持这个语言模型。"
+  },
+  "ui_143": {
+    "message": "Model status: $arg1$",
+    "description": "模型状态：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_144": {
+    "message": "Preparing the model. Keep this page open…",
+    "description": "正在准备模型，请保持此页面打开…"
+  },
+  "ui_145": {
+    "message": "Download progress: $arg1$%",
+    "description": "下载进度：$1%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_146": {
+    "message": "The model returned no test translation",
+    "description": "模型未返回测试译文"
+  },
+  "ui_147": {
+    "message": "Test source: $arg1$\n\nModel translation: $arg2$",
+    "description": "测试原文：$1\n\n模型译文：$2",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "ui_148": {
+    "message": "Model ready. Test complete.",
+    "description": "模型已就绪，测试完成。"
+  },
+  "ui_149": {
+    "message": "Initialization failed: $arg1$",
+    "description": "初始化失败：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_150": {
+    "message": "Enabled. Return to Chatwork and refresh the page.",
+    "description": "已开启。请回到 Chatwork 并刷新页面。"
+  },
+  "ui_151": {
+    "message": "Translation service unavailable. Try again in a minute.",
+    "description": "翻译服务暂不可用，请一分钟后重试"
+  },
+  "ui_152": {
+    "message": "Unsupported language",
+    "description": "不支持的语言"
+  },
+  "ui_153": {
+    "message": "Message is empty or too long",
+    "description": "消息为空或过长"
+  },
+  "ui_154": {
+    "message": "Network connection failed",
+    "description": "网络连接失败"
+  },
+  "ui_155": {
+    "message": "$arg1$ · Google Translate",
+    "description": "$1 · Google 翻译",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_156": {
+    "message": "Google returned no translation",
+    "description": "Google 未返回译文"
+  },
+  "ui_157": {
+    "message": "Translating with Google…",
+    "description": "正在通过 Google 翻译…"
+  },
+  "ui_158": {
+    "message": "Google returned no translation. Try again.",
+    "description": "Google 未返回译文，请重试。"
+  },
+  "ui_159": {
+    "message": "Translated · Google Translate",
+    "description": "翻译完成 · Google 翻译"
+  },
+  "ui_160": {
+    "message": "Check your connection to Google.",
+    "description": "请检查 Google 网络连接。"
+  },
+  "ui_161": {
+    "message": "Chatwork · Google Translate",
+    "description": "Chatwork Google 翻译"
+  },
+  "ui_162": {
+    "message": "Message text is sent to Google when auto-translation or manual translation is used.",
+    "description": "开启自动翻译或使用手动翻译时，正文会发送给 Google。"
+  },
+  "ui_163": {
+    "message": "Google Translate · Text sent to Google",
+    "description": "Google 翻译 · 正文发送给 Google"
+  },
+  "ui_164": {
+    "message": "Text is sent to Google Translate. Ctrl+Enter to translate.",
+    "description": "正文会发送给 Google 翻译。Ctrl+Enter 翻译。"
+  },
+  "ui_165": {
+    "message": "Google returned an unrecognized response",
+    "description": "Google 返回了无法识别的结果"
+  },
+  "ui_166": {
+    "message": "Google rate limit reached. Try again later.",
+    "description": "Google 暂时限流，请稍后重试"
+  },
+  "ui_167": {
+    "message": "Translation service error ($arg1$)",
+    "description": "翻译服务错误（$1）",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_language": {
+    "message": "en"
+  },
+  "ext_name": {
+    "message": "Chatwork Translator · Edge"
+  },
+  "ext_description": {
+    "message": "Translate Chatwork messages below the original, with manual translation, member navigation and related-message previews."
+  },
+  "language_traditional": {
+    "message": "Chinese (Traditional)",
+    "description": "中文（繁体）"
+  },
+  "language_auto": {
+    "message": "Detect language",
+    "description": "自动检测"
+  },
+  "translation_line_failed": {
+    "message": "[Line $arg1$ untranslated; original] ",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "translation_partial": {
+    "message": "$arg1$ part(s) could not be translated and are marked as original text. Other translations are shown. You can retry.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  }
+}

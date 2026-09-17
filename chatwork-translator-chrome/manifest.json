@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_ext_name__",
+  "version": "1.12.2",
+  "description": "__MSG_ext_description__",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://translate.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "__MSG_ext_name__"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.chatwork.com/*",
+        "https://kcw.kddi.ne.jp/*"
+      ],
+      "js": [
+        "i18n.js",
+        "auto-settings.js",
+        "names.js",
+        "google-client.js",
+        "content.js",
+        "mentions-core.js",
+        "mentions.js"
+      ],
+      "css": [
+        "content.css",
+        "mentions.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "default_locale": "en"
+}

@@ -1,0 +1,798 @@
+{
+  "ui_000": {
+    "message": "$arg1$ · Edge ローカル翻訳",
+    "description": "$1 · Edge 本地翻译",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_001": {
+    "message": "再試行",
+    "description": "重试"
+  },
+  "ui_002": {
+    "message": "ローカル翻訳を初期化",
+    "description": "初始化本地翻译"
+  },
+  "ui_003": {
+    "message": "モデルのダウンロード $arg1$%",
+    "description": "模型下载 $1%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_004": {
+    "message": "翻訳中…",
+    "description": "正在翻译…"
+  },
+  "ui_005": {
+    "message": "翻訳が完了していません",
+    "description": "翻译未完成"
+  },
+  "ui_006": {
+    "message": "翻訳に失敗しました。ページを再読み込みしてください。",
+    "description": "翻译失败，请刷新页面重试"
+  },
+  "ui_007": {
+    "message": "この環境では Edge のローカル Translator API を利用できません。Edge を更新しても利用できない場合、このローカル版は動作しません。",
+    "description": "当前 Edge 未开放本地 Translator API。请更新 Edge；若仍不支持，此本地版无法使用。"
+  },
+  "ui_008": {
+    "message": "翻訳言語が変更されました。再試行してください。",
+    "description": "翻译语言已切换，请重试"
+  },
+  "ui_009": {
+    "message": "選択した言語ペアのローカルモデルは利用できません。拡張機能の設定を確認してください。",
+    "description": "Edge 暂不支持所选语言对的本地模型，请在插件设置中检查。"
+  },
+  "ui_010": {
+    "message": "先に言語モデルをダウンロードしてください。下の「ローカル翻訳を初期化」または拡張機能の設定から開始できます。",
+    "description": "需要先下载语言模型，请点击下方「初始化本地翻译」，或打开插件设置。"
+  },
+  "ui_011": {
+    "message": "翻訳は一時停止中です",
+    "description": "翻译已暂停"
+  },
+  "ui_012": {
+    "message": "メッセージが空か、30,000 文字を超えています",
+    "description": "消息为空或超过 30000 字符"
+  },
+  "ui_013": {
+    "message": "翻訳が一時停止されたか、言語が変更されました",
+    "description": "翻译已暂停或语言已切换"
+  },
+  "ui_014": {
+    "message": "ローカルモデルから翻訳結果が返されませんでした",
+    "description": "本地模型未返回译文"
+  },
+  "ui_015": {
+    "message": "翻訳",
+    "description": "翻译"
+  },
+  "ui_016": {
+    "message": "設定を読み込めませんでした。このまま使用できます。",
+    "description": "设置读取失败，可直接使用。"
+  },
+  "ui_017": {
+    "message": "切り替え設定を保存できませんでした。このセッションでは使用できます。",
+    "description": "开关状态未能保存，本次仍可使用。"
+  },
+  "ui_018": {
+    "message": "「翻訳」をクリックするか、Ctrl+Enter を押してください。",
+    "description": "点击翻译，或按 Ctrl+Enter。"
+  },
+  "ui_019": {
+    "message": "言語が変更されました。もう一度翻訳してください。",
+    "description": "语言已切换，请重新翻译。"
+  },
+  "ui_020": {
+    "message": "言語設定を保存できませんでした。このセッションでは翻訳できます。",
+    "description": "语言设置未能保存，本次仍可翻译。"
+  },
+  "ui_021": {
+    "message": "一度に翻訳できるのは 10,000 文字までです。",
+    "description": "每次最多翻译 10000 字符。"
+  },
+  "ui_022": {
+    "message": "原文と翻訳先の言語が同じため、原文を保持しました。",
+    "description": "源语言与目标语言相同，已保留原文。"
+  },
+  "ui_023": {
+    "message": "リンクと記号はそのまま保持しました。",
+    "description": "链接和符号已原样保留。"
+  },
+  "ui_024": {
+    "message": "翻訳中…",
+    "description": "翻译中…"
+  },
+  "ui_025": {
+    "message": "ローカル翻訳 API を利用できません。Edge を更新して再試行してください。",
+    "description": "当前 Edge 未开放本地翻译 API。请更新 Edge 后重试。"
+  },
+  "ui_026": {
+    "message": "モデルを準備中です。初回はダウンロードが必要な場合があります。このパネルを開いたままにしてください…",
+    "description": "正在准备模型，首次可能需要下载，请保持面板打开…"
+  },
+  "ui_027": {
+    "message": "このデバイスで翻訳中…",
+    "description": "正在本机翻译…"
+  },
+  "ui_028": {
+    "message": "翻訳をキャンセルしました",
+    "description": "翻译已取消"
+  },
+  "ui_029": {
+    "message": "モデルから翻訳結果が返されませんでした。再試行してください。",
+    "description": "模型没有返回译文，请重试。"
+  },
+  "ui_030": {
+    "message": "翻訳完了 · デバイス内で処理",
+    "description": "翻译完成 · 本机处理"
+  },
+  "ui_031": {
+    "message": "翻訳に失敗しました：$arg1$",
+    "description": "翻译失败：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_032": {
+    "message": "この言語の組み合わせは未対応の可能性があります。モデル設定を確認してください。",
+    "description": "该语言组合可能不受支持，请在设置中检查模型。"
+  },
+  "ui_033": {
+    "message": "翻訳をコピーしました",
+    "description": "已复制译文"
+  },
+  "ui_034": {
+    "message": "コピーできませんでした。翻訳を選択して手動でコピーしてください。",
+    "description": "复制失败，请选中译文手动复制。"
+  },
+  "ui_035": {
+    "message": "読み込み済みのみ",
+    "description": "仅已加载"
+  },
+  "ui_036": {
+    "message": "メンバーのメッセージ移動",
+    "description": "成员消息导航"
+  },
+  "ui_037": {
+    "message": "対象メンバーを選択",
+    "description": "选择统计成员"
+  },
+  "ui_038": {
+    "message": "直近 ",
+    "description": "最近 "
+  },
+  "ui_039": {
+    "message": "対象の日数",
+    "description": "最近多少天"
+  },
+  "ui_040": {
+    "message": " 日",
+    "description": " 天"
+  },
+  "ui_041": {
+    "message": "指定した日数のメッセージを再読み込み",
+    "description": "刷新并加载指定天数的聊天记录"
+  },
+  "ui_042": {
+    "message": "関連メッセージ数",
+    "description": "相关信息总数"
+  },
+  "ui_043": {
+    "message": "前の該当メッセージ",
+    "description": "上一条匹配消息"
+  },
+  "ui_044": {
+    "message": "次の該当メッセージ",
+    "description": "下一条匹配消息"
+  },
+  "ui_045": {
+    "message": "アカウント $arg1$",
+    "description": "账号 $1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_046": {
+    "message": "$arg1$（自分）",
+    "description": "$1（自己）",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_047": {
+    "message": "自分",
+    "description": "自己"
+  },
+  "ui_048": {
+    "message": "別のアカウント ID を入力…",
+    "description": "输入其他账号编号…"
+  },
+  "ui_049": {
+    "message": "自分のアカウントを設定…",
+    "description": "设置自己的账号…"
+  },
+  "ui_050": {
+    "message": "対象メンバー：$arg1$",
+    "description": "统计成员：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_051": {
+    "message": "自分のアカウント：$arg1$",
+    "description": "统计自己：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_052": {
+    "message": "未識別",
+    "description": "尚未识别"
+  },
+  "ui_053": {
+    "message": "自分の Chatwork アカウントを設定",
+    "description": "设置自己的 Chatwork 账号"
+  },
+  "ui_054": {
+    "message": "対象メンバーを指定",
+    "description": "指定统计成员"
+  },
+  "ui_055": {
+    "message": "読み込み済みのメンバーを選択",
+    "description": "选择已加载的成员"
+  },
+  "ui_056": {
+    "message": "選択してください",
+    "description": "请选择"
+  },
+  "ui_057": {
+    "message": "数値のアカウント ID（TO タグ内の番号）",
+    "description": "数字账号编号（TO 标记中的编号）"
+  },
+  "ui_058": {
+    "message": "決定",
+    "description": "确定"
+  },
+  "ui_059": {
+    "message": "メンバーのアカウントを確定",
+    "description": "确定成员账号"
+  },
+  "ui_060": {
+    "message": "数値のアカウント ID を入力し、ログインしていることを確認してください。",
+    "description": "请填写数字账号编号，并确认已登录。"
+  },
+  "ui_061": {
+    "message": "キャンセル",
+    "description": "取消"
+  },
+  "ui_062": {
+    "message": "メンバー設定をキャンセル",
+    "description": "取消设置成员"
+  },
+  "ui_063": {
+    "message": "関連情報：$arg1$",
+    "description": "相关信息：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_064": {
+    "message": "対象メンバーの TO・RE・SEND をまとめた重複のない件数です。矢印でこの一覧を移動します。",
+    "description": "所选成员的 TO、RE、SEND 消息合并去重后的总数；上下箭头在这些消息中跳转"
+  },
+  "ui_065": {
+    "message": "自分のアカウントを識別できません。メンバー選択から設定してください。",
+    "description": "未识别自己，请在成员下拉框中设置自己的账号"
+  },
+  "ui_066": {
+    "message": "$arg1$。直近 $arg2$×24 時間の重複を除いたメッセージです。矢印で各メッセージを一度ずつ移動します。",
+    "description": "$1。按消息去重，最近 $2×24 小时；上下箭头在所有匹配消息中跳转，同一条消息仅经过一次。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "ui_067": {
+    "message": "$arg1$：$arg2$",
+    "description": "$1：$2",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "ui_068": {
+    "message": "読み込みを停止",
+    "description": "停止刷新"
+  },
+  "ui_069": {
+    "message": "前の関連メッセージのプレビュー",
+    "description": "上一条相关信息预览"
+  },
+  "ui_070": {
+    "message": "次の関連メッセージのプレビュー",
+    "description": "下一条相关信息预览"
+  },
+  "ui_071": {
+    "message": "前の関連メッセージ",
+    "description": "上一条相关信息"
+  },
+  "ui_072": {
+    "message": "次の関連メッセージ",
+    "description": "下一条相关信息"
+  },
+  "ui_073": {
+    "message": "メッセージのプレビューを閉じる",
+    "description": "关闭消息预览"
+  },
+  "ui_074": {
+    "message": "このメッセージは未読み込みです。「メッセージへ移動」をクリックするか、上部で履歴を再読み込みしてください。",
+    "description": "这条消息尚未加载。可点击“前往此消息”查看，或先用顶部刷新加载历史记录。"
+  },
+  "ui_075": {
+    "message": "チャットメッセージ",
+    "description": "聊天消息"
+  },
+  "ui_076": {
+    "message": "翻訳結果",
+    "description": "中文翻译"
+  },
+  "ui_077": {
+    "message": "メッセージへ移動",
+    "description": "前往此消息"
+  },
+  "ui_078": {
+    "message": "プレビュー中のメッセージへ移動",
+    "description": "前往预览的消息"
+  },
+  "ui_079": {
+    "message": "関連メッセージへの移動",
+    "description": "相关信息快速跳转"
+  },
+  "ui_080": {
+    "message": "プレビュー",
+    "description": "预览"
+  },
+  "ui_081": {
+    "message": "前の関連メッセージをプレビュー",
+    "description": "预览上一条相关信息"
+  },
+  "ui_082": {
+    "message": "次の関連メッセージをプレビュー",
+    "description": "预览下一条相关信息"
+  },
+  "ui_083": {
+    "message": "返信なし",
+    "description": "无人回复"
+  },
+  "ui_084": {
+    "message": "関連情報 $arg1$/$arg2$",
+    "description": "相关信息 $1/$2",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "ui_085": {
+    "message": "読み込み済みの履歴に明確な RE 返信関係がありません。同じ宛先の TO は同じメッセージへの返信とは限りません。履歴を追加で読み込んでください。",
+    "description": "当前已加载记录中未找到这条消息的明确 RE 回复关系；TO 同一个人不等于回复同一条消息。可用顶部刷新加载更多记录。"
+  },
+  "ui_086": {
+    "message": "同じルームの RE 返信関係で連結しています（連続返信と分岐を含む）。上部のメンバー・日数条件には制限されません。$arg1$",
+    "description": "按同一聊天室的 RE 回复链关联（含连续回复和分支），不受顶部成员和天数筛选限制。$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_087": {
+    "message": "未読み込みの元メッセージには、矢印から直接リンクで移動します。",
+    "description": "部分原消息尚未加载，箭头会通过消息直达链接定位。"
+  },
+  "ui_088": {
+    "message": "読み込み済みの返信関係のみです。上部で追加読み込みできます。",
+    "description": "仅包含网页已加载的回复关系，可用顶部刷新加载更多。"
+  },
+  "ui_089": {
+    "message": "移動できません · 履歴を再読み込み",
+    "description": "未能定位·请刷新历史"
+  },
+  "ui_090": {
+    "message": "停止 · 読み込み済みのみ",
+    "description": "已停止·仅已加载"
+  },
+  "ui_091": {
+    "message": "チャットのスクロール領域が見つかりません",
+    "description": "未找到聊天滚动区"
+  },
+  "ui_092": {
+    "message": "最新メッセージに移動中",
+    "description": "正在定位最新消息"
+  },
+  "ui_093": {
+    "message": "最新履歴の準備中 · 読み込み済みのみ",
+    "description": "最新记录未稳定·仅已加载"
+  },
+  "ui_094": {
+    "message": "指定期間を読み込み済み",
+    "description": "已覆盖时间范围"
+  },
+  "ui_095": {
+    "message": "読み込み中 · $arg1$ 件",
+    "description": "加载中·$1条",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_096": {
+    "message": "追加読み込み不可 · 読み込み済みのみ",
+    "description": "无法继续·仅已加载"
+  },
+  "ui_097": {
+    "message": "今回の上限に到達 · 再読み込みで続行",
+    "description": "本轮到限·可继续加载"
+  },
+  "ui_098": {
+    "message": "読み込み失敗 · 再試行可能",
+    "description": "加载失败·可重试"
+  },
+  "ui_099": {
+    "message": "翻訳サービスが名前のマーカーを書き換えました。再試行してください。",
+    "description": "姓名标记被翻译服务改写，请重试"
+  },
+  "ui_100": {
+    "message": "Chatwork Edge ローカル翻訳",
+    "description": "Chatwork Edge 本地翻译"
+  },
+  "ui_101": {
+    "message": "Chatwork 翻訳",
+    "description": "Chatwork 翻译"
+  },
+  "ui_102": {
+    "message": "Edge ローカル版 · 原文の下に翻訳を表示",
+    "description": "Edge 本地版 · 译文显示在原文下方"
+  },
+  "ui_103": {
+    "message": "自動翻訳を有効にする",
+    "description": "开启自动翻译"
+  },
+  "ui_104": {
+    "message": "設定を読み込み中…",
+    "description": "读取设置中…"
+  },
+  "ui_105": {
+    "message": "モデル・言語設定",
+    "description": "模型 / 语言设置"
+  },
+  "ui_106": {
+    "message": "手動翻訳",
+    "description": "手动翻译"
+  },
+  "ui_107": {
+    "message": "入力した文章を別の言語に翻訳",
+    "description": "输入文字，翻译成另一种语言"
+  },
+  "ui_108": {
+    "message": "原文の言語",
+    "description": "原文语言"
+  },
+  "ui_109": {
+    "message": "中国語（簡体字）",
+    "description": "中文（简体）"
+  },
+  "ui_110": {
+    "message": "日本語",
+    "description": "日语"
+  },
+  "ui_111": {
+    "message": "英語",
+    "description": "英语"
+  },
+  "ui_112": {
+    "message": "韓国語",
+    "description": "韩语"
+  },
+  "ui_113": {
+    "message": "テキストを入力",
+    "description": "输入文本"
+  },
+  "ui_114": {
+    "message": "翻訳先の言語",
+    "description": "译文语言"
+  },
+  "ui_115": {
+    "message": "翻訳結果",
+    "description": "译文"
+  },
+  "ui_116": {
+    "message": "翻訳をコピー",
+    "description": "复制译文"
+  },
+  "ui_117": {
+    "message": "文章を入力し、「翻訳」または Ctrl+Enter で翻訳します。",
+    "description": "输入文字后点击翻译，或按 Ctrl+Enter。"
+  },
+  "ui_118": {
+    "message": "有効 · Chatwork に戻ってください",
+    "description": "已开启 · 请返回 Chatwork"
+  },
+  "ui_119": {
+    "message": "一時停止中",
+    "description": "已暂停"
+  },
+  "ui_120": {
+    "message": "読み込みに失敗しました。拡張機能を開き直してください。",
+    "description": "读取失败，请重新打开插件"
+  },
+  "ui_121": {
+    "message": "保存できませんでした。再試行してください。",
+    "description": "保存失败，请重试"
+  },
+  "ui_122": {
+    "message": "メッセージ移動の設定を読み込めませんでした。拡張機能を開き直してください。",
+    "description": "导航设置读取失败，请重新打开插件"
+  },
+  "ui_123": {
+    "message": "翻訳モデルが保護マーカーを書き換えました",
+    "description": "翻译模型改写了保护标记"
+  },
+  "ui_124": {
+    "message": "Edge ローカル翻訳の初期化",
+    "description": "初始化 Edge 本地翻译"
+  },
+  "ui_125": {
+    "message": "言語モデルを準備する",
+    "description": "先准备好语言模型"
+  },
+  "ui_126": {
+    "message": "初回は Edge によるモデルのダウンロードが必要です。準備後はチャット本文をクラウド翻訳サービスに送らず、このデバイス内で翻訳します。",
+    "description": "首次使用需要 Edge 下载模型。准备完成后，聊天正文在本机翻译，不发送到云端翻译服务。"
+  },
+  "ui_127": {
+    "message": "チャット原文の言語",
+    "description": "聊天原文语言"
+  },
+  "ui_128": {
+    "message": "日本語 → 中国語（簡体字）",
+    "description": "日语 → 简体中文"
+  },
+  "ui_129": {
+    "message": "英語 → 中国語（簡体字）",
+    "description": "英语 → 简体中文"
+  },
+  "ui_130": {
+    "message": "韓国語 → 中国語（簡体字）",
+    "description": "韩语 → 简体中文"
+  },
+  "ui_131": {
+    "message": "ルームの主な言語を選んでください。この版では混在する言語を自動判定しません。",
+    "description": "按聊天室主要语言选择；此版本不自动识别混合语言。"
+  },
+  "ui_132": {
+    "message": "対応状況を確認",
+    "description": "检查支持情况"
+  },
+  "ui_133": {
+    "message": "ダウンロード・初期化してテスト",
+    "description": "下载 / 初始化并测试"
+  },
+  "ui_134": {
+    "message": "設定を読み込み中…",
+    "description": "正在读取配置…"
+  },
+  "ui_135": {
+    "message": "Chatwork の自動翻訳を有効にする",
+    "description": "开启 Chatwork 自动翻译"
+  },
+  "ui_136": {
+    "message": "準備後に Chatwork を再読み込みしてください。初期化が必要と表示される場合は、メッセージ下の「ローカル翻訳を初期化」をクリックしてください。",
+    "description": "成功后刷新 Chatwork。若页面仍提示初始化，点击消息下方的「初始化本地翻译」。"
+  },
+  "ui_137": {
+    "message": "API やモデルを利用できない場合は Edge を更新して再試行してください。それでも利用できない環境は未対応です。Google、有料 API、Edge の非公開 API への切り替えは行いません。",
+    "description": "若提示 API 或语言模型不可用，更新 Edge 后重试；仍不可用表示当前环境不支持此版本。此扩展不会改用 Google、付费 API 或调用 Edge 私有接口。"
+  },
+  "ui_138": {
+    "message": "Microsoft ローカル翻訳 API の説明",
+    "description": "微软本地翻译 API 说明"
+  },
+  "ui_139": {
+    "message": "モデルの準備ができました。初期化してテストできます。",
+    "description": "模型已就绪，可以点击初始化并测试。"
+  },
+  "ui_140": {
+    "message": "対応しています。先にモデルをダウンロードしてください。",
+    "description": "支持此语言，需要先下载模型。"
+  },
+  "ui_141": {
+    "message": "モデルをダウンロード中です。初期化をクリックしてお待ちください。",
+    "description": "模型正在下载，请点击初始化并等待。"
+  },
+  "ui_142": {
+    "message": "この Edge 環境ではこの言語モデルを利用できません。",
+    "description": "当前 Edge 不支持这个语言模型。"
+  },
+  "ui_143": {
+    "message": "モデルの状態：$arg1$",
+    "description": "模型状态：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_144": {
+    "message": "モデルを準備中です。このページを開いたままにしてください…",
+    "description": "正在准备模型，请保持此页面打开…"
+  },
+  "ui_145": {
+    "message": "ダウンロードの進行状況：$arg1$%",
+    "description": "下载进度：$1%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_146": {
+    "message": "モデルからテスト翻訳が返されませんでした",
+    "description": "模型未返回测试译文"
+  },
+  "ui_147": {
+    "message": "テスト原文：$arg1$\n\nモデルの翻訳：$arg2$",
+    "description": "测试原文：$1\n\n模型译文：$2",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "ui_148": {
+    "message": "モデルの準備とテストが完了しました。",
+    "description": "模型已就绪，测试完成。"
+  },
+  "ui_149": {
+    "message": "初期化に失敗しました：$arg1$",
+    "description": "初始化失败：$1",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_150": {
+    "message": "有効になりました。Chatwork に戻り、ページを再読み込みしてください。",
+    "description": "已开启。请回到 Chatwork 并刷新页面。"
+  },
+  "ui_151": {
+    "message": "翻訳サービスを利用できません。1 分後に再試行してください。",
+    "description": "翻译服务暂不可用，请一分钟后重试"
+  },
+  "ui_152": {
+    "message": "未対応の言語",
+    "description": "不支持的语言"
+  },
+  "ui_153": {
+    "message": "メッセージが空か、長すぎます",
+    "description": "消息为空或过长"
+  },
+  "ui_154": {
+    "message": "ネットワーク接続に失敗しました",
+    "description": "网络连接失败"
+  },
+  "ui_155": {
+    "message": "$arg1$ · Google 翻訳",
+    "description": "$1 · Google 翻译",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_156": {
+    "message": "Google から翻訳結果が返されませんでした",
+    "description": "Google 未返回译文"
+  },
+  "ui_157": {
+    "message": "Google で翻訳中…",
+    "description": "正在通过 Google 翻译…"
+  },
+  "ui_158": {
+    "message": "Google から翻訳結果が返されませんでした。再試行してください。",
+    "description": "Google 未返回译文，请重试。"
+  },
+  "ui_159": {
+    "message": "翻訳完了 · Google 翻訳",
+    "description": "翻译完成 · Google 翻译"
+  },
+  "ui_160": {
+    "message": "Google へのネットワーク接続を確認してください。",
+    "description": "请检查 Google 网络连接。"
+  },
+  "ui_161": {
+    "message": "Chatwork Google 翻訳",
+    "description": "Chatwork Google 翻译"
+  },
+  "ui_162": {
+    "message": "自動翻訳または手動翻訳を使用すると、本文が Google に送信されます。",
+    "description": "开启自动翻译或使用手动翻译时，正文会发送给 Google。"
+  },
+  "ui_163": {
+    "message": "Google 翻訳 · 本文を Google に送信",
+    "description": "Google 翻译 · 正文发送给 Google"
+  },
+  "ui_164": {
+    "message": "本文を Google 翻訳に送信します。Ctrl+Enter で翻訳。",
+    "description": "正文会发送给 Google 翻译。Ctrl+Enter 翻译。"
+  },
+  "ui_165": {
+    "message": "Google から認識できない結果が返されました",
+    "description": "Google 返回了无法识别的结果"
+  },
+  "ui_166": {
+    "message": "Google の利用制限に達しました。しばらくして再試行してください。",
+    "description": "Google 暂时限流，请稍后重试"
+  },
+  "ui_167": {
+    "message": "翻訳サービスのエラー（$arg1$）",
+    "description": "翻译服务错误（$1）",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "ui_language": {
+    "message": "ja"
+  },
+  "ext_name": {
+    "message": "Chatwork 翻訳"
+  },
+  "ext_description": {
+    "message": "Chatwork の原文の下に翻訳を表示。手動翻訳、メンバーのメッセージ移動、関連メッセージのプレビューに対応。"
+  },
+  "language_traditional": {
+    "message": "中国語（繁体字）",
+    "description": "中文（繁体）"
+  },
+  "language_auto": {
+    "message": "言語を自動検出",
+    "description": "自动检测"
+  }
+}

@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script src="i18n.js"></script><script src="auto-settings.js"></script><title data-i18n="ui_124">Initialize Edge local translation</title><link rel="stylesheet" href="setup.css"></head>
+<body><main><span class="eyebrow">CHATWORK · EDGE</span><h1><span data-i18n="ui_125">Prepare the language model</span></h1>
+<p><span data-i18n="ui_126">Edge needs to download a model on first use. After setup, chat text is translated on this device, without sending it to a cloud translation service.</span></p>
+<label for="language"><span data-i18n="ui_127">Chat source language</span></label>
+<select id="language" disabled></select>
+<label for="target-language" data-i18n="ui_114">Target language</label><select id="target-language" disabled></select>
+<p><span data-i18n="ui_131">Choose the room's main language. This edition does not automatically detect mixed languages.</span></p>
+<div class="actions"><button id="check" disabled=""><span data-i18n="ui_132">Check support</span></button><button id="prepare" disabled=""><span data-i18n="ui_133">Download / Initialize and test</span></button></div>
+<p id="status" role="status"><span data-i18n="ui_134">Reading configuration…</span></p><pre id="sample"></pre>
+<button id="enable" disabled=""><span data-i18n="ui_135">Enable Chatwork auto-translation</span></button>
+<p class="note"><span data-i18n="ui_136">After setup, refresh Chatwork. If initialization is still requested, click Initialize local translation below a message.</span></p>
+<p class="note"><span data-i18n="ui_137">If the API or model is unavailable, update Edge and retry. If it remains unavailable, this environment is unsupported. This extension does not fall back to Google, paid APIs or private Edge APIs.</span></p>
+<a href="https://learn.microsoft.com/en-us/microsoft-edge/web-platform/translator-api" target="_blank" rel="noreferrer"><span data-i18n="ui_138">Microsoft local translation API documentation</span></a>
+</main><script src="i18n-page.js"></script><script src="protected-text.js"></script><script src="local-translator.js"></script><script src="setup.js"></script>
+</body></html>

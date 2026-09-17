@@ -1,0 +1,11 @@
+{
+  "name": "chatwork-edge-local-translator",
+  "version": "1.5.1",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "^29.0.0"
+  }
+}

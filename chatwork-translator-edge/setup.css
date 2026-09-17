@@ -1,0 +1,10 @@
+body { margin: 0; background: #f3f7f5; color: #1e3931; font: 16px/1.7 system-ui, sans-serif; }
+main { max-width: 680px; margin: 60px auto; padding: 36px; background: white; border-radius: 18px; box-shadow: 0 12px 50px #1233; }
+h1 { font-size: 30px; margin: 10px 0; } .eyebrow { color: #18826e; font-size: 12px; letter-spacing: 2px; }
+select, button { padding: 10px 16px; border: 1px solid #bdd5ce; border-radius: 7px; background: #f7fbf9; font: inherit; }
+button { cursor: pointer; } button:disabled { opacity: .5; cursor: default; } .actions { display: flex; gap: 10px; }
+#prepare, #enable { background: #167b64; color: white; } #status { font-weight: 600; } .note { color: #61786f; font-size: 14px; }
+pre { white-space: pre-wrap; } a { color: #167b64; }
+
+label[for="target-language"] { display:block; margin-top:12px; }
+.actions { flex-wrap:wrap; }

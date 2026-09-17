@@ -1,0 +1,4 @@
+.cw-zh-translation { margin: 10px 0 4px; padding: 10px 12px; border-left: 3px solid #279b8f; border-radius: 4px; background: rgba(39,155,143,.09); color: inherit; font: inherit; }
+.cw-zh-label { color: #279b8f; font-size: 11px; font-weight: 600; margin-bottom: 6px; }
+.cw-zh-body { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.65; user-select: text; }
+.cw-zh-translation button { margin-top: 8px; padding: 3px 10px; cursor: pointer; }
