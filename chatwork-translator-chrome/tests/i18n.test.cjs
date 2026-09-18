@@ -59,7 +59,7 @@ for (const locale of [...locales, 'en-US', 'fr']) {
 }
 
 for (const locale of locales) {
-  test(`${locale}: member navigation and preview localize without changing message text or names`, async () => {
+  test(`${locale}: member navigation and Thread localize without changing message text or names`, async () => {
     const body = 'こんにちは。中文 English 한국어 $1';
     const name = '山田 Alice 张三';
     const message = (id, reply) => `<div class="_message" data-rid="7" data-mid="${id}" data-index="${id}"><div class="_speaker"><div data-aid="12"><img src="me.png" alt="${name}"></div></div><pre>${reply ? '<div data-cwtag="[rp aid=12 to=7-1]"></div>' : ''}${body}</pre><div class="_timeStamp" data-tm="${Math.floor(Date.now()/1000)}"></div></div>`;
@@ -75,10 +75,10 @@ for (const locale of locales) {
       assert.ok(doc.querySelector('#cw-mentions select').textContent.includes(name));
       const related = doc.querySelector('[data-mid="1"] .cw-m-related');
       assert.ok(related.textContent.includes(t('ui_084', [1,2])));
-      related.querySelector(`[aria-label="${t('ui_082')}"]`).click();
+      related.querySelector('.cw-m-thread-open').click();
       assert.equal(doc.querySelector('.cw-m-preview-author strong').textContent, name);
       assert.ok(doc.querySelector('.cw-m-preview-text').textContent.includes(body));
-      assert.ok(doc.querySelector('.cw-m-preview footer').textContent.includes(t('ui_077')));
+      assert.ok(doc.querySelector('.cw-m-thread-message > button').textContent.includes(t('ui_077')));
       assert.equal(w.jumped, undefined);
       for (const pre of doc.querySelectorAll('#_timeLine pre')) assert.equal(pre.textContent, body);
     } finally { dom.window.close(); }

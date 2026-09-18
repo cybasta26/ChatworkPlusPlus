@@ -474,12 +474,12 @@
     "description": "姓名标记被翻译服务改写，请重试"
   },
   "ui_100": {
-    "message": "Chatwork Edge ローカル翻訳",
-    "description": "Chatwork Edge 本地翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_101": {
-    "message": "Chatwork 翻訳",
-    "description": "Chatwork 翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_102": {
     "message": "Edge ローカル版 · 原文の下に翻訳を表示",
@@ -746,8 +746,8 @@
     "description": "请检查 Google 网络连接。"
   },
   "ui_161": {
-    "message": "Chatwork Google 翻訳",
-    "description": "Chatwork Google 翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_162": {
     "message": "自動翻訳または手動翻訳を使用すると、本文が Google に送信されます。",
@@ -782,7 +782,7 @@
     "message": "ja"
   },
   "ext_name": {
-    "message": "Chatwork 翻訳 · Edge"
+    "message": "Chatwork++"
   },
   "ext_description": {
     "message": "Chatwork の原文の下に翻訳を表示。手動翻訳、メンバーのメッセージ移動、関連メッセージのプレビューに対応。"
@@ -810,5 +810,95 @@
         "content": "$1"
       }
     }
+  },
+  "thread_title": {
+    "message": "スレッド"
+  },
+  "thread_close": {
+    "message": "スレッドを閉じる"
+  },
+  "thread_open": {
+    "message": "関連スレッドを開く"
+  },
+  "thread_count": {
+    "message": "スレッド · $arg1$ 件",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_scope": {
+    "message": "このチャットで検出済みの RE 返信のみ表示します。他の返信を見つけるには、過去のメッセージを読み込んでください。"
+  },
+  "thread_goto": {
+    "message": "元のメッセージへ移動"
+  },
+  "thread_refresh": {
+    "message": "更新"
+  },
+  "thread_stop": {
+    "message": "停止"
+  },
+  "thread_loading": {
+    "message": "メッセージを読み込み中（残り $arg1$ 件）…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_manual": {
+    "message": "関連メッセージが 10 件以上あります。未取得のメッセージは「更新」で読み込めます。"
+  },
+  "thread_failed": {
+    "message": "読み込めないメッセージがあります。「更新」で再試行してください。"
+  },
+  "thread_missing": {
+    "message": "未取得のメッセージが $arg1$ 件あります。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_ready": {
+    "message": "現在把握しているすべてのメッセージを表示しています。"
+  },
+  "thread_resize": {
+    "message": "ドラッグまたは左右キーでスレッドの幅を調整"
+  },
+  "thread_translation_only": {
+    "message": "訳文のみ表示"
+  },
+  "thread_image_copy": {
+    "message": "長い画像をコピー"
+  },
+  "thread_image_save": {
+    "message": "長い画像を保存"
+  },
+  "thread_image_preparing": {
+    "message": "Thread 全体の画像を準備中…"
+  },
+  "thread_image_copied": {
+    "message": "画像をクリップボードにコピーしました"
+  },
+  "thread_image_saved": {
+    "message": "画像のダウンロードを開始しました"
+  },
+  "thread_image_clipboard_failed": {
+    "message": "クリップボードに書き込めません。ページを前面にして再試行するか、ファイルに保存してください。"
+  },
+  "thread_image_failed": {
+    "message": "画像を作成できませんでした。再試行してください。"
+  },
+  "thread_image_large": {
+    "message": "Thread が長すぎるため、読みやすい1枚の画像を作成できません。"
+  },
+  "thread_image_changed": {
+    "message": "翻訳設定または Thread の内容が変更されました。もう一度書き出してください。"
+  },
+  "thread_image_timeout": {
+    "message": "翻訳がまだ完了していません。しばらくしてから書き出してください。"
   }
 }

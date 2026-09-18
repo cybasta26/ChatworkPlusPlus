@@ -35,15 +35,50 @@
 
 .cw-m-related button[hidden] { display:none !important; }
 
-.cw-m-preview { position:fixed; z-index:2147483647; width:520px; max-width:calc(100vw - 16px); max-height: min(480px,calc(100vh - 16px)); display:flex; flex-direction:column; box-sizing:border-box; overflow:hidden; border:1px solid #a9c7e0; border-radius:5px; background:white; color:#203532; box-shadow:0 3px 14px #203e5f40; font:14px/1.6 system-ui,sans-serif; }
-.cw-m-preview > header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 12px; border-bottom:1px solid #e2eaf0; flex-shrink:0; }
-.cw-m-preview button { border:1px solid #bfd3e3; border-radius:4px; background:#f7fbff; color:#467398; padding:4px 10px; font:inherit; cursor:pointer; }
-.cw-m-preview button:disabled { opacity:.4; cursor:default; }
-.cw-m-preview-content { min-height:0; overflow:auto; overscroll-behavior:contain; padding:14px; }
 .cw-m-preview-author { display:flex; align-items:center; gap:8px; margin-bottom:10px; color:#446880; flex-wrap:wrap; }
 .cw-m-preview-author img { width:32px; height:32px; border-radius:50%; object-fit:cover; }
 .cw-m-preview-author span { margin-left:auto; color:#778899; font-size:12px; }
 .cw-m-preview-text { white-space:pre-wrap; overflow-wrap:anywhere; }
 .cw-m-preview-translation { background:#eef8f5; border-left:3px solid #28a797; margin-top:14px; padding:10px; }
 .cw-m-preview-translation > strong { color:#248b81; font-size:12px; }
-.cw-m-preview > footer { text-align:center; padding:8px; background:#f0f3f5; flex-shrink:0; border-top:1px solid #e2eaf0; }
+
+.cw-m-related .cw-m-thread-open { background:#fff; }
+.cw-m-related .cw-m-thread-open:disabled { border-color:transparent; background:transparent; opacity:1; color:#7197c8; }
+.cw-m-related .cw-m-thread-open[aria-expanded=true] { background:#e0f4f1; border-color:#24a797; }
+.cw-m-thread { position:fixed; inset:0 0 0 auto; z-index:2147483646; width:min(440px,100vw); box-sizing:border-box; display:flex; flex-direction:column; background:#f5f9fa; color:#203532; border-left:1px solid #bed2dc; box-shadow:-4px 0 18px #203e5f18; font:14px/1.6 system-ui,sans-serif; text-align:left; }
+.cw-m-thread > header { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; padding:16px; background:#fff; border-bottom:1px solid #d8e5e9; flex-shrink:0; }
+.cw-m-thread > header strong { font-size:17px; }
+.cw-m-thread button { font:inherit; border:1px solid #bfd3e3; border-radius:5px; padding:4px 10px; background:#fff; color:#467398; cursor:pointer; }
+.cw-m-thread button:hover { background:#e0f4f1; }
+.cw-m-thread button:disabled { opacity:.4; cursor:default; }
+.cw-m-thread button:focus-visible, .cw-m-thread-open:focus-visible { outline:2px solid #168d81; outline-offset:2px; }
+.cw-m-thread-tools { display:flex; gap:10px; align-items:center; justify-content:space-between; padding:8px 16px; font-size:12px; border-bottom:1px solid #d8e5e9; }
+.cw-m-thread-tools[hidden] { display:none !important; }
+.cw-m-thread-tools > span { flex:1; }
+.cw-m-thread-tools > button { flex-shrink:0; }
+.cw-m-thread-list { min-height:0; flex:1; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; padding:12px; position:relative; }
+.cw-m-thread-message { background:#fff; border:1px solid #dbe6e9; border-radius:7px; padding:14px; margin-bottom:12px; overflow-wrap:anywhere; }
+.cw-m-thread-message.cw-m-thread-selected { border-color:#24a797; box-shadow:inset 3px 0 #24a797; }
+.cw-m-thread-message > button { display:block; margin:12px 0 0 auto; font-size:12px; }
+.cw-m-thread-warning { color:#986300; font-size:12px; margin:8px 0 0; white-space:pre-wrap; }
+.cw-m-thread-resize { position:absolute; top:0; bottom:0; left:0; width:7px; cursor:col-resize; touch-action:none; z-index:1; }
+.cw-m-thread-resize:hover, .cw-m-thread-resize:focus-visible, .cw-m-thread-resizing .cw-m-thread-resize { background:#24a79766; outline:none; }
+.cw-m-thread-resizing { user-select:none; }
+.cw-m-thread > header > strong { flex:1 0 auto; min-width:0; }
+.cw-m-thread > header > button { flex-shrink:0; }
+.cw-m-thread-view-toggle { display:flex; align-items:center; gap:7px; flex-shrink:0; cursor:pointer; font-size:12px; line-height:1.35; }
+.cw-m-thread-view-toggle[hidden] { display:none !important; }
+.cw-m-thread-view-toggle > span:first-child { max-width:80px; }
+.cw-m-thread-view-toggle input { position:absolute; opacity:0; width:1px; height:1px; }
+.cw-m-thread-switch-track { display:block; width:36px; height:22px; border-radius:12px; background:#a6b6b4; position:relative; flex-shrink:0; }
+.cw-m-thread-switch-track::after { content:''; position:absolute; width:16px; height:16px; top:3px; left:3px; border-radius:50%; background:white; transition:transform .15s; }
+.cw-m-thread-view-toggle input:checked + .cw-m-thread-switch-track { background:#118d7e; }
+.cw-m-thread-view-toggle input:checked + .cw-m-thread-switch-track::after { transform:translateX(14px); }
+.cw-m-thread-view-toggle input:focus-visible + .cw-m-thread-switch-track { outline:2px solid #168d81; outline-offset:3px; }
+/* Keep source text readable while pending, on failure, or when already in the target language. */
+.cw-m-thread-only-translations .cw-m-thread-message[data-cw-translation-state="done"]:has(> .cw-m-thread-translation) > .cw-m-thread-source { display:none; }
+
+.cw-m-related-label { cursor:default; padding:0 2px; }
+.cw-m-thread-export { display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:12px; }
+.cw-m-thread-export-status { padding:8px 16px; border-bottom:1px solid #d8e5e9; color:#637d89; overflow-wrap:anywhere; font-size:12px; }
+.cw-m-thread-export-status:empty { display:none; }

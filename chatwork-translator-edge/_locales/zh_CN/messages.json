@@ -474,12 +474,12 @@
     "description": "姓名标记被翻译服务改写，请重试"
   },
   "ui_100": {
-    "message": "Chatwork Edge 本地翻译",
-    "description": "Chatwork Edge 本地翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_101": {
-    "message": "Chatwork 翻译",
-    "description": "Chatwork 翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_102": {
     "message": "Edge 本地版 · 译文显示在原文下方",
@@ -746,8 +746,8 @@
     "description": "请检查 Google 网络连接。"
   },
   "ui_161": {
-    "message": "Chatwork Google 翻译",
-    "description": "Chatwork Google 翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_162": {
     "message": "开启自动翻译或使用手动翻译时，正文会发送给 Google。",
@@ -782,7 +782,7 @@
     "message": "zh-CN"
   },
   "ext_name": {
-    "message": "Chatwork 翻译 · Edge"
+    "message": "Chatwork++"
   },
   "ext_description": {
     "message": "在 Chatwork 原文下方显示译文，支持手动翻译、成员消息导航和关联预览。"
@@ -810,5 +810,95 @@
         "content": "$1"
       }
     }
+  },
+  "thread_title": {
+    "message": "Thread"
+  },
+  "thread_close": {
+    "message": "关闭 Thread"
+  },
+  "thread_open": {
+    "message": "打开关联 Thread"
+  },
+  "thread_count": {
+    "message": "Thread · $arg1$ 条消息",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_scope": {
+    "message": "仅包含当前聊天室已发现的 RE 回复链；加载更多历史记录才能发现其他回复。"
+  },
+  "thread_goto": {
+    "message": "跳转到原消息"
+  },
+  "thread_refresh": {
+    "message": "刷新"
+  },
+  "thread_stop": {
+    "message": "停止"
+  },
+  "thread_loading": {
+    "message": "正在补载消息（剩余 $arg1$ 条）…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_manual": {
+    "message": "已知关联消息达到 10 条，请点击刷新补载缺失消息。"
+  },
+  "thread_failed": {
+    "message": "有消息未能加载，请点击刷新重试。"
+  },
+  "thread_missing": {
+    "message": "还有 $arg1$ 条消息未加载。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_ready": {
+    "message": "已显示当前已知的全部消息。"
+  },
+  "thread_resize": {
+    "message": "拖动调整 Thread 宽度，也可用左右方向键调整"
+  },
+  "thread_translation_only": {
+    "message": "仅显示译文"
+  },
+  "thread_image_copy": {
+    "message": "复制长图"
+  },
+  "thread_image_save": {
+    "message": "保存长图"
+  },
+  "thread_image_preparing": {
+    "message": "正在准备长图…"
+  },
+  "thread_image_copied": {
+    "message": "长图已复制到剪贴板"
+  },
+  "thread_image_saved": {
+    "message": "已开始下载长图"
+  },
+  "thread_image_clipboard_failed": {
+    "message": "无法写入剪贴板，请保持页面在前台重试，或保存为文件。"
+  },
+  "thread_image_failed": {
+    "message": "生成长图失败，请重试。"
+  },
+  "thread_image_large": {
+    "message": "Thread 太长，无法生成可读的单张图片。"
+  },
+  "thread_image_changed": {
+    "message": "翻译设置或 Thread 内容已改变，请重新导出。"
+  },
+  "thread_image_timeout": {
+    "message": "翻译仍未完成，请稍后重试导出。"
   }
 }

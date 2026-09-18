@@ -1,13 +1,15 @@
-# ChatworkPlusPlus
+# Chatwork++
 
-为 Chatwork 提供消息翻译、成员消息导航和关联消息预览的浏览器扩展。
+当前项目目录：`F:\Projects\DCG\DCG_Doc\ChatworkPlusPlus`。旧 `ChatworkTranslator` 目录保留为历史副本，后续修改和打包使用当前目录。
+
+为 Chatwork 提供消息翻译、成员消息导航和关联消息 Thread 侧栏的浏览器扩展。
 
 ## 两个版本
 
 | 版本 | 翻译方式 | 最新安装包 |
 | --- | --- | --- |
-| [Chrome](chatwork-translator-chrome/) | Google 翻译；待翻译正文会发送给 Google | [v1.12.2 ZIP](chatwork-translator-chrome-v1.12.2.zip) |
-| [Edge](chatwork-translator-edge/) | Edge 本地翻译模型；需要浏览器支持对应语言对并下载模型 | [v1.12.2 ZIP](chatwork-translator-edge-v1.12.2.zip) |
+| [Chrome](chatwork-translator-chrome/) | Google 翻译；待翻译正文会发送给 Google | [v1.15.0 ZIP](ChatworkPlusPlus-chrome-v1.15.0.zip) |
+| [Edge](chatwork-translator-edge/) | Edge 本地翻译模型；需要浏览器支持对应语言对并下载模型 | [v1.15.0 ZIP](ChatworkPlusPlus-edge-v1.15.0.zip) |
 
 ## 功能
 
@@ -15,7 +17,8 @@
 - 自动翻译前判断是否已经是目标语言，避免重复翻译。
 - 手动输入翻译，并复制译文。
 - 按成员及最近天数查找 TO、RE、SEND 消息，支持上下跳转。
-- 关联回复链导航，以及上一条、下一条关联消息的小窗预览。
+- 关联回复链上下跳转、独立 Thread 入口，以及覆盖原生信息栏、支持拖动调宽、显示原文并独立触发自动翻译的 Thread 侧栏（支持仅显示译文，并记住开关状态）。已知关联消息少于 10 条时自动补载缺失内容，10 条及以上手动刷新。
+- Thread 全部内容可复制为长图或下载 PNG，包含滚动区域外的消息，并遵循“仅显示译文”设置。
 - 界面自动适配简体中文、繁体中文、英语、日语、韩语，其他界面语言回退英语。
 - 首次安装默认“日语 → 浏览器当前语言”；日语环境默认关闭自动翻译，其他环境默认开启。已有设置会保留。
 

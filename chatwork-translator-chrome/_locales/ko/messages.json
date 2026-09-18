@@ -474,12 +474,12 @@
     "description": "姓名标记被翻译服务改写，请重试"
   },
   "ui_100": {
-    "message": "Chatwork Edge 로컬 번역",
-    "description": "Chatwork Edge 本地翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_101": {
-    "message": "Chatwork 번역",
-    "description": "Chatwork 翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_102": {
     "message": "Edge 로컬 버전 · 원문 아래에 번역 표시",
@@ -746,8 +746,8 @@
     "description": "请检查 Google 网络连接。"
   },
   "ui_161": {
-    "message": "Chatwork Google 번역",
-    "description": "Chatwork Google 翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_162": {
     "message": "자동 번역 또는 수동 번역 사용 시 본문이 Google로 전송됩니다.",
@@ -782,7 +782,7 @@
     "message": "ko"
   },
   "ext_name": {
-    "message": "Chatwork 번역"
+    "message": "Chatwork++"
   },
   "ext_description": {
     "message": "Chatwork 원문 아래에 번역을 표시합니다. 수동 번역, 멤버 메시지 탐색, 관련 메시지 미리보기를 지원합니다."
@@ -794,5 +794,95 @@
   "language_auto": {
     "message": "언어 감지",
     "description": "自动检测"
+  },
+  "thread_title": {
+    "message": "스레드"
+  },
+  "thread_close": {
+    "message": "스레드 닫기"
+  },
+  "thread_open": {
+    "message": "관련 스레드 열기"
+  },
+  "thread_count": {
+    "message": "스레드 · 메시지 $arg1$개",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_scope": {
+    "message": "현재 채팅방에서 확인된 RE 답장만 포함됩니다. 다른 답장을 찾으려면 이전 메시지를 불러오세요."
+  },
+  "thread_goto": {
+    "message": "원본 메시지로 이동"
+  },
+  "thread_refresh": {
+    "message": "새로 고침"
+  },
+  "thread_stop": {
+    "message": "중지"
+  },
+  "thread_loading": {
+    "message": "메시지 불러오는 중 ($arg1$개 남음)…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_manual": {
+    "message": "관련 메시지가 10개 이상입니다. 누락된 메시지를 불러오려면 새로 고침을 누르세요."
+  },
+  "thread_failed": {
+    "message": "메시지를 불러오지 못했습니다. 새로 고침을 눌러 다시 시도하세요."
+  },
+  "thread_missing": {
+    "message": "아직 불러오지 않은 메시지가 $arg1$개 있습니다.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_ready": {
+    "message": "현재 확인된 모든 메시지를 표시했습니다."
+  },
+  "thread_resize": {
+    "message": "드래그하거나 좌우 방향키로 스레드 너비 조절"
+  },
+  "thread_translation_only": {
+    "message": "번역만 표시"
+  },
+  "thread_image_copy": {
+    "message": "긴 이미지 복사"
+  },
+  "thread_image_save": {
+    "message": "긴 이미지 저장"
+  },
+  "thread_image_preparing": {
+    "message": "Thread 전체 이미지 준비 중…"
+  },
+  "thread_image_copied": {
+    "message": "이미지를 클립보드에 복사했습니다"
+  },
+  "thread_image_saved": {
+    "message": "이미지 다운로드를 시작했습니다"
+  },
+  "thread_image_clipboard_failed": {
+    "message": "클립보드에 쓸 수 없습니다. 페이지를 활성화한 후 다시 시도하거나 파일로 저장하세요."
+  },
+  "thread_image_failed": {
+    "message": "이미지를 만들지 못했습니다. 다시 시도하세요."
+  },
+  "thread_image_large": {
+    "message": "Thread가 너무 길어 읽을 수 있는 한 장의 이미지를 만들 수 없습니다."
+  },
+  "thread_image_changed": {
+    "message": "번역 설정 또는 Thread 내용이 변경되었습니다. 다시 내보내세요."
+  },
+  "thread_image_timeout": {
+    "message": "번역이 아직 진행 중입니다. 잠시 후 다시 내보내세요."
   }
 }

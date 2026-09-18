@@ -474,12 +474,12 @@
     "description": "姓名标记被翻译服务改写，请重试"
   },
   "ui_100": {
-    "message": "Chatwork · Edge local translation",
-    "description": "Chatwork Edge 本地翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_101": {
-    "message": "Chatwork Translator",
-    "description": "Chatwork 翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_102": {
     "message": "Edge local edition · Translation below the original",
@@ -746,8 +746,8 @@
     "description": "请检查 Google 网络连接。"
   },
   "ui_161": {
-    "message": "Chatwork · Google Translate",
-    "description": "Chatwork Google 翻译"
+    "message": "Chatwork++",
+    "description": "Chatwork++"
   },
   "ui_162": {
     "message": "Message text is sent to Google when auto-translation or manual translation is used.",
@@ -782,7 +782,7 @@
     "message": "en"
   },
   "ext_name": {
-    "message": "Chatwork Translator"
+    "message": "Chatwork++"
   },
   "ext_description": {
     "message": "Translate Chatwork messages below the original, with manual translation, member navigation and related-message previews."
@@ -794,5 +794,95 @@
   "language_auto": {
     "message": "Detect language",
     "description": "自动检测"
+  },
+  "thread_title": {
+    "message": "Thread"
+  },
+  "thread_close": {
+    "message": "Close Thread"
+  },
+  "thread_open": {
+    "message": "Open related thread"
+  },
+  "thread_count": {
+    "message": "Thread · $arg1$ messages",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_scope": {
+    "message": "Only discovered RE reply links in this room are included. Load more history to discover other replies."
+  },
+  "thread_goto": {
+    "message": "Go to original message"
+  },
+  "thread_refresh": {
+    "message": "Refresh"
+  },
+  "thread_stop": {
+    "message": "Stop"
+  },
+  "thread_loading": {
+    "message": "Loading missing messages ($arg1$ left)…",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_manual": {
+    "message": "10 or more linked messages: click Refresh to load missing messages."
+  },
+  "thread_failed": {
+    "message": "Could not load a message. Click Refresh to retry."
+  },
+  "thread_missing": {
+    "message": "Missing $arg1$ message(s).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "thread_ready": {
+    "message": "All currently known messages are displayed."
+  },
+  "thread_resize": {
+    "message": "Drag to resize Thread; use the left and right arrow keys to adjust"
+  },
+  "thread_translation_only": {
+    "message": "Translation only"
+  },
+  "thread_image_copy": {
+    "message": "Copy image"
+  },
+  "thread_image_save": {
+    "message": "Save image"
+  },
+  "thread_image_preparing": {
+    "message": "Preparing full Thread image…"
+  },
+  "thread_image_copied": {
+    "message": "Image copied to clipboard"
+  },
+  "thread_image_saved": {
+    "message": "Image download started"
+  },
+  "thread_image_clipboard_failed": {
+    "message": "Could not write to the clipboard. Keep this page focused and retry, or save the image as a file."
+  },
+  "thread_image_failed": {
+    "message": "Could not create the image. Please retry."
+  },
+  "thread_image_large": {
+    "message": "This Thread is too long for a readable single image."
+  },
+  "thread_image_changed": {
+    "message": "Translation settings or Thread content changed. Please export again."
+  },
+  "thread_image_timeout": {
+    "message": "Translation is still running. Please try exporting again later."
   }
 }

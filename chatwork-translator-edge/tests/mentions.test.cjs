@@ -17,6 +17,172 @@ function setup(body='', storage={}) {
   return {dom,w,core:w.ChatworkMentions,start:()=>w.eval(fs.readFileSync(path.join(__dirname,'../mentions.js'),'utf8'))};
 }
 const wait = ms=>new Promise(r=>setTimeout(r,ms));
+
+test('相关信息为不可点击文字，按钮仅按 ↑ Thread ↓ 排列，箭头直接跳转，Thread 独立打开',async()=>{
+  const {dom,w,start}=setup(message(1,1,'正文')+message(2,1,re(12)+'回复')+message(3,1,re(12)+'继续回复'));
+  try {start();await wait(25);const doc=w.document,bar=doc.querySelector('[data-mid="2"] .cw-m-related');
+    const label=bar.querySelector('.cw-m-related-label');assert.equal(label.tagName,'SPAN');assert.equal(label.tabIndex,-1);assert.equal(label.textContent,'相关信息 2/3');
+    assert.deepEqual(Array.from(bar.children,el=>el.tagName),['SPAN','BUTTON','BUTTON','BUTTON']);
+    assert.deepEqual(Array.from(bar.querySelectorAll('button'),el=>el.textContent),['↑','Thread','↓']);
+    label.click();assert.equal(w.jumped,undefined);assert.equal(doc.querySelector('.cw-m-thread'),null);
+    bar.querySelectorAll('button')[0].click();assert.equal(w.jumped,'1');assert.equal(doc.querySelector('.cw-m-thread'),null);
+    bar.querySelectorAll('button')[2].click();assert.equal(w.jumped,'3');assert.equal(doc.querySelector('.cw-m-preview'),null);
+    const entry=bar.querySelector('.cw-m-thread-open');entry.click();assert.ok(doc.querySelector('.cw-m-thread'));assert.equal(entry.getAttribute('aria-expanded'),'true');
+    doc.querySelector('.cw-m-thread header > button').click();assert.equal(entry.getAttribute('aria-expanded'),'false');assert.equal(doc.activeElement,entry);
+  }finally{dom.window.close();}
+});
+
+test('Thread 覆盖原有右侧信息栏，不缩小聊天；重排后跟随原栏，关闭完整恢复',async()=>{
+  const {dom,w,start}=setup(message(1,1,'正文')+message(2,1,re(12)+'回复'));
+  try {const doc=w.document;
+    Object.defineProperty(w,'innerWidth',{value:1280,writable:true}); Object.defineProperty(w,'innerHeight',{value:800,writable:true});
+    const rect=(left,top,width,height)=>({left,top,width,height,right:left+width,bottom:top+height});
+    const native=doc.createElement('aside'); native.id='native-details';native.innerHTML='<button>Chatwork AI</button><p>描述与工作</p>'; native.style.cssText='color:red'; doc.body.append(native);
+    const header=doc.querySelector('#_roomHeader'),timeline=doc.querySelector('#_timeLine');
+    header.getBoundingClientRect=()=>rect(200,40,1080,60); timeline.getBoundingClientRect=()=>rect(200,100,760,700);
+    let bounds=rect(960,100,320,700); native.getBoundingClientRect=()=>bounds;
+    const html=native.innerHTML,style=native.getAttribute('style'),chatStyle=timeline.getAttribute('style');
+    start(); await wait(25); doc.querySelector('.cw-m-thread-open').click();
+    const panel=doc.querySelector('.cw-m-thread');
+    assert.equal(panel.style.left,'960px');assert.equal(panel.style.top,'100px');assert.equal(panel.style.width,'320px');assert.equal(panel.style.height,'700px');
+    assert.equal(native.hasAttribute('inert'),true);assert.equal(native.innerHTML,html);assert.equal(native.getAttribute('style'),style);
+    assert.equal(timeline.getAttribute('style'),chatStyle);assert.equal(doc.querySelectorAll('.cw-m-thread-workspace').length,0);
+    bounds=rect(920,120,360,680);timeline.getBoundingClientRect=()=>rect(200,120,720,680);w.dispatchEvent(new w.Event('resize'));
+    assert.equal(panel.style.left,'920px');assert.equal(panel.style.width,'360px');assert.equal(panel.style.top,'120px');
+    panel.querySelector('.cw-m-thread-resize').dispatchEvent(new w.KeyboardEvent('keydown',{key:'Home',bubbles:true}));
+    assert.equal(panel.style.width,'360px');assert.equal(panel.querySelector('.cw-m-thread-resize').getAttribute('aria-valuemin'),'360');
+    panel.querySelector('header > button').click(); assert.equal(native.hasAttribute('inert'),false);assert.equal(native.innerHTML,html);assert.equal(native.getAttribute('style'),style);
+    native.setAttribute('inert','saved');doc.querySelector('.cw-m-thread-open').click();w.storageChanged({mentionEnabled:{newValue:false}},'local');assert.equal(native.getAttribute('inert'),'saved');
+  } finally {dom.window.close();}
+});
+
+test('原生信息栏重建后覆盖新节点，解除旧节点的 inert；隐藏时仅浮层显示而不压缩页面',async()=>{
+  const {dom,w,start}=setup(message(1,1,'正文')+message(2,1,re(12)+'回复'));
+  try {const doc=w.document;Object.defineProperty(w,'innerWidth',{value:1280});Object.defineProperty(w,'innerHeight',{value:800});
+    const rect={left:960,top:100,width:320,height:700,right:1280,bottom:800};
+    doc.querySelector('#_roomHeader').getBoundingClientRect=()=>({...rect,left:200,width:1080,top:40,height:60,bottom:100});
+    doc.querySelector('#_timeLine').getBoundingClientRect=()=>({...rect,left:200,width:760,right:960});
+    const old=doc.createElement('aside');old.getBoundingClientRect=()=>rect;doc.body.append(old);
+    start();await wait(25);doc.querySelector('.cw-m-thread-open').click();assert.ok(old.hasAttribute('inert'));
+    const next=doc.createElement('aside');next.getBoundingClientRect=()=>rect;old.replaceWith(next);await wait(250);
+    assert.equal(old.hasAttribute('inert'),false);assert.ok(next.hasAttribute('inert'));
+    next.getBoundingClientRect=()=>({left:0,top:0,width:0,height:0,right:0,bottom:0});w.dispatchEvent(new w.Event('resize'));
+    assert.equal(next.hasAttribute('inert'),false);assert.equal(doc.querySelector('.cw-m-thread').style.top,'100px');
+    assert.equal(doc.querySelectorAll('.cw-m-thread-workspace').length,0);
+  } finally {dom.window.close();}
+});
+
+test('Thread 左边缘拖动与键盘调整宽度，保存后重新打开恢复，关闭清理拖动监听',async()=>{
+  const store={threadWidth:360};const {dom,w,start}=setup(message(1,1,'正文')+message(2,1,re(12)+'回复'),store);
+  try {Object.defineProperty(w,'innerWidth',{value:1280});Object.defineProperty(w,'innerHeight',{value:800});
+    start();await wait(25);const doc=w.document;doc.querySelector('.cw-m-thread-open').click();
+    const panel=doc.querySelector('.cw-m-thread'),handle=doc.querySelector('.cw-m-thread-resize');
+    panel.getBoundingClientRect=()=>({width:parseFloat(panel.style.width)});
+    assert.equal(panel.style.width,'360px');
+    handle.dispatchEvent(new w.MouseEvent('pointerdown',{button:0,clientX:920,bubbles:true}));
+    w.dispatchEvent(new w.MouseEvent('pointermove',{clientX:820}));w.dispatchEvent(new w.MouseEvent('pointerup',{clientX:820}));
+    assert.equal(panel.style.width,'460px');assert.equal(store.threadWidth,460);assert.equal(panel.style.left,'820px');
+    handle.dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));assert.equal(store.threadWidth,440);
+    handle.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Home',bubbles:true}));assert.equal(store.threadWidth,260);
+    handle.dispatchEvent(new w.KeyboardEvent('keydown',{key:'End',bubbles:true}));assert.equal(store.threadWidth,800);
+    handle.dispatchEvent(new w.MouseEvent('pointerdown',{button:0,clientX:480,bubbles:true}));
+    panel.querySelector('header > button').click();w.dispatchEvent(new w.MouseEvent('pointermove',{clientX:1000}));
+    doc.querySelector('.cw-m-thread-open').click();assert.equal(doc.querySelector('.cw-m-thread').style.width,'800px');
+    assert.equal(doc.querySelector('.cw-m-thread-resize').getAttribute('aria-valuenow'),'800');
+  } finally {dom.window.close();}
+});
+
+test('Thread 按关联链显示原文、译文、警告和作者，点击不会跳转或复制活跃聊天节点',async()=>{
+  const {dom,w,start}=setup(message(1,1,'原文第一行\n&lt;img src=x onerror=alert(1)&gt;')+message(2,1,re(12)+'返信')+message(3,1,to(12)+'无关消息'));
+  try { const doc=w.document;
+    doc.querySelector('[data-mid="1"]').insertAdjacentHTML('beforeend','<div class="cw-zh-translation"><strong class="cw-zh-label">中文</strong><div class="cw-zh-body">译文\n第二行</div><p class="cw-zh-warning">部分失败</p></div>');
+    start(); await wait(25); const original=doc.querySelector('pre').innerHTML;
+    doc.querySelector('[data-mid="2"] .cw-m-thread-open').click();
+    assert.equal(w.jumped,undefined); const panel=doc.querySelector('.cw-m-thread');
+    assert.equal(panel.querySelectorAll('article').length,2);
+    assert.ok(panel.textContent.includes('Member 12')); assert.ok(panel.textContent.includes('部分失败'));
+    assert.equal(panel.querySelector('.cw-m-preview-text').textContent,'原文第一行\n<img src=x onerror=alert(1)>');
+    assert.equal(panel.querySelectorAll('._message, pre, [data-aid], .cw-zh-body, [onerror]').length,0);
+    assert.equal(doc.querySelector('pre').innerHTML,original);
+    panel.querySelector('[data-thread-mid="1"] > button').click(); assert.equal(w.jumped,'1');
+    assert.ok(doc.querySelector('.cw-m-thread')); assert.equal(doc.querySelectorAll('.cw-m-preview').length,0);
+    panel.querySelector('header > button').click(); assert.equal(doc.querySelector('.cw-m-thread'),null);
+    assert.equal(doc.querySelectorAll('.cw-m-thread-workspace').length,0);
+  } finally {dom.window.close();}
+});
+
+test('Thread 更新译文与回复，保留滚动和已卸载原文，删除消息不会留下旧卡片',async()=>{
+  const {dom,w,start}=setup(message(1,1,'原始正文')+message(2,1,re(12)+'回复'));
+  try {start(); await wait(25); const doc=w.document;
+    doc.querySelector('[data-mid="2"] .cw-m-thread-open').click();
+    const list=doc.querySelector('.cw-m-thread-list'); list.scrollTop=85;
+    doc.querySelector('[data-mid="1"]').insertAdjacentHTML('beforeend','<div class="cw-zh-translation"><div class="cw-zh-body">新译文</div></div>');
+    await wait(250); assert.ok(list.textContent.includes('新译文')); assert.equal(list.scrollTop,85);
+    doc.querySelector('.cw-zh-body').textContent='更新的译文'; await wait(250); assert.ok(list.textContent.includes('更新的译文'));
+    doc.querySelector('[data-mid="1"]').remove(); doc.querySelector('#scroll').insertAdjacentHTML('beforeend',message(3,1,re(12)+'新回复'));
+    await wait(250); assert.equal(list.querySelectorAll('article').length,3); assert.ok(list.textContent.includes('原始正文'));
+    doc.querySelector('[data-mid="3"]').dataset.deleted='1'; await wait(250); assert.equal(list.querySelectorAll('article').length,2);
+    doc.querySelector('[data-roomid]').dataset.roomid='8'; await wait(250); assert.equal(doc.querySelector('.cw-m-thread'),null);
+  } finally {dom.window.close();}
+});
+
+test('Thread 关闭成员导航或 Escape 时清理侧栏并恢复入口焦点',async()=>{
+  const {dom,w,start}=setup(message(1,1,'正文')+message(2,1,re(12)+'回复'));
+  try {start(); await wait(25); const doc=w.document,entry=doc.querySelector('.cw-m-thread-open'); entry.click();
+    doc.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape'})); assert.equal(doc.querySelector('.cw-m-thread'),null); assert.equal(doc.activeElement,entry);
+    entry.click(); w.storageChanged({mentionEnabled:{newValue:false}},'local');
+    assert.equal(doc.querySelector('.cw-m-thread'),null); assert.equal(doc.querySelectorAll('.cw-m-thread-workspace').length,0);
+  } finally {dom.window.close();}
+});
+
+test('Thread 少于 10 条时自动补载缺失原文，10 条及以上只在手动刷新后加载',async()=>{
+  for (const total of [2,9,10,11]) {
+    const {dom,w,start}=setup(Array.from({length:total-1},(_,i)=>message(i+2,1,re(12)+'回复')).join(''));
+    try { const doc=w.document; const routes=[];
+      w.addEventListener('hashchange',()=>{ routes.push(w.location.hash); if(w.location.hash==='#!rid7-1' && !doc.querySelector('[data-mid="1"]')) doc.querySelector('#scroll').insertAdjacentHTML('afterbegin',message(1,1,'补载的原文')); });
+      start(); await wait(25); doc.querySelector('.cw-m-thread-open').click(); await wait(100);
+      if (total>=10) { assert.equal(routes.length,0); assert.match(doc.querySelector('.cw-m-thread-tools').textContent,/10 条/); doc.querySelector('.cw-m-thread-tools button').click(); }
+      await wait(650); assert.ok(routes.includes('#!rid7-1')); assert.ok(doc.querySelector('.cw-m-thread-list').textContent.includes('补载的原文'));
+      assert.equal(doc.querySelectorAll('.cw-m-thread-message').length,total); assert.equal(w.jumped,undefined);
+    } finally {dom.window.close();}
+  }
+});
+
+test('Thread 自动补载发现总数达到 10 条时暂停，不继续打开下一条缺失消息',async()=>{
+  const {dom,w,start}=setup(message(2,1,re(12)+'回复'));
+  try {const doc=w.document,routes=[];
+    w.addEventListener('hashchange',()=>{routes.push(w.location.hash); if(w.location.hash==='#!rid7-1'&&!doc.querySelector('[data-mid="1"]')) {
+      doc.querySelector('#scroll').insertAdjacentHTML('afterbegin',message(1,1,'<div data-cwtag="[rp aid=12 to=7-0]"></div>根消息')+Array.from({length:7},(_,i)=>message(i+3,1,re(12)+'新发现的回复')).join(''));
+    }});
+    start(); await wait(25); doc.querySelector('.cw-m-thread-open').click(); await wait(750);
+    assert.equal(doc.querySelectorAll('.cw-m-thread-message').length,10); assert.ok(!routes.includes('#!rid7-0'));
+    assert.match(doc.querySelector('.cw-m-thread-tools').textContent,/10 条/);
+  } finally {dom.window.close();}
+});
+
+test('Thread 自动补载中切换房间会取消后续请求，不恢复到旧房间',async()=>{
+  const {dom,w,start}=setup(message(2,1,re(12)+'回复'));
+  try {start(); await wait(25); const doc=w.document; doc.querySelector('.cw-m-thread-open').click(); await wait(30);
+    doc.querySelector('[data-roomid]').dataset.roomid='8'; w.location.hash='#!rid8'; await wait(450);
+    assert.equal(w.location.hash,'#!rid8'); assert.equal(doc.querySelector('.cw-m-thread'),null);
+  } finally {dom.window.close();}
+});
+
+test('Thread 补载超时提示失败，不自动反复重试；可手动重试恢复',async()=>{
+  const {dom,w,start}=setup(message(2,1,re(12)+'回复'));
+  try {const doc=w.document; const routes=[];
+    w.Date.now=()=>Date.now()*100;
+    w.addEventListener('hashchange',()=>routes.push(w.location.hash));
+    start(); await wait(25); doc.querySelector('.cw-m-thread-open').click(); await wait(750);
+    assert.match(doc.querySelector('.cw-m-thread-tools').textContent,/未能加载/);
+    const before=routes.filter(route=>route==='#!rid7-1').length; await wait(300);
+    assert.equal(routes.filter(route=>route==='#!rid7-1').length,before);
+    w.addEventListener('hashchange',()=>{if(w.location.hash==='#!rid7-1'&&!doc.querySelector('[data-mid="1"]')) doc.querySelector('#scroll').insertAdjacentHTML('afterbegin',message(1,1,'重试成功'));});
+    doc.querySelector('.cw-m-thread-tools button').click(); await wait(750);
+    assert.ok(doc.querySelector('.cw-m-thread-list').textContent.includes('重试成功'));
+    assert.ok(!doc.querySelector('.cw-m-thread-tools').textContent.includes('未能加载'));assert.equal(doc.querySelector('.cw-m-thread-tools').hidden,true);
+  } finally {dom.window.close();}
+});
 test('按账号、时间及消息去重，排除引用、删除、别的房间和未知时间',()=>{
   const {dom,w,core}=setup(message(1,4,to(12))+message(2,2,to(12)+to(12)+re(12))+message(3,1,`<blockquote>${to(12)}</blockquote>`)+message(4,1,to(12),'8')+message(5,1,to(12),'7',true)+message(6,1,to(123))+message(2,2,to(12)));
   try {
@@ -174,42 +340,10 @@ test('消息标题重建会补回按钮，持续页面变动不会让刷新一�
   } finally {dom.window.close();}
 });
 
-test('上下预览不跳转，不复制活跃 HTML；前往按钮才定位消息',async()=>{
-  const {dom,w,start}=setup(message(1,2,'第一行\n第二行&lt;img src=x onerror=alert(1)&gt;')+message(2,1,re(12)));
-  try {start();await wait(20);const doc=w.document;
-    const translation=doc.createElement('section');translation.className='cw-zh-translation';translation.innerHTML='<b class="cw-zh-label">中文</b><div class="cw-zh-body">已有译文</div>';doc.querySelector('[data-mid="1"]').append(translation);
-    const btn=doc.querySelector('[data-mid="2"] [aria-label="预览上一条相关信息"]');btn.click();
-    const dialog=doc.querySelector('.cw-m-preview');assert.ok(dialog);assert.equal(w.jumped,undefined);
-    assert.match(dialog.textContent,/第一行/);assert.match(dialog.textContent,/已有译文/);
-    assert.equal(dialog.querySelector('script, [onerror], ._message, .cw-m-related'),null);
-    assert.equal(doc.querySelectorAll('#_timeLine ._message').length,2);
-    assert.equal(btn.getAttribute('aria-expanded'),'true');
-    dialog.querySelector('[aria-label="前往预览的消息"]').click();assert.equal(w.jumped,'1');assert.equal(doc.querySelector('.cw-m-preview'),null);
-    doc.querySelector('[data-mid="1"] [aria-label="预览下一条相关信息"]').click();assert.ok(doc.querySelector('.cw-m-preview'));
-    doc.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(doc.querySelector('.cw-m-preview'),null);
-  } finally {dom.window.close();}
-});
-test('缺失原消息预览保持原位置，前往直接定位而不触发原生预览',async()=>{
-  const {dom,w,start}=setup(message(2,1,'<div data-cwtag="[rp aid=12 to=7-1]"><span class="_replyMessage">RE</span></div>'));
-  try {let clicked=0;const doc=w.document;doc.querySelector('._replyMessage').addEventListener('click',()=>clicked++);start();await wait(20);
-    doc.querySelector('[aria-label="预览上一条相关信息"]').click();assert.equal(clicked,0);assert.match(doc.querySelector('.cw-m-preview').textContent,/尚未加载/);
-    doc.querySelector('[aria-label="前往预览的消息"]').click();assert.equal(clicked,0);assert.equal(w.location.hash,'#!rid7-1');assert.equal(doc.querySelector('.cw-m-preview'),null);
-  } finally {dom.window.close();}
-});
-test('点击外部、滚动聊天室、关闭导航会关闭预览；小窗内滚动不关闭',async()=>{
-  const {dom,w,start}=setup(message(1,2,to(12))+message(2,1,re(12)));
-  try {start();await wait(20);const doc=w.document;const open=()=>doc.querySelector('[data-mid="2"] [aria-label="预览上一条相关信息"]').click();
-    open();doc.querySelector('.cw-m-preview-content').dispatchEvent(new w.Event('scroll'));assert.ok(doc.querySelector('.cw-m-preview'));
-    doc.body.dispatchEvent(new w.Event('pointerdown',{bubbles:true}));assert.equal(doc.querySelector('.cw-m-preview'),null);
-    open();doc.querySelector('#scroll').dispatchEvent(new w.Event('scroll'));assert.equal(doc.querySelector('.cw-m-preview'),null);
-    open();w.storageChanged({mentionEnabled:{newValue:false}},'local');assert.equal(doc.querySelector('.cw-m-preview'),null);
-  } finally {dom.window.close();}
-});
-
 test('序号恢复为当前位置/总数，已加载目标箭头只滚动，不改变网址或打开预览',async()=>{
   const {dom,w,start}=setup(message(1,2,to(12))+message(2,1,re(12))+message(3,1,re(12)));
   try {start();await wait(20);const doc=w.document;const original=w.location.href;
-    assert.match(doc.querySelector('[data-mid="2"] .cw-m-related > span').textContent,/相关信息 2\/3/);
+    assert.match(doc.querySelector('[data-mid="2"] .cw-m-related > .cw-m-related-label').textContent,/相关信息 2\/3/);
     doc.querySelector('[data-mid="2"] [aria-label="上一条相关信息"]').click();assert.equal(w.jumped,'1');assert.equal(w.location.href,original);assert.equal(doc.querySelector('.cw-m-preview'),null);
   } finally {dom.window.close();}
 });
@@ -219,4 +353,23 @@ test('重复定位已卸载目标能重新进入直达链接；关闭导航取�
     doc.querySelector('[aria-label="上一条相关信息"]').click();assert.equal(w.location.hash,'#!rid7');await wait(90);assert.equal(w.location.hash,'#!rid7-1');
     doc.querySelector('[aria-label="上一条相关信息"]').click();w.storageChanged({mentionEnabled:{newValue:false}},'local');await wait(90);assert.equal(w.location.hash,'#!rid7');
   } finally {dom.window.close();}
+});
+
+
+test('Thread 导出按钮在标题栏，移除范围说明；无缺失时隐藏整行加载提示',async()=>{
+  const {dom,w,start}=setup(message(1,1,'正文')+message(2,1,re(12)+'回复'));
+  try {start();await wait(25);const doc=w.document;doc.querySelector('.cw-m-thread-open').click();const panel=doc.querySelector('.cw-m-thread');
+    assert.equal(panel.querySelectorAll('header .cw-m-thread-export button').length,2);
+    assert.equal(panel.querySelector('.cw-m-thread-note'),null);assert.ok(!panel.textContent.includes('仅包含当前聊天室'));
+    assert.equal(panel.querySelector('.cw-m-thread-tools').hidden,true);assert.equal(panel.querySelector('.cw-m-thread-tools span').textContent,'');
+  }finally{dom.window.close();}
+});
+
+test('补载失败后消息稍晚到达时，自动清除过期失败提示并隐藏提示行',async()=>{
+  const {dom,w,start}=setup(message(2,1,re(12)+'回复'));
+  try {w.Date.now=()=>Date.now()*100;start();await wait(25);const doc=w.document;doc.querySelector('.cw-m-thread-open').click();await wait(750);
+    const row=doc.querySelector('.cw-m-thread-tools');assert.equal(row.hidden,false);assert.match(row.textContent,/未能加载/);
+    doc.querySelector('#scroll').insertAdjacentHTML('afterbegin',message(1,1,'稍晚加载完成'));await wait(300);
+    assert.equal(row.hidden,true);assert.equal(row.querySelector('span').textContent,'');assert.ok(doc.querySelector('.cw-m-thread-list').textContent.includes('稍晚加载完成'));
+  }finally{dom.window.close();}
 });

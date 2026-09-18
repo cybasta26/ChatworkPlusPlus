@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_ext_name__",
-  "version": "1.12.2",
+  "version": "1.15.0",
   "description": "__MSG_ext_description__",
   "permissions": [
     "storage"
@@ -30,6 +30,8 @@
         "google-client.js",
         "content.js",
         "mentions-core.js",
+        "vendor/html2canvas.min.js",
+        "thread-image.js",
         "mentions.js"
       ],
       "css": [
