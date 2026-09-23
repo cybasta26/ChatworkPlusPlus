@@ -2,3 +2,21 @@
 .cw-zh-label { color: #279b8f; font-size: 11px; font-weight: 600; margin-bottom: 6px; }
 .cw-zh-body { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.65; user-select: text; }
 .cw-zh-translation button { margin-top: 8px; padding: 3px 10px; cursor: pointer; }
+.cw-attachment-open { margin: 0 4px; min-width: 28px; height: 28px; border: 1px solid #bdd8d8; border-radius: 5px; background: #fff; color: #4c8490; cursor: pointer; font-size: 18px; line-height: 24px; }
+.cw-attachment-open:hover { background: #e4f4f1; }
+.cw-attachment-panel { position: fixed; z-index: 2147483647; right: 24px; bottom: 72px; width: min(420px, calc(100vw - 48px)); padding: 14px; box-sizing: border-box; background: #fff; border: 1px solid #b8cfd4; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,.2); color: #345; font: 14px/1.4 sans-serif; }
+.cw-attachment-panel[hidden] { display: none; }
+.cw-attachment-panel header, .cw-attachment-actions { display: flex; align-items: center; gap: 8px; }
+.cw-attachment-panel header { justify-content: space-between; margin-bottom: 10px; }
+.cw-attachment-destination { margin: -2px 0 10px; color: #4c6870; font-size: 12px; line-height: 1.45; }
+.cw-attachment-panel button { border: 1px solid #b8cfd4; border-radius: 5px; background: #fff; color: #356b77; padding: 5px 9px; cursor: pointer; }
+.cw-attachment-panel button:hover { background: #e8f5f3; }
+.cw-attachment-close { border: 0 !important; font-size: 18px; padding: 0 5px !important; }
+.cw-attachment-file { display: block; max-width: 100%; margin-bottom: 7px; }
+.cw-attachment-hint { color: #74858b; font-size: 12px; margin-bottom: 8px; }
+.cw-attachment-list { max-height: 170px; overflow-y: auto; margin: 6px 0; }
+.cw-attachment-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #edf2f3; }
+.cw-attachment-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cw-attachment-row button { padding: 0 6px; }
+.cw-attachment-actions { margin-top: 10px; }
+.cw-attachment-status { min-height: 20px; margin-top: 7px; color: #667; font-size: 12px; }

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_ext_name__",
-  "version": "1.15.0",
+  "version": "1.20.7",
   "description": "__MSG_ext_description__",
   "permissions": [
     "storage"
@@ -32,7 +32,9 @@
         "mentions-core.js",
         "vendor/html2canvas.min.js",
         "thread-image.js",
-        "mentions.js"
+        "mentions.js",
+        "attachments.js",
+        "ad-hider.js"
       ],
       "css": [
         "content.css",

@@ -900,5 +900,36 @@
   },
   "thread_image_timeout": {
     "message": "Translation is still running. Please try exporting again later."
+  },
+  "attachment_add": {
+    "message": "Enhanced Add Attachments"
+  },
+  "attachment_upload": {
+    "message": "Upload and insert"
+  },
+  "attachment_uploading": {
+    "message": "Uploading…"
+  },
+  "attachment_destination": {
+    "message": "Attachments are first sent to “My Chat”, then you are returned to the current conversation."
+  },
+  "attachment_hint": {
+    "message": "Choose multiple files, or paste an image here with Ctrl+V."
+  },
+  "attachment_failed": {
+    "message": "Upload failed"
+  },
+  "attachment_cancel": {
+    "message": "Cancel"
+  },
+  "attachment_close": {
+    "message": "Close"
+  },
+  "attachment_remove": {
+    "message": "Remove"
+  },
+  "attachment_title": {
+    "message": "Enhanced Add Attachments"
   }
 }
+

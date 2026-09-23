@@ -821,7 +821,7 @@
     "message": "関連スレッドを開く"
   },
   "thread_count": {
-    "message": "スレッド · $arg1$ 件",
+    "message": "Thread · $arg1$ 件",
     "placeholders": {
       "arg1": {
         "content": "$1"
@@ -900,5 +900,36 @@
   },
   "thread_image_timeout": {
     "message": "翻訳がまだ完了していません。しばらくしてから書き出してください。"
+  },
+  "attachment_add": {
+    "message": "拡張版の添付ファイル追加"
+  },
+  "attachment_upload": {
+    "message": "アップロードして挿入"
+  },
+  "attachment_uploading": {
+    "message": "アップロード中…"
+  },
+  "attachment_destination": {
+    "message": "添付ファイルは先に「マイチャット」へ送信され、その後現在の会話に自動的に戻ります。"
+  },
+  "attachment_hint": {
+    "message": "複数ファイルを選択するか、この画面で Ctrl+V で画像を貼り付けます。"
+  },
+  "attachment_failed": {
+    "message": "アップロードに失敗しました"
+  },
+  "attachment_cancel": {
+    "message": "キャンセル"
+  },
+  "attachment_close": {
+    "message": "閉じる"
+  },
+  "attachment_remove": {
+    "message": "削除"
+  },
+  "attachment_title": {
+    "message": "拡張版の添付ファイル追加"
   }
 }
+

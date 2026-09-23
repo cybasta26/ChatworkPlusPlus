@@ -884,5 +884,36 @@
   },
   "thread_image_timeout": {
     "message": "翻译仍未完成，请稍后重试导出。"
+  },
+  "attachment_add": {
+    "message": "增强版添加附件"
+  },
+  "attachment_upload": {
+    "message": "上传并插入"
+  },
+  "attachment_uploading": {
+    "message": "正在上传…"
+  },
+  "attachment_destination": {
+    "message": "附件会先发送到“我的交谈”，然后自动返回当前对话。"
+  },
+  "attachment_hint": {
+    "message": "可选择多个文件，也可以在此窗口按 Ctrl+V 粘贴图片。"
+  },
+  "attachment_failed": {
+    "message": "上传失败"
+  },
+  "attachment_cancel": {
+    "message": "取消"
+  },
+  "attachment_close": {
+    "message": "关闭"
+  },
+  "attachment_remove": {
+    "message": "移除"
+  },
+  "attachment_title": {
+    "message": "增强版添加附件"
   }
 }
+

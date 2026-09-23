@@ -805,7 +805,7 @@
     "message": "관련 스레드 열기"
   },
   "thread_count": {
-    "message": "스레드 · 메시지 $arg1$개",
+    "message": "Thread · 메시지 $arg1$개",
     "placeholders": {
       "arg1": {
         "content": "$1"
@@ -884,5 +884,36 @@
   },
   "thread_image_timeout": {
     "message": "번역이 아직 진행 중입니다. 잠시 후 다시 내보내세요."
+  },
+  "attachment_add": {
+    "message": "확장 첨부 파일 추가"
+  },
+  "attachment_upload": {
+    "message": "업로드하고 삽입"
+  },
+  "attachment_uploading": {
+    "message": "업로드 중…"
+  },
+  "attachment_destination": {
+    "message": "첨부 파일은 먼저 “내 대화”로 전송한 다음 현재 대화로 자동으로 돌아옵니다."
+  },
+  "attachment_hint": {
+    "message": "여러 파일을 선택하거나 이 창에서 Ctrl+V로 이미지를 붙여넣으세요."
+  },
+  "attachment_failed": {
+    "message": "업로드 실패"
+  },
+  "attachment_cancel": {
+    "message": "취소"
+  },
+  "attachment_close": {
+    "message": "닫기"
+  },
+  "attachment_remove": {
+    "message": "삭제"
+  },
+  "attachment_title": {
+    "message": "확장 첨부 파일 추가"
   }
 }
+

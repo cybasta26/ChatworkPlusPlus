@@ -884,5 +884,36 @@
   },
   "thread_image_timeout": {
     "message": "翻譯尚未完成，請稍後重試匯出。"
+  },
+  "attachment_add": {
+    "message": "增強版新增附件"
+  },
+  "attachment_upload": {
+    "message": "上傳並插入"
+  },
+  "attachment_uploading": {
+    "message": "正在上傳…"
+  },
+  "attachment_destination": {
+    "message": "附件會先傳送到「我的交談」，然後自動返回目前對話。"
+  },
+  "attachment_hint": {
+    "message": "可選擇多個檔案，也可以在此視窗按 Ctrl+V 貼上圖片。"
+  },
+  "attachment_failed": {
+    "message": "上傳失敗"
+  },
+  "attachment_cancel": {
+    "message": "取消"
+  },
+  "attachment_close": {
+    "message": "關閉"
+  },
+  "attachment_remove": {
+    "message": "移除"
+  },
+  "attachment_title": {
+    "message": "增強版新增附件"
   }
 }
+

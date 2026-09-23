@@ -3,12 +3,37 @@
   let days = 3, saved = {}, rid = '', identity = {}, aid = '', bar, timer, run;
   let enabled = true, target = '', targetName = '', accountKey = '';
   let items = [], groups = {to: [], re: [], send: []}, selected = {};
+  let recipient = '', requireBoth = false, saveMode = 'all', saveImage = true, saveText = true, perDay = true;
+  let keyword = '', keywordDraft = '';
+  let caseSensitive = false, wholeWord = false;
+  let historyOpen = false, historyWidth = 0, sharedPanelWidth = 0;
   let status = CW_I18N.t("ui_035"), coverage = false;
   let pendingJump;
   let threadWidth;
   let threadTranslationOnly = false;
   const controls = {}, detected = new Map();
-  let resizeObserver;
+  function extensionContextAlive() {
+    try { return !!chrome?.runtime?.id && !!chrome?.storage?.local; }
+    catch { return false; }
+  }
+  function saveSettings(values) {
+    try {
+      if (!extensionContextAlive()) return Promise.resolve();
+      return Promise.resolve(chrome.storage.local.set(values)).catch(() => {});
+    } catch { return Promise.resolve(); }
+  }
+  const historyLocale = (chrome.i18n?.getUILanguage?.() || navigator.language || 'zh-CN').toLowerCase();
+  const historyStrings = historyLocale.startsWith('ja')
+    ? ['チャット履歴','送信者','宛先','送信者と宛先の両方を含む','チャット履歴を保存','すべて','指定','画像','テキスト','日ごと','保存','閉じる','無','保存完了','保存に失敗しました','メッセージ：{count}','条件に一致するメッセージ数','ドラッグして幅を調整','キーワードを入力','検索','大文字と小文字を区別','単語全体に一致']
+    : historyLocale.startsWith('ko')
+      ? ['채팅 기록','보낸 사람','받는 사람','보낸 사람과 받는 사람 모두 포함','채팅 기록 저장','전체','지정','이미지','텍스트','날짜별','저장','닫기','없음','저장 완료','저장 실패','메시지: {count}','현재 필터와 일치하는 메시지 수','드래그하여 너비 조절','키워드 입력','검색','대소문자 구분','전체 단어 일치']
+      : historyLocale.startsWith('en')
+        ? ['Chat history','Sender','Recipient','Require both sender and recipient','Save chat history','All','Filtered','Image','Text','Split by day','Save','Close','None','Saved','Save failed','Messages: {count}','Number of messages matching the current filters','Drag to resize','Search keyword','Search','Match case','Whole word']
+        : (['zh-tw','zh-hk'].some(prefix=>historyLocale.startsWith(prefix))
+          ? ['聊天記錄','發信人','收信人','同時包含發信人和收信人','儲存聊天記錄','全部記錄','指定記錄','圖片','文字','按天','儲存','關閉','無','儲存完成','儲存失敗','訊息：{count}','符合目前篩選條件的訊息數','拖曳以調整寬度','輸入關鍵字','搜尋','區分大小寫','全詞符合']
+          : ['聊天记录','发信人','收信人','同时包含发信人和收信人','保存聊天记录','全部记录','指定记录','图片','文本','按天','保存','关闭','无','保存完成','保存失败','消息：{count}','符合当前筛选条件的消息数','拖动调整宽度','输入关键字','搜索','区分大小写','全词匹配']);
+  const ht = index => historyStrings[index];
+  let resizeObserver, nativeSidebarObserver, nativeSidebarHost;
   const text = (el, value) => { if (el.textContent !== value) el.textContent = value; };
   function button(label, title, fn, parent = bar) {
     const el = document.createElement('button');
@@ -29,21 +54,41 @@
     return users;
   }
   function mount(header) {
-    bar = document.createElement('div'); bar.id = 'cw-mentions';
-    bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', CW_I18N.t("ui_036"));
-    controls.person = document.createElement('select'); controls.person.setAttribute('aria-label', CW_I18N.t("ui_037")); bar.append(controls.person);
-    controls.person.addEventListener('change', () => {
-      const value = controls.person.value;
-      if (value === 'custom' || value === 'self-settings') { openSettings(value === 'self-settings'); updatePeople(); return; }
-      stop(); target = value; targetName = members().get(value) || ''; selected = {}; refresh();
-    });
+    const launch = button('', ht(0), () => { historyOpen = !historyOpen; bar.hidden = !historyOpen; launch.setAttribute('aria-expanded',String(historyOpen)); if(historyOpen) updatePeople(); },header);
+    launch.innerHTML='<svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g fill="currentColor"><rect x="5" y="12" width="21" height="5" rx="2.5"/><rect x="5" y="25" width="16" height="5" rx="2.5"/><rect x="5" y="38" width="21" height="5" rx="2.5"/></g><circle cx="40" cy="28" r="17" fill="none" stroke="currentColor" stroke-width="5"/><path d="M52.5 40.5 62 50" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>';
+    controls.launch=launch;
+    launch.id = 'cw-history-launch'; launch.title = ht(0); launch.setAttribute('aria-label',ht(0));
+    header.insertBefore(launch, header.querySelector('.chatRoomHeader__infoContainer'));
+    bar = document.createElement('aside'); bar.id = 'cw-mentions'; bar.className = 'cw-history-panel';
+    bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', ht(0)); bar.hidden = true;
+    const resize = document.createElement('div'); resize.className = 'cw-history-resize'; resize.title = ht(17); bar.append(resize);
+    const panelHead = document.createElement('header'); panelHead.className='cw-history-head'; bar.append(panelHead);
+    const heading = document.createElement('strong'); heading.textContent=ht(0); panelHead.append(heading);
+    button('×',ht(11),()=>{historyOpen=false;bar.hidden=true;launch.setAttribute('aria-expanded','false');},panelHead);
+    const filters = document.createElement('div'); filters.className='cw-history-filters'; bar.append(filters);
+    const senderLabel=document.createElement('label');senderLabel.className='cw-history-person';senderLabel.append(document.createTextNode(ht(1)));
+    controls.person=document.createElement('select');controls.person.setAttribute('aria-label',ht(1));senderLabel.append(controls.person);filters.append(senderLabel);
+    controls.person.addEventListener('change',()=>{target=controls.person.value;targetName=members().get(target)||'';selected={};refresh();});
+    const recipientLabel=document.createElement('label');recipientLabel.className='cw-history-person cw-history-recipient';recipientLabel.append(document.createTextNode(ht(2)));
+    controls.recipient=document.createElement('select');controls.recipient.setAttribute('aria-label',ht(2));recipientLabel.append(controls.recipient);filters.append(recipientLabel);
+    controls.recipient.addEventListener('change',()=>{recipient=controls.recipient.value;selected={};refresh();});
+    const bothLabel=document.createElement('label');bothLabel.className='cw-history-both';
+    controls.both=document.createElement('input');controls.both.type='checkbox';controls.both.checked=false;bothLabel.append(controls.both,document.createTextNode(ht(3)));filters.append(bothLabel);
+    controls.both.addEventListener('change',()=>{requireBoth=controls.both.checked;selected={};refresh();});
+    const searchRow=document.createElement('div');searchRow.className='cw-history-search';filters.append(searchRow);
+    controls.keyword=document.createElement('input');controls.keyword.type='search';controls.keyword.value=keywordDraft;controls.keyword.placeholder=ht(18);controls.keyword.setAttribute('aria-label',ht(18));searchRow.append(controls.keyword);
+    const searchOptions=document.createElement('div');searchOptions.className='cw-history-search-options';searchRow.append(searchOptions);
+    const caseLabel=document.createElement('label');caseLabel.className='cw-history-search-option';controls.caseSensitive=document.createElement('input');controls.caseSensitive.type='checkbox';controls.caseSensitive.checked=false;caseLabel.append(controls.caseSensitive,document.createTextNode(ht(20)));searchOptions.append(caseLabel);
+    const wordLabel=document.createElement('label');wordLabel.className='cw-history-search-option';controls.wholeWord=document.createElement('input');controls.wholeWord.type='checkbox';controls.wholeWord.checked=false;wordLabel.append(controls.wholeWord,document.createTextNode(ht(21)));searchOptions.append(wordLabel);
+    controls.search=button(ht(19),ht(19),()=>applyKeywordSearch(),searchOptions);controls.search.className='cw-history-search-button';
+    controls.keyword.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();applyKeywordSearch();}});
     const label = document.createElement('label'); label.textContent = CW_I18N.t("ui_038");
     const input = document.createElement('input'); input.type = 'number'; input.min = '1'; input.max = '365'; input.value = days;
     input.setAttribute('aria-label', CW_I18N.t("ui_039")); label.append(input, CW_I18N.t("ui_040")); bar.append(label); controls.days = input;
     input.addEventListener('change', () => {
       if (!input.checkValidity() || !input.value) { input.value = days; return; }
       stop(); days = Number(input.value); coverage = false; status = CW_I18N.t("ui_035"); selected = {};
-      chrome.storage.local.set({mentionDays: days}); refresh();
+      saveSettings({mentionDays: days}); refresh();
     });
     controls.load = button('⟳', CW_I18N.t("ui_041"), () => run ? stop() : load()); controls.load.className = 'cw-m-refresh';
     controls.count = document.createElement('input'); controls.count.type = 'text'; controls.count.readOnly = true;
@@ -53,25 +98,42 @@
     controls.next = button('↓', CW_I18N.t("ui_044"), () => jump('all', 1));
     controls.prev.className = controls.next.className = 'cw-m-step';
     controls.status = document.createElement('span'); controls.status.className = 'cw-m-status'; controls.status.setAttribute('role','status'); bar.append(controls.status);
-    const settings = document.createElement('div'); settings.className = 'cw-m-settings'; settings.hidden = true; bar.append(settings); controls.settings = settings;
-    header.insertBefore(bar, header.querySelector('.chatRoomHeader__infoContainer'));
+    const nav = document.createElement('div');nav.className='cw-history-nav';bar.append(nav);
+    for (const el of [label,controls.load,controls.count,controls.position,controls.prev,controls.next,controls.status]) nav.append(el);
+    const saveBox=document.createElement('section');saveBox.className='cw-history-save';bar.append(saveBox);
+    const saveTitle=document.createElement('strong');saveTitle.textContent=ht(4);saveBox.append(saveTitle);
+    const modeLabel=document.createElement('label');modeLabel.textContent='';controls.saveMode=document.createElement('select');controls.saveMode.setAttribute('aria-label',ht(4));
+    for(const [value,name] of [['all',ht(5)],['filtered',ht(6)]]){const option=document.createElement('option');option.value=value;option.textContent=name;controls.saveMode.append(option);}modeLabel.append(controls.saveMode);saveBox.append(modeLabel);
+    controls.saveMode.addEventListener('change',()=>saveMode=controls.saveMode.value);
+    const formats=document.createElement('div');formats.className='cw-history-formats';saveBox.append(formats);
+    const imgLabel=document.createElement('label');controls.saveImage=document.createElement('input');controls.saveImage.type='checkbox';controls.saveImage.checked=true;imgLabel.append(controls.saveImage,document.createTextNode(ht(7)));formats.append(imgLabel);controls.saveImage.addEventListener('change',()=>saveImage=controls.saveImage.checked);
+    const txtLabel=document.createElement('label');controls.saveText=document.createElement('input');controls.saveText.type='checkbox';controls.saveText.checked=true;txtLabel.append(controls.saveText,document.createTextNode(ht(8)));formats.append(txtLabel);controls.saveText.addEventListener('change',()=>saveText=controls.saveText.checked);
+    const dayLabel=document.createElement('label');controls.perDay=document.createElement('input');controls.perDay.type='checkbox';controls.perDay.checked=true;dayLabel.append(controls.perDay,document.createTextNode(ht(9)));saveBox.append(dayLabel);controls.perDay.addEventListener('change',()=>perDay=controls.perDay.checked);
+    controls.saveStatus=document.createElement('span');controls.saveStatus.className='cw-history-save-status';saveBox.append(controls.saveStatus);
+    controls.saveButton=button(ht(10),ht(10),saveHistory,saveBox);
+    document.body.append(bar);
+    const nativeWidth=document.querySelector('#_subContent')?.getBoundingClientRect().width;
+    bar.style.width=`${sharedPanelWidth||historyWidth||threadWidth||nativeWidth||340}px`;
+    observeNativeSidebar();
+    resize.addEventListener('pointerdown',event=>{const startX=event.clientX,startWidth=bar.getBoundingClientRect().width;const move=e=>setSharedPanelWidth(startWidth+startX-e.clientX);const end=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',end);};window.addEventListener('pointermove',move);window.addEventListener('pointerup',end,{once:true});});
     resizeObserver?.disconnect();
     if (typeof ResizeObserver !== 'undefined') {
       resizeObserver = new ResizeObserver(entries => header.classList.toggle('cw-m-narrow', entries[0].contentRect.width < 1000));
       resizeObserver.observe(header);
     }
   }
+  function applyKeywordSearch() { keywordDraft=controls.keyword.value.trim(); keyword=keywordDraft; caseSensitive=controls.caseSensitive.checked; wholeWord=controls.wholeWord.checked; selected={}; refresh(); }
   function updatePeople() {
     const users = members();
-    if (target && !users.has(target)) users.set(target, targetName || CW_I18N.t("ui_045", [target]));
-    const options = [['', CW_I18N.t("ui_046", [identity.name || CW_I18N.t("ui_047")])], ...users.entries(), ['custom', CW_I18N.t("ui_048")], ['self-settings', CW_I18N.t("ui_049")]];
-    const signature = JSON.stringify(options);
-    if (controls.person.dataset.options !== signature) {
-      controls.person.replaceChildren(...options.map(([value, label]) => { const opt = document.createElement('option'); opt.value = value; opt.textContent = label; return opt; }));
-      controls.person.dataset.options = signature;
+    if (target && !users.has(target)) users.set(target, targetName || target);
+    if (recipient && !users.has(recipient)) users.set(recipient, recipient);
+    const options = [['', ht(12)], ...users.entries()];
+    for(const select of [controls.person,controls.recipient]) {
+      if(!select)continue;
+      const signature=JSON.stringify(options);
+      if(select.dataset.options!==signature){select.replaceChildren(...options.map(([value,name])=>{const opt=document.createElement('option');opt.value=value;opt.textContent=name;return opt;}));select.dataset.options=signature;}
     }
-    controls.person.value = target;
-    controls.person.title = target ? CW_I18N.t("ui_050", [users.get(target)]) : CW_I18N.t("ui_051", [identity.name || CW_I18N.t("ui_052")]);
+    controls.person.value=target; controls.recipient.value=recipient;
   }
   function openSettings(self) {
     const panel = controls.settings; panel.replaceChildren(); panel.hidden = false;
@@ -87,7 +149,7 @@
     button(CW_I18N.t("ui_058"), CW_I18N.t("ui_059"), () => {
       if (!/^\d+$/.test(input.value.trim()) || (self && !identity.key)) { info.textContent = CW_I18N.t("ui_060"); return; }
       stop(); selected = {};
-      if (self) { saved[identity.key] = input.value.trim(); chrome.storage.local.set({mentionAccounts: saved}); target = ''; }
+      if (self) { saved[identity.key] = input.value.trim(); saveSettings({mentionAccounts: saved}); target = ''; }
       else { target = input.value.trim(); targetName = members().get(target) || CW_I18N.t("ui_045", [target]); }
       panel.hidden = true; refresh();
     }, panel);
@@ -96,28 +158,47 @@
   function refresh() {
     const next = core.roomId(document); const header = document.querySelector('#_roomHeader');
     if (pendingJump && (!enabled || (next && next !== pendingJump.room))) cancelPendingJump();
-    if (!enabled || !next || !header) { stop(); bar?.remove(); removeRelated(); resizeObserver?.disconnect(); document.querySelectorAll('.cw-m-highlight').forEach(el => el.classList.remove('cw-m-highlight')); return; }
-    if (next !== rid) { stop(); rid = next; coverage = false; status = CW_I18N.t("ui_035"); selected = {}; target = ''; controls.settings?.setAttribute('hidden',''); }
+    if (!enabled || !next || !header) { stop(); bar?.remove(); controls.launch?.remove(); removeRelated(); resizeObserver?.disconnect(); document.querySelectorAll('.cw-m-highlight').forEach(el => el.classList.remove('cw-m-highlight')); clearKeywordHighlights(); return; }
+    if (next !== rid) { stop(); rid = next; coverage = false; status = CW_I18N.t("ui_035"); selected = {}; target = ''; recipient=''; accountKey=''; keyword=''; keywordDraft=''; clearKeywordHighlights(); }
     if (!bar?.isConnected) mount(header);
+    observeNativeSidebar();
     identity = core.account(document);
-    if (identity.key !== accountKey) { accountKey = identity.key; target = ''; selected = {}; }
+    if (identity.key !== accountKey) { accountKey = identity.key; target = identity.id || ''; recipient=identity.id || ''; selected = {}; }
     if (identity.id) detected.set(identity.key, identity.id);
     aid = target || saved[identity.key] || identity.id || detected.get(identity.key) || '';
     updatePeople(); if (document.activeElement !== controls.days) controls.days.value = days;
-    items = core.messages(document, rid); groups = core.matches(items, aid, days);
+    items = core.messages(document, rid);
+    const cutoff=Date.now()-days*86400000;
+    const eligible=items.filter(m=>!m.deleted&&m.time>=cutoff&&m.time<=Date.now());
+    const hasSender=!!target, hasRecipient=!!recipient;
+    const senderMatches=m=>m.sender===target;
+    const recipientMatches=m=>m.to.has(recipient)||m.re.has(recipient);
+    groups={to:[],re:[],send:[]};
+    const personFiltered=eligible.filter(m=>{
+      if (hasSender && hasRecipient) return requireBoth
+        ? senderMatches(m) && recipientMatches(m)
+        : senderMatches(m) || recipientMatches(m);
+      if (hasSender) return senderMatches(m);
+      if (hasRecipient) return recipientMatches(m);
+      return true;
+    });
+    groups.all=keyword?personFiltered.filter(m=>keywordRanges(originalMessageText(m)).length>0):personFiltered;
+    updateKeywordHighlights(groups.all);
+    groups.send=groups.all.filter(m=>target&&m.sender===target);
+    groups.to=groups.all.filter(m=>recipient&&m.to.has(recipient));
+    groups.re=groups.all.filter(m=>recipient&&m.re.has(recipient));
     if (pendingJump) {
       const found = items.find(m => m.id === pendingJump.id && !m.deleted);
       if (found) { cancelPendingJump(); highlight(found); }
     }
     if (coverage && !core.covered(items, Date.now() - days * 86400000)) { coverage = false; status = CW_I18N.t("ui_035"); }
-    groups.all = core.union(groups);
-    controls.count.value = CW_I18N.t("ui_063", [aid ? groups.all.length : '?']);
-    controls.count.title = CW_I18N.t("ui_064");
+    controls.count.value = ht(15).replace('{count}',groups.all.length);
+    controls.count.title = ht(16);
     const group = groups.all, index = group.findIndex(m => m.id === selected.all);
     text(controls.position, index < 0 ? '' : `${index + 1}/${group.length}`);
     controls.prev.disabled = controls.next.disabled = !group.length || !!run;
-    text(controls.load, run ? '■' : '⟳'); controls.load.disabled = !aid;
-    const detail = !aid ? CW_I18N.t("ui_065") : status;
+    text(controls.load, run ? '■' : '⟳'); controls.load.disabled = false;
+    const detail = status;
     text(controls.status, coverage ? '✓' : '•'); controls.status.dataset.complete = String(coverage);
     controls.status.title = CW_I18N.t("ui_066", [detail, days]);
     controls.status.setAttribute('aria-label', detail);
@@ -141,6 +222,32 @@
     document.querySelectorAll('.cw-m-highlight').forEach(el => el.classList.remove('cw-m-highlight'));
     message.el.scrollIntoView({block:'center', behavior:'smooth'}); message.el.classList.add('cw-m-highlight');
     setTimeout(() => message.el.classList.remove('cw-m-highlight'), 2500);
+  }
+  function clearKeywordHighlights() {
+    for(const mark of document.querySelectorAll('.cw-keyword-highlight')) { mark.replaceWith(document.createTextNode(mark.textContent||'')); mark.parentNode?.normalize(); }
+  }
+  function updateKeywordHighlights(messages) {
+    clearKeywordHighlights();
+    if(!keyword)return;
+    for(const message of messages) {
+      const walker=document.createTreeWalker(message.el,NodeFilter.SHOW_TEXT,{acceptNode(node){return node.parentElement?.closest('script,style,textarea,input,button,.cw-zh-translation,.cw-m-preview-translation,.cw-m-thread-translation')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT;}});
+      const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+      for(const node of nodes){const value=node.nodeValue||'',ranges=keywordRanges(value);if(!ranges.length)continue;const fragment=document.createDocumentFragment();let cursor=0;for(const range of ranges){if(range.start>cursor)fragment.append(document.createTextNode(value.slice(cursor,range.start)));const mark=document.createElement('mark');mark.className='cw-keyword-highlight';mark.textContent=value.slice(range.start,range.end);fragment.append(mark);cursor=range.end;}if(cursor<value.length)fragment.append(document.createTextNode(value.slice(cursor)));node.replaceWith(fragment);}
+    }
+  }
+  function keywordRanges(value) {
+    if(!keyword)return [];
+    const escaped=keyword.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const matcher=new RegExp(escaped,`g${caseSensitive?'':'i'}u`),ranges=[];
+    const isWord=char=>!!char&&/[\p{L}\p{N}_]/u.test(char);
+    for(const match of value.matchAll(matcher)) {
+      const start=match.index,end=start+match[0].length;
+      const before=start>0?Array.from(value.slice(0,start)).at(-1):'';
+      const after=end<value.length?String.fromCodePoint(value.codePointAt(end)):'';
+      if(wholeWord&&(isWord(before)||isWord(after)))continue;
+      ranges.push({start,end});
+    }
+    return ranges;
   }
   const relatedBars = new Map();
   let relatedGroups = new Map();
@@ -178,7 +285,7 @@
     viewInput.addEventListener('change',() => {
       threadTranslationOnly = viewInput.checked;
       syncThreadView();
-      chrome.storage.local.set({threadTranslationOnly}).catch(() => {});
+      saveSettings({threadTranslationOnly});
     });
     const close = button('×',CW_I18N.t('thread_close'),() => closeThread(true),head);
     const exportBar = document.createElement('div'); exportBar.className = 'cw-m-thread-export'; head.insertBefore(exportBar,viewToggle);
@@ -243,6 +350,14 @@
     else state.host.setAttribute('inert',state.hostInert);
     state.host = undefined;
   }
+  function setSharedPanelWidth(width) {
+    const max=Math.min(800,Math.max(300,innerWidth-80));
+    sharedPanelWidth=Math.round(Math.max(300,Math.min(max,width)));
+    historyWidth=threadWidth=sharedPanelWidth;
+    if(bar?.isConnected)bar.style.width=`${sharedPanelWidth}px`;
+    positionThread();
+    saveSettings({sharedPanelWidth,historyWidth,threadWidth:sharedPanelWidth});
+  }
   function threadWidthLimits() {
     const max = Math.min(800,Math.max(160,innerWidth-80));
     // Never expose a strip of the covered native sidebar when dragging narrower.
@@ -250,14 +365,14 @@
     return {min:Math.min(nativeWidth,max),max};
   }
   function saveThreadWidth() {
-    chrome.storage.local.set({threadWidth}).catch(() => {});
+    saveSettings({threadWidth,historyWidth:threadWidth,sharedPanelWidth:threadWidth});
   }
   function installThreadResize(state) {
     const handle = document.createElement('div'); handle.className = 'cw-m-thread-resize'; handle.tabIndex = 0;
     handle.setAttribute('role','separator'); handle.setAttribute('aria-orientation','vertical');
     handle.setAttribute('aria-label',CW_I18N.t('thread_resize')); handle.title = CW_I18N.t('thread_resize');
     state.box.append(handle); state.resizeHandle = handle;
-    const resize = width => { const limits = threadWidthLimits(); threadWidth = Math.round(Math.max(limits.min,Math.min(limits.max,width))); positionThread(); };
+    const resize = width => setSharedPanelWidth(width);
     handle.addEventListener('pointerdown',event => {
       if (event.button !== 0 || thread !== state) return;
       event.preventDefault(); state.endResize?.();
@@ -301,6 +416,25 @@
       r.bottom >= Math.min(chat.bottom,innerHeight)-80 && r.height >= 240);
     columns.sort((a,b) => Math.abs(a.rect.left-chat.right)-Math.abs(b.rect.left-chat.right) || b.rect.height-a.rect.height);
     return columns[0]?.el;
+  }
+  function observeNativeSidebar() {
+    if(typeof ResizeObserver==='undefined')return;
+    const host=document.querySelector('#_subContent')||threadHost();
+    if(!host)return;
+    if(nativeSidebarHost===host && host.isConnected)return;
+    nativeSidebarObserver?.disconnect();nativeSidebarHost=host;
+    nativeSidebarObserver=new ResizeObserver(()=>{
+      const width=host.getBoundingClientRect().width;
+      if(width<160)return;
+      if(Math.abs(width-(bar?.getBoundingClientRect().width||0))>2 || Math.abs(width-(thread?.box.getBoundingClientRect().width||0))>2){
+        sharedPanelWidth=historyWidth=threadWidth=width;
+        if(bar?.isConnected)bar.style.width=`${width}px`;
+        positionThread();
+      }
+    });
+    nativeSidebarObserver.observe(host);
+    const width=host.getBoundingClientRect().width;
+    if(width>=160){sharedPanelWidth=historyWidth=threadWidth=width;if(bar?.isConnected)bar.style.width=`${width}px`;}
   }
   function positionThread() {
     if (!thread) return;
@@ -563,6 +697,83 @@
     } else location.hash = hash;
   }
   function stop() { if (run) { run.cancelled = true; status = CW_I18N.t("ui_090"); } }
+  const dateKey = time => { const d=new Date(time); return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`; };
+  function safeFile(value) { return String(value||'Chatwork').replace(/[<>:"/\\|?*\x00-\x1f]/g,'_').replace(/[. ]+$/,'').slice(0,120)||'Chatwork'; }
+  function originalMessageText(message) {
+    const source=message.el.querySelector('pre');
+    if(!source)return '';
+    const copy=source.cloneNode(true);
+    copy.querySelectorAll('.cw-zh-translation,.cw-m-preview-translation,.cw-m-thread-translation').forEach(node=>node.remove());
+    return globalThis.ChatworkNames?.messageText(copy)??copy.textContent??'';
+  }
+  async function saveHistory() {
+    if (controls.saveButton?.disabled) return;
+    if (!saveImage&&!saveText) { text(controls.saveStatus,historyLocale.startsWith('en')?'Choose at least one format':historyLocale.startsWith('ja')?'画像またはテキストを選択してください':historyLocale.startsWith('ko')?'이미지 또는 텍스트 형식을 선택하세요':'请至少选择图片或文本格式'); return; }
+    if (!window.showDirectoryPicker) { text(controls.saveStatus,historyLocale.startsWith('en')?'This browser cannot choose a save folder':historyLocale.startsWith('ja')?'保存先フォルダーを選択できません':historyLocale.startsWith('ko')?'저장 폴더를 선택할 수 없습니다':'当前浏览器不支持选择保存目录'); return; }
+    let directory;
+    try { directory=await window.showDirectoryPicker({mode:'readwrite'}); }
+    catch(error) { if(error.name!=='AbortError')text(controls.saveStatus,error.message||'无法打开保存目录'); return; }
+    const previousLabel=controls.saveButton?.textContent;
+    if(controls.saveButton)controls.saveButton.disabled=true;
+    const progress=message=>{controls.saveStatus.textContent=message;};
+    const loading=historyLocale.startsWith('en')?'Checking and loading chat history…':historyLocale.startsWith('ja')?'チャット履歴を確認して読み込んでいます…':historyLocale.startsWith('ko')?'채팅 기록을 확인하고 불러오는 중…':'正在检查并加载聊天记录…';
+    try {
+    progress(loading);
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    if (!coverage || !core.covered(items,Date.now()-days*86400000)) {
+      await load();
+      refresh();
+      if (!coverage) { progress(historyLocale.startsWith('en')?'Chat history is not fully loaded. Check loading status and try again':historyLocale.startsWith('ja')?'履歴がすべて読み込まれていません。読み込み状況を確認して再試行してください':historyLocale.startsWith('ko')?'채팅 기록이 모두 로드되지 않았습니다. 로드 상태를 확인한 후 다시 시도하세요':'聊天记录尚未完整加载；请查看上方加载状态后重试'); return; }
+    }
+    const cutoff=Date.now()-days*86400000;
+    const records=items.filter(m=>!m.deleted&&m.time>=cutoff&&m.time<=Date.now()).filter(m=>saveMode==='all'||groups.all.some(match=>match.id===m.id));
+    if (!records.length) { controls.saveStatus.textContent=historyLocale.startsWith('en')?'No messages match the filters':historyLocale.startsWith('ja')?'条件に一致するメッセージがありません':historyLocale.startsWith('ko')?'필터에 일치하는 메시지가 없습니다':'筛选范围内没有消息'; return; }
+    const room=safeFile(document.querySelector('#_roomTitle')?.textContent?.trim()||`Chatwork-${rid}`);
+    const from=dateKey(cutoff),to=dateKey(Date.now());
+    const batches=perDay?new Map([...new Set(records.map(m=>dateKey(m.time)))].sort().map(day=>[day,records.filter(m=>dateKey(m.time)===day)])) : new Map([[`${from}-${to}`,records]]);
+    const write=async(name,blob)=>{const handle=await directory.getFileHandle(name,{create:true});const writable=await handle.createWritable();await writable.write(blob);await writable.close();};
+    try {
+      let completed=0;
+      for(const [period,batch] of batches) {
+        progress(historyLocale.startsWith('en')?`Saving ${period}…`:historyLocale.startsWith('ja')?`${period} を保存中…`:historyLocale.startsWith('ko')?`${period} 저장 중…`:`正在保存 ${period}…`);
+        await new Promise(resolve=>requestAnimationFrame(resolve));
+        const base=safeFile(saveMode==='all'?`${room} (${period})`:`${room} 指定记录 (${period})`);
+        if(saveText) {
+          const output=batch.map(m=>{const body=originalMessageText(m);const avatar=m.el.querySelector('._speaker img,[data-source="timeline_message_avatar_profile"] img');const sender=m.el.querySelector('[data-testid="timeline_user-name"]')?.textContent?.trim()||avatar?.alt||'未知发信人';const recipients=[...m.to].map(id=>`TO:${members().get(id)||id}`).concat([...m.re].map(id=>`RE:${members().get(id)||id}`)).join(' ');return `${sender}  ${new Date(m.time).toLocaleString()}\n${recipients}\n${body}`;}).join('\n\n---------------------------------------\n\n');
+          await write(`${base}.txt`,new Blob([output],{type:'text/plain;charset=utf-8'}));completed++;
+        }
+        if(saveImage) {
+          const capture=document.createElement('div');capture.className='cw-history-capture';
+          const title=document.createElement('h2');title.textContent=`${room} (${period})`;capture.append(title);
+          const cards=document.createDocumentFragment();
+          for(const m of batch){const card=document.createElement('article');const avatar=m.el.querySelector('._speaker img,[data-source="timeline_message_avatar_profile"] img');const author=m.el.querySelector('[data-testid="timeline_user-name"]')?.textContent?.trim()||avatar?.alt||'未知发信人';const head=document.createElement('header');head.textContent=`${author}　${new Date(m.time).toLocaleString()}`;card.append(head);const body=document.createElement('pre');body.textContent=originalMessageText(m);card.append(body);cards.append(card);}
+          capture.append(cards);
+          document.body.append(capture);
+          try {
+            await new Promise(resolve=>requestAnimationFrame(resolve));
+            const width=Math.ceil(capture.getBoundingClientRect().width);
+            const height=Math.ceil(capture.scrollHeight);
+            capture.style.cssText=`position:fixed!important;left:-100000px!important;top:0!important;display:block!important;box-sizing:border-box!important;width:${width}px!important;height:${height}px!important;min-height:0!important;max-height:none!important;overflow:hidden!important;padding:12px!important;background:#f5f9fa!important;color:#31556f!important;font:14px/1.6 system-ui,sans-serif!important;`;
+            const canvas=await html2canvas(capture,{width,height,windowWidth:width,windowHeight:height,backgroundColor:'#f5f9fa',scale:1,useCORS:true,allowTaint:false,logging:false,scrollX:0,scrollY:0,onclone:doc=>{
+              const root=doc.querySelector('.cw-history-capture');
+              if(!root)return;
+              root.style.cssText=`position:absolute!important;left:0!important;top:0!important;display:block!important;box-sizing:border-box!important;width:${width}px!important;height:${height}px!important;min-height:0!important;max-height:none!important;overflow:hidden!important;padding:12px!important;background:#f5f9fa!important;color:#31556f!important;font:14px/1.6 system-ui,sans-serif!important;`;
+              root.querySelectorAll('h2').forEach(el=>el.style.cssText='display:block!important;box-sizing:border-box!important;width:100%!important;margin:0 0 12px!important;padding:4px 2px 10px!important;border-bottom:1px solid #dbe6e9!important;font-size:17px!important;');
+              root.querySelectorAll('article').forEach(el=>el.style.cssText='display:block!important;box-sizing:border-box!important;width:100%!important;min-height:0!important;padding:12px 14px!important;margin:0 0 10px!important;background:#fff!important;border:1px solid #dbe6e9!important;border-radius:7px!important;overflow-wrap:anywhere!important;');
+              root.querySelectorAll('article header').forEach(el=>el.style.cssText='display:block!important;margin:0 0 8px!important;font-weight:700!important;color:#467398!important;');
+              root.querySelectorAll('article pre').forEach(el=>el.style.cssText='display:block!important;box-sizing:border-box!important;width:100%!important;min-height:0!important;margin:0!important;padding:10px!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;background:#eef7f4!important;border-left:3px solid #24a797!important;font:inherit!important;');
+            }});
+            const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));canvas.width=canvas.height=0;if(!blob)throw new Error('图片生成失败');await write(`${base}.png`,blob);completed++;
+          }
+          finally {capture.remove();}
+        }
+      }
+      progress(`${ht(13)} (${completed})`);
+    } catch(error) { progress(`${ht(14)}: ${error.message||error}`); }
+    } finally {
+      if(controls.saveButton){controls.saveButton.disabled=false;controls.saveButton.textContent=previousLabel||ht(10);}
+    }
+  }
   async function load() {
     cancelThreadLoad(false);
     cancelPendingJump();
@@ -614,17 +825,21 @@
       document.dispatchEvent(new Event('cw-history-finished')); refresh();
     }
   }
-  chrome.storage.local.get(['mentionDays','mentionAccounts','mentionEnabled','threadWidth','threadTranslationOnly']).then(data => {
+  try { if (!extensionContextAlive()) return; } catch { return; }
+  Promise.resolve().then(() => chrome.storage.local.get(['mentionDays','mentionAccounts','mentionEnabled','threadWidth','threadTranslationOnly','historyWidth','sharedPanelWidth'])).then(data => {
     threadTranslationOnly = data.threadTranslationOnly === true;
     if (Number.isFinite(data.threadWidth) && data.threadWidth > 0) threadWidth = data.threadWidth;
+    if (Number.isFinite(data.historyWidth) && data.historyWidth >= 300) historyWidth = data.historyWidth;
+    sharedPanelWidth=Number.isFinite(data.sharedPanelWidth)&&data.sharedPanelWidth>=300?data.sharedPanelWidth:(historyWidth||threadWidth||0);
+    if(sharedPanelWidth){historyWidth=threadWidth=sharedPanelWidth;}
     if (Number.isInteger(data.mentionDays) && data.mentionDays >= 1 && data.mentionDays <= 365) days = data.mentionDays;
     saved = data.mentionAccounts || {};
     enabled = data.mentionEnabled !== false;
-    chrome.storage.onChanged?.addListener((changes, area) => {
+    try { chrome.storage.onChanged?.addListener((changes, area) => {
       if (area !== 'local') return;
       if (changes.threadTranslationOnly) { threadTranslationOnly = changes.threadTranslationOnly.newValue === true; syncThreadView(); }
       if (changes.mentionEnabled) { enabled = changes.mentionEnabled.newValue !== false; refresh(); }
-    });
+    }); } catch { /* Extension may have been reloaded while this page was open. */ }
     const scheduleRefresh = () => {
       if (timer) return;
       timer = setTimeout(() => { timer = undefined; refresh(); }, 200);
@@ -638,5 +853,5 @@
     }).observe(document.body, {childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['data-rid','data-roomid','data-mid','data-index','data-tm','data-deleted','data-cwtag']});
     document.addEventListener('scroll', scheduleRefresh, {capture:true, passive:true});
     window.addEventListener('hashchange', refresh); setInterval(refresh, 30000); refresh();
-  });
+  }).catch(() => {});
 })();
