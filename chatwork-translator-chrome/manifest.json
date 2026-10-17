@@ -1,10 +1,12 @@
 {
   "manifest_version": 3,
   "name": "__MSG_ext_name__",
-  "version": "1.20.7",
+  "version": "1.24.24",
   "description": "__MSG_ext_description__",
   "permissions": [
-    "storage"
+    "storage",
+    "unlimitedStorage",
+    "alarms"
   ],
   "host_permissions": [
     "https://translate.googleapis.com/*"
@@ -33,15 +35,30 @@
         "vendor/html2canvas.min.js",
         "thread-image.js",
         "mentions.js",
-        "attachments.js",
-        "ad-hider.js"
+        "screenshot-attachment.js",
+        "ad-hider.js",
+        "room-titles.js",
+        "archive-source.js",
+        "archive-sidebar.js"
       ],
       "css": [
         "content.css",
-        "mentions.css"
+        "mentions.css",
+        "room-titles.css"
       ],
       "run_at": "document_idle"
     }
   ],
-  "default_locale": "en"
+  "default_locale": "en",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "archive.html"
+      ],
+      "matches": [
+        "https://www.chatwork.com/*",
+        "https://kcw.kddi.ne.jp/*"
+      ]
+    }
+  ]
 }

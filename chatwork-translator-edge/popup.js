@@ -1,7 +1,7 @@
 const toggle = document.getElementById('enabled');
 const status = document.getElementById('status');
 const setupButton = document.getElementById('setup');
-function show(value) { document.getElementById('auto-direction').hidden = !value; setupButton.hidden = !value; status.textContent = value ? CW_I18N.t("ui_118") : CW_I18N.t("ui_119"); }
+function show(value) { document.getElementById("room-title-setting").hidden = !value; document.getElementById('auto-direction').hidden = !value; setupButton.hidden = !value; status.textContent = value ? CW_I18N.t("ui_118") : CW_I18N.t("ui_119"); }
 const autoSource = document.getElementById('auto-source'), autoTarget = document.getElementById('auto-target');
 let autoSettings;
 AutoSettings.read().then(settings => {
@@ -41,4 +41,26 @@ setupButton.addEventListener('click', () => chrome.runtime.openOptionsPage());
     catch { input.checked = !input.checked; feedback.textContent = CW_I18N.t("ui_121"); }
     finally { input.disabled = false; }
   });
+})();
+
+(() => {
+ const input = document.getElementById('room-title-enabled');
+ chrome.storage.local.get('roomTitleTranslationEnabled').then(data => {
+   input.checked = data.roomTitleTranslationEnabled !== false;
+   input.disabled = false;
+ }).catch(() => { status.textContent = CW_I18N.t('ui_120'); });
+ input.addEventListener('change', async () => {
+   input.disabled = true;
+   try { await chrome.storage.local.set({roomTitleTranslationEnabled:input.checked}); }
+   catch { input.checked = !input.checked; status.textContent = CW_I18N.t('ui_121'); }
+   finally { input.disabled = false; }
+ });
+})();
+
+
+(()=>{
+ const toggle=document.getElementById('recent-threads-enabled'),days=document.getElementById('recent-thread-days');
+ chrome.storage.local.get(['recentThreadsEnabled','recentThreadDays']).then(v=>{toggle.checked=v.recentThreadsEnabled!==false;days.value=Math.max(1,Math.min(10,Number(v.recentThreadDays)||3));toggle.disabled=days.disabled=false;});
+ const save=async()=>{days.value=Math.max(1,Math.min(10,Math.round(Number(days.value)||3)));try{await chrome.storage.local.set({recentThreadsEnabled:toggle.checked,recentThreadDays:Number(days.value)});}catch{status.textContent=CW_I18N.t('ui_121');}};
+ toggle.onchange=days.onchange=save;
 })();

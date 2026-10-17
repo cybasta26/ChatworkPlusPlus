@@ -914,6 +914,283 @@
   },
   "attachment_title": {
     "message": "增強版新增附件"
+  },
+  "history_search_loading": {
+    "message": "正在載入訊息正文（$current$/$total$）…",
+    "placeholders": {
+      "current": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "history_search_complete": {
+    "message": "搜尋完成"
+  },
+  "history_search_partial": {
+    "message": "搜尋未完成：部分歷史記錄或正文未能載入，請重新整理後再次搜尋。"
+  },
+  "room_title_translation": {
+    "message": "翻譯群組交談名稱"
+  },
+  "archive_open": {
+    "message": "本機歸檔（試用版）"
+  },
+  "archive_folder": {
+    "message": "歸檔目錄"
+  },
+  "archive_auto": {
+    "message": "自動歸檔"
+  },
+  "archive_update": {
+    "message": "立即更新歸檔（最近40天）"
+  },
+  "archive_view": {
+    "message": "查看歸檔記錄"
+  },
+  "archive_no_folder": {
+    "message": "尚未選擇目錄"
+  },
+  "archive_range": {
+    "message": "已歸檔"
+  },
+  "archive_authorize": {
+    "message": "選擇目錄 / 授權存取"
+  },
+  "archive_path_note": {
+    "message": "瀏覽器僅提供目錄名稱，無法讀取完整磁碟路徑。"
+  },
+  "archive_worker_notice": {
+    "message": "自動歸檔期間請保留此歸檔工作頁。"
+  },
+  "archive_empty": {
+    "message": "暫無歸檔記錄"
+  },
+  "archive_stop": {
+    "message": "停止歸檔"
+  },
+  "archive_update_days": {
+    "message": "立即更新歸檔（最近{days}天）"
+  },
+  "archive_days_label": {
+    "message": "最近 {days} 天"
+  },
+  "archive_choose_days": {
+    "message": "選擇歸檔天數"
+  },
+  "archive_close": {
+    "message": "關閉"
+  },
+  "archive_auto_active": {
+    "message": "自動歸檔執行中"
+  },
+  "archive_reconnecting": {
+    "message": "正在重新連接 Chatwork"
+  },
+  "archive_other_owner": {
+    "message": "此目錄已綁定其他瀏覽器或擴充功能設定檔，請選擇另一個歸檔目錄。"
+  },
+  "recent_threads": {
+    "message": "最近N天Thread列表提示"
+  },
+  "recent_thread_days": {
+    "message": "最近天數（1–10）"
+  },
+  "recent_thread_unread": {
+    "message": "有未讀回覆"
+  },
+  "recent_thread_caption": {
+    "message": "展示$1天內相關話題"
+  },
+  "recent_thread_help": {
+    "message": "目前展示$1天內更新過、並且與你有關的話題列表。可在擴充功能設定頁面的「最近N天Thread列表提示」處停用此功能或調整展示時間範圍。"
+  },
+  "recent_thread_refresh": {
+    "message": "點擊重新整理"
+  },
+  "recent_thread_stop": {
+    "message": "點擊停止"
+  },
+  "recent_thread_settings": {
+    "message": "前往設定"
+  },
+  "recent_thread_help_before": {
+    "message": "目前展示$1天內更新過、並且與你有關的話題列表。可在擴充功能設定頁面的「"
+  },
+  "recent_thread_help_after": {
+    "message": "」處停用此功能或調整展示時間範圍。"
+  },
+  "archive_error_0": {
+    "message": "日期無效"
+  },
+  "archive_error_1": {
+    "message": "請先停止封存，再清理記錄。"
+  },
+  "archive_error_2": {
+    "message": "請先停止封存，再復原記錄。"
+  },
+  "archive_error_3": {
+    "message": "資料庫操作已中止"
+  },
+  "archive_error_4": {
+    "message": "附件路徑無效"
+  },
+  "archive_error_5": {
+    "message": "找不到可復原的封存。"
+  },
+  "archive_error_6": {
+    "message": "復原已中止"
+  },
+  "archive_error_7": {
+    "message": "無法識別封存資料夾歸屬標記"
+  },
+  "archive_error_8": {
+    "message": "檔案下載不完整"
+  },
+  "archive_error_9": {
+    "message": "檔案大小不符"
+  },
+  "archive_error_10": {
+    "message": "來源聊天室已變更"
+  },
+  "archive_error_11": {
+    "message": "封存檔案過大"
+  },
+  "archive_error_12": {
+    "message": "封存檔案無效"
+  },
+  "archive_error_13": {
+    "message": "訊息記錄無效"
+  },
+  "archive_error_14": {
+    "message": "封存無效："
+  },
+  "archive_error_15": {
+    "message": "訊息無效："
+  },
+  "archive_error_16": {
+    "message": "封存檔案過大："
+  },
+  "archive_error_17": {
+    "message": "封存正在執行"
+  },
+  "archive_error_18": {
+    "message": "無法識別 Chatwork 帳號或聊天室"
+  },
+  "archive_error_19": {
+    "message": "日期範圍無效"
+  },
+  "archive_error_20": {
+    "message": "帳號或聊天室已變更"
+  },
+  "archive_error_21": {
+    "message": "附件下載中，請稍後重試"
+  },
+  "archive_error_22": {
+    "message": "下載已逾時，請重試"
+  },
+  "archive_error_23": {
+    "message": "無權下載附件或伺服器傳回錯誤頁面"
+  },
+  "archive_error_24": {
+    "message": "無法識別封存操作"
+  },
+  "archive_error_25": {
+    "message": "找不到聊天捲動區域"
+  },
+  "archive_error_26": {
+    "message": "請求來源無效"
+  },
+  "archive_error_27": {
+    "message": "已取消"
+  },
+  "month_error_0": {
+    "message": "請求逾時，請重試"
+  },
+  "month_error_1": {
+    "message": "找不到訊息輸入框"
+  },
+  "month_error_2": {
+    "message": "Chatwork 原生附件控制項無法使用"
+  },
+  "month_error_3": {
+    "message": "已取消附件上傳；檔案仍保留，可再次點選「上傳並插入」重試"
+  },
+  "month_error_4": {
+    "message": "找不到目前帳號的「我的交談」，請從右上角帳號選單開啟一次"
+  },
+  "month_error_5": {
+    "message": "找不到 Chatwork 聊天室"
+  },
+  "month_error_6": {
+    "message": "圖片產生失敗"
+  },
+  "month_dynamic_0": {
+    "message": "聊天視窗載入逾時（$1）"
+  },
+  "month_dynamic_1": {
+    "message": "附件控制項只接收了 $1/$2 個檔案"
+  },
+  "month_dynamic_2": {
+    "message": "上傳後未找到全部檔案 ID（$1/$2）"
+  },
+  "month_dynamic_3": {
+    "message": "缺少檔案 ID（$1）"
+  },
+  "month_dynamic_4": {
+    "message": "上傳準備失敗（$1）"
+  },
+  "month_dynamic_5": {
+    "message": "檔案登錄失敗（$1）"
+  },
+  "month_dynamic_6": {
+    "message": "檔案登錄失敗（$1）"
+  },
+  "month_upload_failed": {
+    "message": "上傳失敗（$1）"
+  },
+  "month_upload_url": {
+    "message": "缺少上傳位址：$1"
+  },
+  "archive_download_rejected": {
+    "message": "下載遭拒（$1）"
+  },
+  "history_export_status_0": {
+    "message": "請至少選擇圖片或文字格式"
+  },
+  "history_export_status_1": {
+    "message": "目前瀏覽器不支援選擇儲存目錄"
+  },
+  "history_export_status_2": {
+    "message": "正在檢查並載入聊天記錄…"
+  },
+  "history_export_status_3": {
+    "message": "聊天記錄尚未完整載入；請查看上方載入狀態後重試"
+  },
+  "history_export_status_4": {
+    "message": "篩選範圍內沒有訊息"
+  },
+  "history_export_status_5": {
+    "message": "正在儲存 $1…"
+  },
+  "history_unknown_sender": {
+    "message": "未知寄件者"
+  },
+  "history_filtered_records": {
+    "message": "指定記錄"
+  },
+  "archive_delete_room": {
+    "message": "刪除記錄"
+  },
+  "archive_delete_confirm": {
+    "message": "是否刪除「{room}」的空封存項目？"
+  },
+  "archive_delete_done": {
+    "message": "已刪除封存項目。"
+  },
+  "archive_delete_not_empty": {
+    "message": "此聊天已有訊息，請重新整理清單後再清理。"
   }
 }
-

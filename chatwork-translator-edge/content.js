@@ -1,5 +1,7 @@
 (() => {
   let enabled = false;
+  let archivePaused = false;
+  let threadRefreshPaused = document.documentElement.dataset.cwThreadRefreshing === '1';
   let settings = AutoSettings.resolve();
   let timer;
   let active = 0;
@@ -56,7 +58,7 @@
       }
     } finally { elements.forEach(element => exportVisible.delete(element)); }
   }
-  globalThis.ChatworkAutoTranslation = {syncThread,isEnabled:() => enabled,prepareThreadExport};
+  globalThis.ChatworkAutoTranslation = { translate: translateShared,syncThread,isEnabled:() => enabled,prepareThreadExport};
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (entry.isIntersecting) visible.add(entry.target);
@@ -203,18 +205,24 @@
   }).observe(document.body, {childList: true, subtree: true, characterData: true});
   document.addEventListener('visibilitychange', pump);
   document.addEventListener('cw-history-finished', pump);
+  document.addEventListener('cw-thread-refresh-state', () => {
+    threadRefreshPaused = document.documentElement.dataset.cwThreadRefreshing === '1';
+    setEnabled(settings.enabled && !archivePaused && !threadRefreshPaused);
+  });
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== 'local' || !AutoSettings.keys.some(key => changes[key])) return;
+    if (area !== 'local' || !changes.archiveManualRunning && !AutoSettings.keys.some(key => changes[key])) return;
+    if (changes.archiveManualRunning) archivePaused = !!changes.archiveManualRunning.newValue;
     const next = {...settings};
     for (const key of AutoSettings.keys) if (changes[key]) next[key] = changes[key].newValue;
     settings = AutoSettings.resolve(next);
     setEnabled(false);
     EdgeTranslation.configure(settings.sourceLanguage, settings.targetLanguage);
-    setEnabled(settings.enabled);
+    setEnabled(settings.enabled && !archivePaused && !threadRefreshPaused);
   });
-  AutoSettings.read().then(value => {
-    settings = value;
+  chrome.storage.local.get([...AutoSettings.keys, 'archiveManualRunning']).then(value => {
+    archivePaused = !!value.archiveManualRunning;
+    settings = AutoSettings.resolve(value);
     EdgeTranslation.configure(settings.sourceLanguage, settings.targetLanguage);
-    setEnabled(settings.enabled);
+    setEnabled(settings.enabled && !archivePaused && !threadRefreshPaused);
   });
 })();

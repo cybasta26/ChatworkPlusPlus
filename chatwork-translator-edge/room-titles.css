@@ -1,0 +1,77 @@
+.cw-room-two-lines {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+  min-width: 0;
+  overflow: hidden;
+}
+.cw-room-two-lines > .cw-room-original {
+  margin: 0 !important;
+  line-height: 18px !important;
+}
+.cw-room-translation {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #888888;
+  font-size: 10px;
+  line-height: 16px;
+}
+.cw-room-header-translation {
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  flex: 0 1 auto;
+}
+
+/* Keep the original title's flexible spacer from pushing the translation away. */
+.chatRoomHeader__titleContainer:has(> .cw-room-header-translation) {
+  justify-content: flex-start !important;
+  min-width: 0;
+}
+.chatRoomHeader__titleContainer:has(> .cw-room-header-translation) > #_roomTitle {
+  flex: 0 1 auto !important;
+  width: auto !important;
+  min-width: 0;
+}
+
+.cw-room-two-lines > .cw-room-translation { font-weight: 700; }
+
+/* Anchor native unread indicators to the room row, not the two-line title. */
+[role="tab"][data-rid] { position: relative; }
+[role="tab"][data-rid] ul:has(> ._unreadBadge) {
+  position: absolute !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%);
+  margin: 0 !important;
+  z-index: 2;
+}
+[role="tab"][data-rid]:has(._unreadBadge) > div:has(use[href="#icon_pin"]) {
+  visibility: hidden;
+}
+
+.chatRoomHeader__roomTitle:has(>.cw-room-header-translation){display:flex!important;flex-direction:column;justify-content:center;line-height:20px}
+.chatRoomHeader__roomTitle>.cw-room-header-translation{font-size:10px!important;line-height:14px;margin:0!important;display:block}
+.cw-recent-threads{display:flex;gap:10px;align-items:center;overflow-x:auto;min-width:0;flex:1;margin-left:16px;padding:4px}
+.cw-recent-thread{position:relative;flex:0 0 34px;width:34px;height:34px;border:0;background:#e6eff3;border-radius:50%;padding:0;cursor:pointer;color:#31556f}
+.cw-recent-thread img{width:34px;height:34px;border-radius:50%;object-fit:cover}
+.cw-recent-thread-count{position:absolute;right:-5px;bottom:-3px;background:#456b7a;color:white;border-radius:12px;min-width:16px;height:16px;padding:0 3px;font:bold 11px/16px sans-serif;text-align:center}
+
+/* The title must not consume the space reserved for recent thread avatars. */
+.chatRoomHeader__titleContainer:has(>.cw-recent-threads){display:flex!important;justify-content:flex-start!important;min-width:0}
+.chatRoomHeader__titleContainer:has(>.cw-recent-threads)>#_roomTitle,
+.chatRoomHeader__titleContainer:has(>.cw-recent-threads)>.chatRoomHeader__roomTitle{flex:0 1 auto!important;width:auto!important;min-width:0;max-width:45%}
+.chatRoomHeader__titleContainer>.cw-recent-threads{flex:1 1 0!important;align-self:center;justify-content:flex-start!important;margin-left:12px;margin-right:0;width:0}
+
+.cw-recent-thread-unread{position:absolute;right:-2px;top:-2px;width:9px;height:9px;border:2px solid white;border-radius:50%;background:#40c49d;pointer-events:none}
+
+.cw-recent-refresh,.cw-recent-info{flex-shrink:0;background:transparent;border:0;color:#7296c9;cursor:pointer;padding:2px}.cw-recent-refresh{font-size:28px;line-height:30px}.cw-recent-caption{font-size:11px;white-space:nowrap;color:#888;flex-shrink:0}.cw-recent-info{font-size:17px}
+
+.cw-recent-caption{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;line-height:16px;cursor:pointer;background:transparent;border:0;padding:0}.cw-recent-refresh-text{text-decoration:underline;color:#7296c9}.cw-recent-caption:focus-visible{outline:2px solid #7296c9;outline-offset:3px}
+
+#cw-recent-help{width:min(480px,85vw);border:1px solid #bfd0d8;border-radius:8px;padding:20px;color:#31556f;background:white;font:14px/1.6 sans-serif}#cw-recent-help::backdrop{background:#0005}.cw-recent-help-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:20px}.cw-recent-help-actions button{border:1px solid #afc8cc;border-radius:5px;padding:6px 14px;background:white;color:#1677d2;cursor:pointer}

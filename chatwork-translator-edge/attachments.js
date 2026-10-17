@@ -9,7 +9,7 @@
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeout);
     try { return await fetch(url, { ...options, signal: controller.signal }); }
-    catch (error) { if (error?.name === 'AbortError') throw new Error('请求超时，请重试'); throw error; }
+    catch (error) { if (error?.name === 'AbortError') throw new Error(CW_I18N.t('month_error_0')); throw error; }
     finally { clearTimeout(timer); }
   }
 
@@ -49,7 +49,7 @@
       }
       await new Promise(resolve => setTimeout(resolve, 250));
     }
-    throw new Error(`聊天窗口加载超时（${id}）`);
+    throw new Error(CW_I18N.t('month_dynamic_0',[id]));
   }
   function clickRoomTab(id) {
     const tab = document.querySelector(`[role="tab"][id="${id}"], [role="tab"][data-roomid="${id}"], a[href*="#!rid${id}"]`);
@@ -105,7 +105,7 @@
   }
   function setComposerText(text) {
     const el = document.querySelector('[contenteditable="true"].chatInput__textarea, [contenteditable="true"], textarea[id*="chat"], textarea[name*="message"], textarea');
-    if (!el) throw new Error('message input not found');
+    if (!el) throw new Error(CW_I18N.t('month_error_1'));
     el.focus();
     if (el.isContentEditable) {
       const setter = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'innerText')?.set;
@@ -171,7 +171,7 @@
     }
     if (info.uri) fields.key = info.uri;
     else if (!fields.key && info.key) fields.key = info.key;
-    if (!uploadUrl) throw new Error(`upload URL missing (${file.name}); descriptor keys: ${Object.keys(info).join(',') || '(none)'}`);
+    if (!uploadUrl) throw new Error(CW_I18N.t('month_upload_url',[file.name]));
     const form = new FormData();
     Object.entries(fields || {}).forEach(([key, value]) => form.append(key, value));
     if (!form.has('file')) form.append('file', file, file.name);
@@ -185,7 +185,7 @@
         const message = xml.match(/<Message>\s*([^<]+)\s*<\/Message>/i)?.[1];
         detail = [code, message].filter(Boolean).join(': ');
       } catch { /* keep status only */ }
-      throw new Error(`upload failed (${uploadResponse.status})${detail ? `: ${detail}` : ''}`);
+      throw new Error(CW_I18N.t('month_upload_failed',[uploadResponse.status])+(detail?': '+detail:''));
     }
     let uploaded = {};
     try { uploaded = await uploadResponse.json(); } catch { /* S3 normally returns XML/empty */ }
@@ -206,7 +206,7 @@
         if (headerId) finalId = headerId;
         try { const raw = await gatewayResponse.text(); const result = JSON.parse(raw); const scan = value => { if (!value) return; if (typeof value === 'string') { const m = value.match(/(?:file[_-]?id|upload[_-]?id|attachment[_-]?id|"id")\D{0,8}(\d{6,})/i) || value.match(/\b\d{9,10}\b/); if (m) finalId = m[1] || m[0]; return; } if (Array.isArray(value)) return value.forEach(scan); if (typeof value === 'object') for (const [k,v] of Object.entries(value)) { if (/^(file_?id|fileId|upload_?id|attachment_?id|id|preview_?id)$/i.test(k) && (typeof v === 'number' || /^\d+$/.test(String(v)))) finalId = v; scan(v); } }; scan(result); if (!finalId) { const m = raw.match(/\b\d{9,10}\b/); if (m) finalId = m[0]; } } catch { /* continue to legacy endpoint */ }
       } else {
-        throw new Error(`file registration failed (${gatewayResponse.status})`);
+        throw new Error(CW_I18N.t('month_dynamic_5',[gatewayResponse.status]));
       }
       const finish = new URL('https://www.chatwork.com/gateway/upload_file_finish.php');
       const finishParams = { cmd: 'upload_file_finish', myid: ownId(), _v: '1.80a', _av: '5', ln: document.documentElement.lang || 'en', room_id: rid, chatwork_room_id: rid, file_id: finalId || info.uri || info.key || '', filename: file.name, extension: ext.replace(/^\./, ''), with_message: '0', message: '', _t: token() };
@@ -225,7 +225,7 @@
           if (!finalId && /^\d{6,}$/.test(text.trim())) finalId = text.trim();
         } catch { /* keep descriptor id */ }
       } else if (!finalId) {
-        throw new Error(`file registration failed (${finishResponse.status})`);
+        throw new Error(CW_I18N.t('month_dynamic_6',[finishResponse.status]));
       }
       if (!finalId) {
         finish.search = finishBody.toString();
@@ -237,7 +237,7 @@
         }
       }
     }
-    if (!finalId) throw new Error(`file ID missing (${file.name})`);
+    if (!finalId) throw new Error(CW_I18N.t('month_dynamic_3',[file.name]));
     return { file, fileId: finalId };
   }
   function findNativeUploadDialog() {
@@ -250,13 +250,13 @@
   function nativeUploadDialogOpen() { return Boolean(findNativeUploadDialog()); }
   async function uploadNative(files, onProgress) {
     const input = document.querySelector('#_fileInput[type="file"]');
-    if (!input) throw new Error('Chatwork 原生附件控件不可用');
+    if (!input) throw new Error(CW_I18N.t('month_error_2'));
     const before = new Set([...document.querySelectorAll('a[href*="file_id="]')].map(a => new URL(a.href, location.origin).searchParams.get('file_id')).filter(Boolean));
     const transfer = new DataTransfer();
     files.forEach(file => transfer.items.add(file));
     input.value = '';
     input.files = transfer.files;
-    if (input.files.length !== files.length) throw new Error(`原生附件控件只接收了 ${input.files.length}/${files.length} 个文件`);
+    if (input.files.length !== files.length) throw new Error(CW_I18N.t('month_dynamic_1',[input.files.length,files.length]));
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
 
@@ -318,17 +318,17 @@
       if (cancelRequested) {
         document.removeEventListener('click', onNativeDialogClick, true);
         document.removeEventListener('keydown', onNativeDialogKey, true);
-        throw new Error('已取消原生附件上传；文件仍保留，可以重新点击“上传并插入”重试');
+        throw new Error(CW_I18N.t('month_error_3'));
       }
       if (nativeDialogClosedAt && Date.now() - nativeDialogClosedAt > 10000) {
         document.removeEventListener('click', onNativeDialogClick, true);
         document.removeEventListener('keydown', onNativeDialogKey, true);
-        throw new Error('已取消原生附件上传；文件仍保留，可以重新点击“上传并插入”重试');
+        throw new Error(CW_I18N.t('month_error_3'));
       }
     }
     document.removeEventListener('click', onNativeDialogClick, true);
     document.removeEventListener('keydown', onNativeDialogKey, true);
-    throw new Error(`原生上传后未找到全部文件 ID（${result.length}/${files.length}）`);
+    throw new Error(CW_I18N.t('month_dynamic_2',[result.length,files.length]));
   }
   async function uploadToMyChat(files, onProgress) {
     const originalHash = location.hash || '';
@@ -336,7 +336,7 @@
     const targetRoom = myRoomId();
     let resolvedTargetRoom = targetRoom;
     if (!resolvedTargetRoom) resolvedTargetRoom = await openMyChatFromAccountCard();
-    if (!resolvedTargetRoom) throw new Error('未找到当前账号的“我的交谈”房间，请从右上角账号资料卡打开一次');
+    if (!resolvedTargetRoom) throw new Error(CW_I18N.t('month_error_4'));
     if (!targetRoom || targetRoom === originalRoom) return uploadNative(files, onProgress);
     try {
       clickRoomTab(resolvedTargetRoom);
@@ -357,13 +357,13 @@
     /* Legacy direct S3 flow retained below for reference. */
     /*
     const rid = roomId();
-    if (!rid) throw new Error('Chatwork room not found');
+    if (!rid) throw new Error(CW_I18N.t('month_error_5'));
     const list = files.map((file, key) => ({ key, name: file.name, size: file.size, message: '' }));
     const endpoint = new URL('/gateway/get_upload_file_info_sig_v4.php', location.origin);
     endpoint.search = new URLSearchParams({ myid: ownId(), _v: '1.80a', _av: '5', ln: document.documentElement.lang || 'en', room_id: rid }).toString();
     const body = new URLSearchParams({ pdata: JSON.stringify({ list, noredirect: true, region: 'tokyo', _t: token() }) });
     const response = await request(endpoint, { method: 'POST', body, credentials: 'include' });
-    if (!response.ok) throw new Error(`upload preparation failed (${response.status})`);
+    if (!response.ok) throw new Error(CW_I18N.t('month_dynamic_4',[response.status]));
     const payload = await response.json();
     const descriptors = normalizeInfo(payload, files);
     const result = [];

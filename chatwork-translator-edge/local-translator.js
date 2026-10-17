@@ -59,16 +59,16 @@
       try { value?.destroy(); } catch {}
     }
   }
-  function translate(text) {
+  function translate(text, {manual=false} = {}) {
     const current = generation;
     const work = queue.then(async () => {
       async function checkActive() {
         const {enabled} = AutoSettings.resolve(await chrome.storage.local.get('enabled'));
-        if (!enabled || current !== generation) throw new Error(CW_I18N.t("ui_013"));
+        if ((!enabled&&!manual) || current !== generation) throw new Error(CW_I18N.t("ui_013"));
       }
       if (current !== generation) throw new Error(CW_I18N.t("ui_008"));
       const {enabled} = AutoSettings.resolve(await chrome.storage.local.get('enabled'));
-      if (!enabled) throw new Error(CW_I18N.t("ui_011"));
+      if (!enabled&&!manual) throw new Error(CW_I18N.t("ui_011"));
       if (typeof text !== 'string' || !text.trim() || text.length > 30000) throw new Error(CW_I18N.t("ui_012"));
       if (sourceLanguage === targetLanguage) return {skipped:true, reason:'same-language'};
       const alreadyTarget = await ProtectedText.isTargetLanguage(text, targetLanguage);

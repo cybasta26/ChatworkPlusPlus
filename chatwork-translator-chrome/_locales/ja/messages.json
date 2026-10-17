@@ -914,6 +914,283 @@
   },
   "attachment_title": {
     "message": "拡張版の添付ファイル追加"
+  },
+  "history_search_loading": {
+    "message": "メッセージ本文を読み込み中（$current$/$total$）…",
+    "placeholders": {
+      "current": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "history_search_complete": {
+    "message": "検索完了"
+  },
+  "history_search_partial": {
+    "message": "検索が完了していません。一部の履歴や本文を読み込めませんでした。更新して再検索してください。"
+  },
+  "room_title_translation": {
+    "message": "グループチャット名を翻訳"
+  },
+  "archive_open": {
+    "message": "ローカル保存（試用版）"
+  },
+  "archive_folder": {
+    "message": "保存先フォルダー"
+  },
+  "archive_auto": {
+    "message": "自動保存"
+  },
+  "archive_update": {
+    "message": "今すぐ更新（直近40日）"
+  },
+  "archive_view": {
+    "message": "保存履歴を表示"
+  },
+  "archive_no_folder": {
+    "message": "フォルダー未選択"
+  },
+  "archive_range": {
+    "message": "保存済み"
+  },
+  "archive_authorize": {
+    "message": "フォルダー選択 / アクセス許可"
+  },
+  "archive_path_note": {
+    "message": "ブラウザーはフォルダー名のみ表示できます。"
+  },
+  "archive_worker_notice": {
+    "message": "自動保存中はこの作業タブを開いたままにしてください。"
+  },
+  "archive_empty": {
+    "message": "保存履歴なし"
+  },
+  "archive_stop": {
+    "message": "保存を停止"
+  },
+  "archive_update_days": {
+    "message": "今すぐ更新（直近{days}日）"
+  },
+  "archive_days_label": {
+    "message": "直近 {days} 日"
+  },
+  "archive_choose_days": {
+    "message": "保存日数を選択"
+  },
+  "archive_close": {
+    "message": "閉じる"
+  },
+  "archive_auto_active": {
+    "message": "自動保存実行中"
+  },
+  "archive_reconnecting": {
+    "message": "Chatwork に再接続中"
+  },
+  "archive_other_owner": {
+    "message": "このフォルダーは別のブラウザーまたは拡張機能プロファイルに登録されています。別のフォルダーを選択してください。"
+  },
+  "recent_threads": {
+    "message": "最近の関連Threadを表示"
+  },
+  "recent_thread_days": {
+    "message": "日数（1–10）"
+  },
+  "recent_thread_unread": {
+    "message": "未読の返信"
+  },
+  "recent_thread_caption": {
+    "message": "$1日以内の関連トピックを表示"
+  },
+  "recent_thread_help": {
+    "message": "$1日以内に更新された、あなたに関連するトピックの一覧です。拡張機能の設定の「最近の関連Threadを表示」で無効にするか、表示期間を変更できます。"
+  },
+  "recent_thread_refresh": {
+    "message": "クリックして更新"
+  },
+  "recent_thread_stop": {
+    "message": "クリックして停止"
+  },
+  "recent_thread_settings": {
+    "message": "設定を開く"
+  },
+  "recent_thread_help_before": {
+    "message": "$1日以内に更新された、あなたに関連するトピックの一覧です。拡張機能の設定の「"
+  },
+  "recent_thread_help_after": {
+    "message": "」で無効にするか、表示期間を変更できます。"
+  },
+  "archive_error_0": {
+    "message": "日付が無効です"
+  },
+  "archive_error_1": {
+    "message": "履歴を削除する前に保存を停止してください。"
+  },
+  "archive_error_2": {
+    "message": "復元する前に保存を停止してください。"
+  },
+  "archive_error_3": {
+    "message": "データベース操作が中断されました"
+  },
+  "archive_error_4": {
+    "message": "添付ファイルのパスが無効です"
+  },
+  "archive_error_5": {
+    "message": "復元できるアーカイブがありません。"
+  },
+  "archive_error_6": {
+    "message": "復元が中断されました"
+  },
+  "archive_error_7": {
+    "message": "フォルダーの所有者情報を認識できません"
+  },
+  "archive_error_8": {
+    "message": "ファイルのダウンロードが不完全です"
+  },
+  "archive_error_9": {
+    "message": "ファイルサイズが一致しません"
+  },
+  "archive_error_10": {
+    "message": "元のチャットが変更されました"
+  },
+  "archive_error_11": {
+    "message": "アーカイブファイルが大きすぎます"
+  },
+  "archive_error_12": {
+    "message": "アーカイブファイルが無効です"
+  },
+  "archive_error_13": {
+    "message": "メッセージ記録が無効です"
+  },
+  "archive_error_14": {
+    "message": "無効なアーカイブ："
+  },
+  "archive_error_15": {
+    "message": "無効なメッセージ："
+  },
+  "archive_error_16": {
+    "message": "アーカイブファイルが大きすぎます："
+  },
+  "archive_error_17": {
+    "message": "アーカイブ処理中です"
+  },
+  "archive_error_18": {
+    "message": "Chatwork アカウントまたはルームを識別できません"
+  },
+  "archive_error_19": {
+    "message": "日付範囲が無効です"
+  },
+  "archive_error_20": {
+    "message": "アカウントまたはルームが変更されました"
+  },
+  "archive_error_21": {
+    "message": "添付ファイルのダウンロード中です。後で再試行してください"
+  },
+  "archive_error_22": {
+    "message": "ダウンロードがタイムアウトしました。再試行してください"
+  },
+  "archive_error_23": {
+    "message": "添付ファイルの権限がないか、サーバーがエラーを返しました"
+  },
+  "archive_error_24": {
+    "message": "不明なアーカイブ操作です"
+  },
+  "archive_error_25": {
+    "message": "チャットのスクロール領域が見つかりません"
+  },
+  "archive_error_26": {
+    "message": "リクエスト元が無効です"
+  },
+  "archive_error_27": {
+    "message": "キャンセルされました"
+  },
+  "month_error_0": {
+    "message": "リクエストがタイムアウトしました。再試行してください"
+  },
+  "month_error_1": {
+    "message": "メッセージ入力欄が見つかりません"
+  },
+  "month_error_2": {
+    "message": "Chatwork の添付機能を利用できません"
+  },
+  "month_error_3": {
+    "message": "アップロードをキャンセルしました。ファイルは保持されています。「アップロードして挿入」で再試行できます"
+  },
+  "month_error_4": {
+    "message": "マイチャットが見つかりません。右上のアカウントメニューから一度開いてください"
+  },
+  "month_error_5": {
+    "message": "Chatwork のルームが見つかりません"
+  },
+  "month_error_6": {
+    "message": "画像の生成に失敗しました"
+  },
+  "month_dynamic_0": {
+    "message": "チャットの読み込みがタイムアウトしました（$1）"
+  },
+  "month_dynamic_1": {
+    "message": "添付機能が受け付けたファイル数：$1/$2"
+  },
+  "month_dynamic_2": {
+    "message": "一部のアップロード済みファイル ID が見つかりません（$1/$2）"
+  },
+  "month_dynamic_3": {
+    "message": "ファイル ID がありません（$1）"
+  },
+  "month_dynamic_4": {
+    "message": "アップロードの準備に失敗しました（$1）"
+  },
+  "month_dynamic_5": {
+    "message": "ファイル登録に失敗しました（$1）"
+  },
+  "month_dynamic_6": {
+    "message": "ファイル登録に失敗しました（$1）"
+  },
+  "month_upload_failed": {
+    "message": "アップロード失敗（$1）"
+  },
+  "month_upload_url": {
+    "message": "アップロード先がありません：$1"
+  },
+  "archive_download_rejected": {
+    "message": "ダウンロードが拒否されました（$1）"
+  },
+  "history_export_status_0": {
+    "message": "画像またはテキストを選択してください"
+  },
+  "history_export_status_1": {
+    "message": "保存先フォルダーを選択できません"
+  },
+  "history_export_status_2": {
+    "message": "チャット履歴を確認して読み込んでいます…"
+  },
+  "history_export_status_3": {
+    "message": "履歴がすべて読み込まれていません。読み込み状況を確認して再試行してください"
+  },
+  "history_export_status_4": {
+    "message": "条件に一致するメッセージがありません"
+  },
+  "history_export_status_5": {
+    "message": "$1 を保存中…"
+  },
+  "history_unknown_sender": {
+    "message": "不明な送信者"
+  },
+  "history_filtered_records": {
+    "message": "抽出した履歴"
+  },
+  "archive_delete_room": {
+    "message": "履歴を削除"
+  },
+  "archive_delete_confirm": {
+    "message": "「{room}」の空のアーカイブ項目を削除しますか？"
+  },
+  "archive_delete_done": {
+    "message": "アーカイブ項目を削除しました。"
+  },
+  "archive_delete_not_empty": {
+    "message": "このチャットにはメッセージがあります。一覧を更新してから削除してください。"
   }
 }
-

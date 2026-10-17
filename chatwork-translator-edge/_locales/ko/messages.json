@@ -930,6 +930,283 @@
   },
   "attachment_title": {
     "message": "확장 첨부 파일 추가"
+  },
+  "history_search_loading": {
+    "message": "메시지 본문 로딩 중 ($current$/$total$)…",
+    "placeholders": {
+      "current": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "history_search_complete": {
+    "message": "검색 완료"
+  },
+  "history_search_partial": {
+    "message": "일부 기록 또는 본문을 불러오지 못했습니다. 새로 고친 후 다시 검색하세요."
+  },
+  "room_title_translation": {
+    "message": "그룹 채팅 이름 번역"
+  },
+  "archive_open": {
+    "message": "로컬 보관（시험판）"
+  },
+  "archive_folder": {
+    "message": "보관 폴더"
+  },
+  "archive_auto": {
+    "message": "자동 보관"
+  },
+  "archive_update": {
+    "message": "지금 업데이트 (최근 40일)"
+  },
+  "archive_view": {
+    "message": "보관 기록 보기"
+  },
+  "archive_no_folder": {
+    "message": "폴더를 선택하지 않음"
+  },
+  "archive_range": {
+    "message": "보관됨"
+  },
+  "archive_authorize": {
+    "message": "폴더 선택 / 접근 허용"
+  },
+  "archive_path_note": {
+    "message": "브라우저는 전체 경로 대신 폴더 이름만 제공합니다."
+  },
+  "archive_worker_notice": {
+    "message": "자동 보관 중에는 이 작업 탭을 열어 두세요."
+  },
+  "archive_empty": {
+    "message": "보관 기록 없음"
+  },
+  "archive_stop": {
+    "message": "보관 중지"
+  },
+  "archive_update_days": {
+    "message": "지금 업데이트 (최근 {days}일)"
+  },
+  "archive_days_label": {
+    "message": "최근 {days}일"
+  },
+  "archive_choose_days": {
+    "message": "보관 일수 선택"
+  },
+  "archive_close": {
+    "message": "닫기"
+  },
+  "archive_auto_active": {
+    "message": "자동 보관 실행 중"
+  },
+  "archive_reconnecting": {
+    "message": "Chatwork에 다시 연결 중"
+  },
+  "archive_other_owner": {
+    "message": "이 폴더는 다른 브라우저 또는 확장 프로필에 연결되어 있습니다. 다른 보관 폴더를 선택하세요."
+  },
+  "recent_threads": {
+    "message": "최근 관련 Thread 표시"
+  },
+  "recent_thread_days": {
+    "message": "최근 일수 (1–10)"
+  },
+  "recent_thread_unread": {
+    "message": "읽지 않은 답글"
+  },
+  "recent_thread_caption": {
+    "message": "최근 $1일 관련 주제 표시"
+  },
+  "recent_thread_help": {
+    "message": "최근 $1일 이내에 업데이트된 나와 관련된 주제 목록입니다. 확장 프로그램 설정의 “최근 관련 Thread 표시”에서 기능을 끄거나 표시 기간을 조정할 수 있습니다."
+  },
+  "recent_thread_refresh": {
+    "message": "클릭하여 새로고침"
+  },
+  "recent_thread_stop": {
+    "message": "클릭하여 중지"
+  },
+  "recent_thread_settings": {
+    "message": "설정으로 이동"
+  },
+  "recent_thread_help_before": {
+    "message": "최근 $1일 이내에 업데이트된 나와 관련된 주제 목록입니다. 확장 프로그램 설정의 “"
+  },
+  "recent_thread_help_after": {
+    "message": "”에서 기능을 끄거나 표시 기간을 조정할 수 있습니다."
+  },
+  "archive_error_0": {
+    "message": "날짜가 올바르지 않습니다"
+  },
+  "archive_error_1": {
+    "message": "기록 삭제 전에 보관 작업을 중지하세요."
+  },
+  "archive_error_2": {
+    "message": "복구 전에 보관 작업을 중지하세요."
+  },
+  "archive_error_3": {
+    "message": "데이터베이스 작업이 중단되었습니다"
+  },
+  "archive_error_4": {
+    "message": "첨부 파일 경로가 올바르지 않습니다"
+  },
+  "archive_error_5": {
+    "message": "복구할 보관 기록이 없습니다."
+  },
+  "archive_error_6": {
+    "message": "복구가 중단되었습니다"
+  },
+  "archive_error_7": {
+    "message": "폴더 소유권 정보를 확인할 수 없습니다"
+  },
+  "archive_error_8": {
+    "message": "파일 다운로드가 완료되지 않았습니다"
+  },
+  "archive_error_9": {
+    "message": "파일 크기가 일치하지 않습니다"
+  },
+  "archive_error_10": {
+    "message": "원본 채팅방이 변경되었습니다"
+  },
+  "archive_error_11": {
+    "message": "보관 파일이 너무 큽니다"
+  },
+  "archive_error_12": {
+    "message": "보관 파일이 올바르지 않습니다"
+  },
+  "archive_error_13": {
+    "message": "메시지 기록이 올바르지 않습니다"
+  },
+  "archive_error_14": {
+    "message": "잘못된 보관 기록: "
+  },
+  "archive_error_15": {
+    "message": "잘못된 메시지: "
+  },
+  "archive_error_16": {
+    "message": "보관 파일이 너무 큽니다: "
+  },
+  "archive_error_17": {
+    "message": "보관 작업이 실행 중입니다"
+  },
+  "archive_error_18": {
+    "message": "Chatwork 계정 또는 채팅방을 확인할 수 없습니다"
+  },
+  "archive_error_19": {
+    "message": "날짜 범위가 올바르지 않습니다"
+  },
+  "archive_error_20": {
+    "message": "계정 또는 채팅방이 변경되었습니다"
+  },
+  "archive_error_21": {
+    "message": "첨부 파일을 다운로드 중입니다. 잠시 후 다시 시도하세요"
+  },
+  "archive_error_22": {
+    "message": "다운로드 시간이 초과되었습니다. 다시 시도하세요"
+  },
+  "archive_error_23": {
+    "message": "첨부 파일 접근 권한이 없거나 서버 오류가 발생했습니다"
+  },
+  "archive_error_24": {
+    "message": "알 수 없는 보관 작업입니다"
+  },
+  "archive_error_25": {
+    "message": "채팅 스크롤 영역을 찾을 수 없습니다"
+  },
+  "archive_error_26": {
+    "message": "요청 출처가 올바르지 않습니다"
+  },
+  "archive_error_27": {
+    "message": "취소되었습니다"
+  },
+  "month_error_0": {
+    "message": "요청 시간이 초과되었습니다. 다시 시도하세요"
+  },
+  "month_error_1": {
+    "message": "메시지 입력란을 찾을 수 없습니다"
+  },
+  "month_error_2": {
+    "message": "Chatwork 첨부 기능을 사용할 수 없습니다"
+  },
+  "month_error_3": {
+    "message": "업로드가 취소되었습니다. 파일은 유지됩니다. “업로드 및 삽입”으로 다시 시도하세요"
+  },
+  "month_error_4": {
+    "message": "내 채팅을 찾을 수 없습니다. 오른쪽 위 계정 메뉴에서 한 번 열어 주세요"
+  },
+  "month_error_5": {
+    "message": "Chatwork 채팅방을 찾을 수 없습니다"
+  },
+  "month_error_6": {
+    "message": "이미지 생성에 실패했습니다"
+  },
+  "month_dynamic_0": {
+    "message": "채팅 로딩 시간 초과 ($1)"
+  },
+  "month_dynamic_1": {
+    "message": "첨부 기능이 수락한 파일: $1/$2"
+  },
+  "month_dynamic_2": {
+    "message": "일부 업로드 파일 ID를 찾을 수 없습니다 ($1/$2)"
+  },
+  "month_dynamic_3": {
+    "message": "파일 ID가 없습니다 ($1)"
+  },
+  "month_dynamic_4": {
+    "message": "업로드 준비 실패 ($1)"
+  },
+  "month_dynamic_5": {
+    "message": "파일 등록 실패 ($1)"
+  },
+  "month_dynamic_6": {
+    "message": "파일 등록 실패 ($1)"
+  },
+  "month_upload_failed": {
+    "message": "업로드 실패 ($1)"
+  },
+  "month_upload_url": {
+    "message": "업로드 주소가 없습니다: $1"
+  },
+  "archive_download_rejected": {
+    "message": "다운로드가 거부되었습니다 ($1)"
+  },
+  "history_export_status_0": {
+    "message": "이미지 또는 텍스트 형식을 선택하세요"
+  },
+  "history_export_status_1": {
+    "message": "저장 폴더를 선택할 수 없습니다"
+  },
+  "history_export_status_2": {
+    "message": "채팅 기록을 확인하고 불러오는 중…"
+  },
+  "history_export_status_3": {
+    "message": "채팅 기록이 모두 로드되지 않았습니다. 로드 상태를 확인한 후 다시 시도하세요"
+  },
+  "history_export_status_4": {
+    "message": "필터에 일치하는 메시지가 없습니다"
+  },
+  "history_export_status_5": {
+    "message": "$1 저장 중…"
+  },
+  "history_unknown_sender": {
+    "message": "알 수 없는 발신자"
+  },
+  "history_filtered_records": {
+    "message": "필터링된 기록"
+  },
+  "archive_delete_room": {
+    "message": "기록 삭제"
+  },
+  "archive_delete_confirm": {
+    "message": "“{room}”의 빈 보관 항목을 삭제할까요？"
+  },
+  "archive_delete_done": {
+    "message": "보관 항목이 삭제되었습니다."
+  },
+  "archive_delete_not_empty": {
+    "message": "이 채팅에 메시지가 있습니다. 목록을 새로 고친 후 정리하세요."
   }
 }
-

@@ -930,6 +930,283 @@
   },
   "attachment_title": {
     "message": "Enhanced Add Attachments"
+  },
+  "history_search_loading": {
+    "message": "Loading message bodies ($current$/$total$)…",
+    "placeholders": {
+      "current": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "history_search_complete": {
+    "message": "Search complete"
+  },
+  "history_search_partial": {
+    "message": "Search incomplete: some history or message text could not be loaded. Refresh and search again."
+  },
+  "room_title_translation": {
+    "message": "Translate group chat names"
+  },
+  "archive_open": {
+    "message": "Local archive (Preview)"
+  },
+  "archive_folder": {
+    "message": "Archive folder"
+  },
+  "archive_auto": {
+    "message": "Automatic archive"
+  },
+  "archive_update": {
+    "message": "Update archive now (40 days)"
+  },
+  "archive_view": {
+    "message": "View archived chats"
+  },
+  "archive_no_folder": {
+    "message": "No folder selected"
+  },
+  "archive_range": {
+    "message": "Archived"
+  },
+  "archive_authorize": {
+    "message": "Choose folder / grant access"
+  },
+  "archive_path_note": {
+    "message": "The browser exposes the folder name, not its full disk path."
+  },
+  "archive_worker_notice": {
+    "message": "Keep this archive worker tab open for automatic archiving."
+  },
+  "archive_empty": {
+    "message": "No archived messages"
+  },
+  "archive_stop": {
+    "message": "Stop archiving"
+  },
+  "archive_update_days": {
+    "message": "Update archive ({days} days)"
+  },
+  "archive_days_label": {
+    "message": "Last {days} days"
+  },
+  "archive_choose_days": {
+    "message": "Choose archive days"
+  },
+  "archive_close": {
+    "message": "Close"
+  },
+  "archive_auto_active": {
+    "message": "Auto archive running"
+  },
+  "archive_reconnecting": {
+    "message": "Reconnecting to Chatwork"
+  },
+  "archive_other_owner": {
+    "message": "This folder belongs to another browser or extension profile. Choose a different archive folder."
+  },
+  "recent_threads": {
+    "message": "Recent thread reminders"
+  },
+  "recent_thread_days": {
+    "message": "Days (1–10)"
+  },
+  "recent_thread_unread": {
+    "message": "Unread replies"
+  },
+  "recent_thread_caption": {
+    "message": "Related topics from the last $1 days"
+  },
+  "recent_thread_help": {
+    "message": "This list shows topics updated within the last $1 days that involve you. In the extension settings, use “Recent thread reminders” to disable this feature or adjust the displayed time range."
+  },
+  "recent_thread_refresh": {
+    "message": "Click to refresh"
+  },
+  "recent_thread_stop": {
+    "message": "Click to stop"
+  },
+  "recent_thread_settings": {
+    "message": "Open settings"
+  },
+  "recent_thread_help_before": {
+    "message": "This list shows topics updated within the last $1 days that involve you. In the extension settings, use “"
+  },
+  "recent_thread_help_after": {
+    "message": "” to disable this feature or adjust the displayed time range."
+  },
+  "archive_error_0": {
+    "message": "Invalid date"
+  },
+  "archive_error_1": {
+    "message": "Please stop archiving before cleaning records."
+  },
+  "archive_error_2": {
+    "message": "Stop archiving before recovery."
+  },
+  "archive_error_3": {
+    "message": "Database aborted"
+  },
+  "archive_error_4": {
+    "message": "Invalid attachment path"
+  },
+  "archive_error_5": {
+    "message": "No recoverable archive found."
+  },
+  "archive_error_6": {
+    "message": "Recovery aborted"
+  },
+  "archive_error_7": {
+    "message": "Unrecognized ownership marker"
+  },
+  "archive_error_8": {
+    "message": "Incomplete file"
+  },
+  "archive_error_9": {
+    "message": "File size mismatch"
+  },
+  "archive_error_10": {
+    "message": "Source changed"
+  },
+  "archive_error_11": {
+    "message": "Backup too large"
+  },
+  "archive_error_12": {
+    "message": "Invalid backup"
+  },
+  "archive_error_13": {
+    "message": "Invalid record"
+  },
+  "archive_error_14": {
+    "message": "Invalid archive: "
+  },
+  "archive_error_15": {
+    "message": "Invalid message: "
+  },
+  "archive_error_16": {
+    "message": "Backup too large: "
+  },
+  "archive_error_17": {
+    "message": "Archive already running"
+  },
+  "archive_error_18": {
+    "message": "Cannot identify Chatwork account / room"
+  },
+  "archive_error_19": {
+    "message": "Invalid dates"
+  },
+  "archive_error_20": {
+    "message": "Account or room changed"
+  },
+  "archive_error_21": {
+    "message": "Download busy"
+  },
+  "archive_error_22": {
+    "message": "Download expired"
+  },
+  "archive_error_23": {
+    "message": "Permission denied / error page"
+  },
+  "archive_error_24": {
+    "message": "Unknown archive action"
+  },
+  "archive_error_25": {
+    "message": "No message scroller"
+  },
+  "archive_error_26": {
+    "message": "Invalid source"
+  },
+  "archive_error_27": {
+    "message": "Cancelled"
+  },
+  "month_error_0": {
+    "message": "Request timed out. Please retry."
+  },
+  "month_error_1": {
+    "message": "Message input not found"
+  },
+  "month_error_2": {
+    "message": "Chatwork attachment control is unavailable"
+  },
+  "month_error_3": {
+    "message": "Upload cancelled. Files are retained; click “Upload and insert” to retry."
+  },
+  "month_error_4": {
+    "message": "My Chat was not found. Open it once from the account menu."
+  },
+  "month_error_5": {
+    "message": "Chatwork room not found"
+  },
+  "month_error_6": {
+    "message": "Image generation failed"
+  },
+  "month_dynamic_0": {
+    "message": "Chat loading timed out ($1)"
+  },
+  "month_dynamic_1": {
+    "message": "The attachment control accepted $1/$2 files"
+  },
+  "month_dynamic_2": {
+    "message": "Some uploaded file IDs were not found ($1/$2)"
+  },
+  "month_dynamic_3": {
+    "message": "File ID missing ($1)"
+  },
+  "month_dynamic_4": {
+    "message": "Upload preparation failed ($1)"
+  },
+  "month_dynamic_5": {
+    "message": "File registration failed ($1)"
+  },
+  "month_dynamic_6": {
+    "message": "File registration failed ($1)"
+  },
+  "month_upload_failed": {
+    "message": "Upload failed ($1)"
+  },
+  "month_upload_url": {
+    "message": "Upload address missing: $1"
+  },
+  "archive_download_rejected": {
+    "message": "Download rejected ($1)"
+  },
+  "history_export_status_0": {
+    "message": "Choose at least one format"
+  },
+  "history_export_status_1": {
+    "message": "This browser cannot choose a save folder"
+  },
+  "history_export_status_2": {
+    "message": "Checking and loading chat history…"
+  },
+  "history_export_status_3": {
+    "message": "Chat history is not fully loaded. Check loading status and try again"
+  },
+  "history_export_status_4": {
+    "message": "No messages match the filters"
+  },
+  "history_export_status_5": {
+    "message": "Saving $1…"
+  },
+  "history_unknown_sender": {
+    "message": "Unknown sender"
+  },
+  "history_filtered_records": {
+    "message": "Filtered records"
+  },
+  "archive_delete_room": {
+    "message": "Delete record"
+  },
+  "archive_delete_confirm": {
+    "message": "Delete the empty archive entry for “{room}”?"
+  },
+  "archive_delete_done": {
+    "message": "Archive entry deleted."
+  },
+  "archive_delete_not_empty": {
+    "message": "This chat contains messages again. Refresh the list before cleaning."
   }
 }
-

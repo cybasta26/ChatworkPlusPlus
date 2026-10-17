@@ -930,6 +930,283 @@
   },
   "attachment_title": {
     "message": "增强版添加附件"
+  },
+  "history_search_loading": {
+    "message": "正在加载消息正文（$current$/$total$）…",
+    "placeholders": {
+      "current": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "history_search_complete": {
+    "message": "搜索完成"
+  },
+  "history_search_partial": {
+    "message": "搜索未完成：部分历史记录或正文未能加载，请刷新后重新搜索。"
+  },
+  "room_title_translation": {
+    "message": "翻译群聊名称"
+  },
+  "archive_open": {
+    "message": "本地归档（试用版）"
+  },
+  "archive_folder": {
+    "message": "归档目录"
+  },
+  "archive_auto": {
+    "message": "自动归档"
+  },
+  "archive_update": {
+    "message": "立即更新归档（最近40天）"
+  },
+  "archive_view": {
+    "message": "查看归档记录"
+  },
+  "archive_no_folder": {
+    "message": "尚未选择目录"
+  },
+  "archive_range": {
+    "message": "已归档"
+  },
+  "archive_authorize": {
+    "message": "选择目录 / 授权访问"
+  },
+  "archive_path_note": {
+    "message": "浏览器仅提供目录名，无法读取完整磁盘路径。"
+  },
+  "archive_worker_notice": {
+    "message": "自动归档期间请保留此归档工作页。"
+  },
+  "archive_empty": {
+    "message": "暂无归档记录"
+  },
+  "archive_stop": {
+    "message": "停止归档"
+  },
+  "archive_update_days": {
+    "message": "立即更新归档（最近{days}天）"
+  },
+  "archive_days_label": {
+    "message": "最近 {days} 天"
+  },
+  "archive_choose_days": {
+    "message": "选择归档天数"
+  },
+  "archive_close": {
+    "message": "关闭"
+  },
+  "archive_auto_active": {
+    "message": "自动归档运行中"
+  },
+  "archive_reconnecting": {
+    "message": "正在重新连接 Chatwork"
+  },
+  "archive_other_owner": {
+    "message": "此目录已绑定其他浏览器或扩展配置，请选择另一个归档目录。"
+  },
+  "recent_threads": {
+    "message": "最近N天Thread列表提示"
+  },
+  "recent_thread_days": {
+    "message": "最近天数（1–10）"
+  },
+  "recent_thread_unread": {
+    "message": "有未读回复"
+  },
+  "recent_thread_caption": {
+    "message": "展示$1天内相关话题"
+  },
+  "recent_thread_help": {
+    "message": "当前展示$1天内更新过、并且与你有关的话题列表。可在插件设置页面的“最近N天Thread列表提示”处禁用该功能或者调整展示时间范围。"
+  },
+  "recent_thread_refresh": {
+    "message": "点击刷新"
+  },
+  "recent_thread_stop": {
+    "message": "点击停止"
+  },
+  "recent_thread_settings": {
+    "message": "前往设置"
+  },
+  "recent_thread_help_before": {
+    "message": "当前展示$1天内更新过、并且与你有关的话题列表。可在插件设置页面的“"
+  },
+  "recent_thread_help_after": {
+    "message": "”处禁用该功能或者调整展示时间范围。"
+  },
+  "archive_error_0": {
+    "message": "日期无效"
+  },
+  "archive_error_1": {
+    "message": "请先停止归档，再清理记录。"
+  },
+  "archive_error_2": {
+    "message": "请先停止归档，再恢复记录。"
+  },
+  "archive_error_3": {
+    "message": "数据库操作已中止"
+  },
+  "archive_error_4": {
+    "message": "附件路径无效"
+  },
+  "archive_error_5": {
+    "message": "未找到可恢复的归档。"
+  },
+  "archive_error_6": {
+    "message": "恢复已中止"
+  },
+  "archive_error_7": {
+    "message": "无法识别归档目录归属标记"
+  },
+  "archive_error_8": {
+    "message": "文件下载不完整"
+  },
+  "archive_error_9": {
+    "message": "文件大小不匹配"
+  },
+  "archive_error_10": {
+    "message": "来源聊天室已变化"
+  },
+  "archive_error_11": {
+    "message": "归档文件过大"
+  },
+  "archive_error_12": {
+    "message": "归档文件无效"
+  },
+  "archive_error_13": {
+    "message": "消息记录无效"
+  },
+  "archive_error_14": {
+    "message": "归档无效："
+  },
+  "archive_error_15": {
+    "message": "消息无效："
+  },
+  "archive_error_16": {
+    "message": "归档文件过大："
+  },
+  "archive_error_17": {
+    "message": "归档正在运行"
+  },
+  "archive_error_18": {
+    "message": "无法识别 Chatwork 账号或聊天室"
+  },
+  "archive_error_19": {
+    "message": "日期范围无效"
+  },
+  "archive_error_20": {
+    "message": "账号或聊天室已变化"
+  },
+  "archive_error_21": {
+    "message": "附件正在下载，请稍后重试"
+  },
+  "archive_error_22": {
+    "message": "下载已超时，请重试"
+  },
+  "archive_error_23": {
+    "message": "无权下载附件或服务器返回错误页面"
+  },
+  "archive_error_24": {
+    "message": "无法识别归档操作"
+  },
+  "archive_error_25": {
+    "message": "未找到聊天滚动区域"
+  },
+  "archive_error_26": {
+    "message": "请求来源无效"
+  },
+  "archive_error_27": {
+    "message": "已取消"
+  },
+  "month_error_0": {
+    "message": "请求超时，请重试"
+  },
+  "month_error_1": {
+    "message": "未找到消息输入框"
+  },
+  "month_error_2": {
+    "message": "Chatwork 原生附件控件不可用"
+  },
+  "month_error_3": {
+    "message": "已取消原生附件上传；文件仍保留，可以重新点击“上传并插入”重试"
+  },
+  "month_error_4": {
+    "message": "未找到当前账号的“我的交谈”房间，请从右上角账号资料卡打开一次"
+  },
+  "month_error_5": {
+    "message": "未找到 Chatwork 聊天室"
+  },
+  "month_error_6": {
+    "message": "图片生成失败"
+  },
+  "month_dynamic_0": {
+    "message": "聊天窗口加载超时（$1）"
+  },
+  "month_dynamic_1": {
+    "message": "原生附件控件只接收了 $1/$2 个文件"
+  },
+  "month_dynamic_2": {
+    "message": "原生上传后未找到全部文件 ID（$1/$2）"
+  },
+  "month_dynamic_3": {
+    "message": "缺少文件 ID（$1）"
+  },
+  "month_dynamic_4": {
+    "message": "上传准备失败（$1）"
+  },
+  "month_dynamic_5": {
+    "message": "文件登记失败（$1）"
+  },
+  "month_dynamic_6": {
+    "message": "文件登记失败（$1）"
+  },
+  "month_upload_failed": {
+    "message": "$1：上传失败"
+  },
+  "month_upload_url": {
+    "message": "缺少上传地址：$1"
+  },
+  "archive_download_rejected": {
+    "message": "下载被拒绝（$1）"
+  },
+  "history_export_status_0": {
+    "message": "请至少选择图片或文本格式"
+  },
+  "history_export_status_1": {
+    "message": "当前浏览器不支持选择保存目录"
+  },
+  "history_export_status_2": {
+    "message": "正在检查并加载聊天记录…"
+  },
+  "history_export_status_3": {
+    "message": "聊天记录尚未完整加载；请查看上方加载状态后重试"
+  },
+  "history_export_status_4": {
+    "message": "筛选范围内没有消息"
+  },
+  "history_export_status_5": {
+    "message": "正在保存 $1…"
+  },
+  "history_unknown_sender": {
+    "message": "未知发信人"
+  },
+  "history_filtered_records": {
+    "message": "指定记录"
+  },
+  "archive_delete_room": {
+    "message": "删除记录"
+  },
+  "archive_delete_confirm": {
+    "message": "是否删除“{room}”的空归档条目？"
+  },
+  "archive_delete_done": {
+    "message": "已删除归档条目。"
+  },
+  "archive_delete_not_empty": {
+    "message": "此聊天已有消息，请刷新列表后再清理。"
   }
 }
-

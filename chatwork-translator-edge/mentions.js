@@ -5,8 +5,31 @@
   let items = [], groups = {to: [], re: [], send: []}, selected = {};
   let recipient = '', requireBoth = false, saveMode = 'all', saveImage = true, saveText = true, perDay = true;
   let keyword = '', keywordDraft = '';
+  let searchBusy=false, searchCandidates=[];
+  const bodyCache=new Map();
   let caseSensitive = false, wholeWord = false;
-  let historyOpen = false, historyWidth = 0, sharedPanelWidth = 0;
+  let recentThreadsEnabled=true,recentThreadDays=3;
+  const threadReadStates=new Map();
+  function readStateFor(me){
+    const key='cwThreadRead:'+JSON.stringify([location.origin,identity.key,rid,me]);
+    if(!threadReadStates.has(key)){
+      threadReadStates.set(key,null);
+      chrome.storage.local.get(key).then(data=>{
+        const value=data[key]||{since:Date.now(),read:{}};
+        threadReadStates.set(key,value);
+        if(!data[key])saveSettings({[key]:value});
+        recentSignature='';refresh();
+      }).catch(()=>{threadReadStates.delete(key);});
+    }
+    return {key,value:threadReadStates.get(key)};
+  }
+  function threadUnread(chain,me,state){
+    if(!state)return false;
+    const last=Math.max(state.since,...chain.map(m=>Number(state.read[m.id])||0));
+    return chain.some(m=>!m.missing&&!m.deleted&&m.sender&&m.sender!==me&&m.time>last);
+  }
+  const recentRecords=new Map();let recentStrip,recentSignature="";
+  let historyOpen = true, historyWidth = 0, sharedPanelWidth = 0;
   let status = CW_I18N.t("ui_035"), coverage = false;
   let pendingJump;
   let threadWidth;
@@ -31,7 +54,7 @@
         ? ['Chat history','Sender','Recipient','Require both sender and recipient','Save chat history','All','Filtered','Image','Text','Split by day','Save','Close','None','Saved','Save failed','Messages: {count}','Number of messages matching the current filters','Drag to resize','Search keyword','Search','Match case','Whole word']
         : (['zh-tw','zh-hk'].some(prefix=>historyLocale.startsWith(prefix))
           ? ['聊天記錄','發信人','收信人','同時包含發信人和收信人','儲存聊天記錄','全部記錄','指定記錄','圖片','文字','按天','儲存','關閉','無','儲存完成','儲存失敗','訊息：{count}','符合目前篩選條件的訊息數','拖曳以調整寬度','輸入關鍵字','搜尋','區分大小寫','全詞符合']
-          : ['聊天记录','发信人','收信人','同时包含发信人和收信人','保存聊天记录','全部记录','指定记录','图片','文本','按天','保存','关闭','无','保存完成','保存失败','消息：{count}','符合当前筛选条件的消息数','拖动调整宽度','输入关键字','搜索','区分大小写','全词匹配']);
+          : ['聊天记录','发信人','收信人','同时包含发信人和收信人','保存聊天记录','全部记录',CW_I18N.t('history_filtered_records'),'图片','文本','按天','保存','关闭','无','保存完成','保存失败','消息：{count}','符合当前筛选条件的消息数','拖动调整宽度','输入关键字','搜索','区分大小写','全词匹配']);
   const ht = index => historyStrings[index];
   let resizeObserver, nativeSidebarObserver, nativeSidebarHost;
   const text = (el, value) => { if (el.textContent !== value) el.textContent = value; };
@@ -60,7 +83,8 @@
     launch.id = 'cw-history-launch'; launch.title = ht(0); launch.setAttribute('aria-label',ht(0));
     header.insertBefore(launch, header.querySelector('.chatRoomHeader__infoContainer'));
     bar = document.createElement('aside'); bar.id = 'cw-mentions'; bar.className = 'cw-history-panel';
-    bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', ht(0)); bar.hidden = true;
+    bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', ht(0)); bar.hidden = !historyOpen;
+    launch.setAttribute('aria-expanded',String(historyOpen));
     const resize = document.createElement('div'); resize.className = 'cw-history-resize'; resize.title = ht(17); bar.append(resize);
     const panelHead = document.createElement('header'); panelHead.className='cw-history-head'; bar.append(panelHead);
     const heading = document.createElement('strong'); heading.textContent=ht(0); panelHead.append(heading);
@@ -102,15 +126,7 @@
     for (const el of [label,controls.load,controls.count,controls.position,controls.prev,controls.next,controls.status]) nav.append(el);
     const saveBox=document.createElement('section');saveBox.className='cw-history-save';bar.append(saveBox);
     const saveTitle=document.createElement('strong');saveTitle.textContent=ht(4);saveBox.append(saveTitle);
-    const modeLabel=document.createElement('label');modeLabel.textContent='';controls.saveMode=document.createElement('select');controls.saveMode.setAttribute('aria-label',ht(4));
-    for(const [value,name] of [['all',ht(5)],['filtered',ht(6)]]){const option=document.createElement('option');option.value=value;option.textContent=name;controls.saveMode.append(option);}modeLabel.append(controls.saveMode);saveBox.append(modeLabel);
-    controls.saveMode.addEventListener('change',()=>saveMode=controls.saveMode.value);
-    const formats=document.createElement('div');formats.className='cw-history-formats';saveBox.append(formats);
-    const imgLabel=document.createElement('label');controls.saveImage=document.createElement('input');controls.saveImage.type='checkbox';controls.saveImage.checked=true;imgLabel.append(controls.saveImage,document.createTextNode(ht(7)));formats.append(imgLabel);controls.saveImage.addEventListener('change',()=>saveImage=controls.saveImage.checked);
-    const txtLabel=document.createElement('label');controls.saveText=document.createElement('input');controls.saveText.type='checkbox';controls.saveText.checked=true;txtLabel.append(controls.saveText,document.createTextNode(ht(8)));formats.append(txtLabel);controls.saveText.addEventListener('change',()=>saveText=controls.saveText.checked);
-    const dayLabel=document.createElement('label');controls.perDay=document.createElement('input');controls.perDay.type='checkbox';controls.perDay.checked=true;dayLabel.append(controls.perDay,document.createTextNode(ht(9)));saveBox.append(dayLabel);controls.perDay.addEventListener('change',()=>perDay=controls.perDay.checked);
-    controls.saveStatus=document.createElement('span');controls.saveStatus.className='cw-history-save-status';saveBox.append(controls.saveStatus);
-    controls.saveButton=button(ht(10),ht(10),saveHistory,saveBox);
+    document.dispatchEvent(new Event('cw-archive-sidebar'));
     document.body.append(bar);
     const nativeWidth=document.querySelector('#_subContent')?.getBoundingClientRect().width;
     bar.style.width=`${sharedPanelWidth||historyWidth||threadWidth||nativeWidth||340}px`;
@@ -122,7 +138,72 @@
       resizeObserver.observe(header);
     }
   }
-  function applyKeywordSearch() { keywordDraft=controls.keyword.value.trim(); keyword=keywordDraft; caseSensitive=controls.caseSensitive.checked; wholeWord=controls.wholeWord.checked; selected={}; refresh(); }
+  async function applyKeywordSearch() {
+    if (run || searchBusy) return;
+    keywordDraft=controls.keyword.value.trim(); keyword=keywordDraft;
+    caseSensitive=controls.caseSensitive.checked; wholeWord=controls.wholeWord.checked;
+    selected={}; refresh();
+    if(!keyword)return;
+    searchBusy=true; controls.search.disabled=true;
+    const searchRoom=rid;
+    try {
+      if(!coverage) await load();
+      if(rid!==searchRoom || !enabled)return;
+      refresh();
+      const scroll=core.scroller(document);
+      if(!scroll){status=CW_I18N.t('history_search_partial');return;}
+      const token={cancelled:false,rid};run=token;
+      const originalTop=scroll.scrollTop;
+      const anchor=items.find(m=>m.el.getBoundingClientRect().bottom>scroll.getBoundingClientRect().top);
+      const offset=anchor?.el.getBoundingClientRect().top;
+      const valid=()=>!token.cancelled && enabled && core.roomId(document)===searchRoom;
+      const interrupt=()=>{token.cancelled=true;};
+      const onKey=e=>{if(['Escape','PageUp','PageDown','ArrowUp','ArrowDown','Home','End'].includes(e.key))interrupt();};
+      scroll.addEventListener('wheel',interrupt,{passive:true});
+      scroll.addEventListener('touchstart',interrupt,{passive:true});
+      document.addEventListener('keydown',onKey);
+      document.documentElement.dataset.cwHistoryLoading='1';
+      let incomplete=false;
+      try {
+        const candidates=searchCandidates.slice();
+        for(let i=0;i<candidates.length&&valid();i++){
+          const m=candidates[i];
+          status=CW_I18N.t('history_search_loading',[i+1,candidates.length]);
+          controls.search.textContent=status;refresh();
+          // Metadata may be loaded while the body is still lazy-rendered.
+          if(!bodyCache.has(m.id)){
+            m.el.scrollIntoView({block:'center',behavior:'instant'});
+            const deadline=Date.now()+2000;
+            await new Promise(resolve=>setTimeout(resolve,250));
+            while(valid()&&!readMessageBody(m).trim()&&Date.now()<deadline)
+              await new Promise(resolve=>setTimeout(resolve,100));
+          }
+          if(!valid())break;
+          const body=readMessageBody(m);
+          if(body.trim())bodyCache.set(m.id,body);
+          else if(!bodyCache.has(m.id))incomplete=true;
+        }
+        if(valid())status=CW_I18N.t(incomplete||!coverage?'history_search_partial':'history_search_complete');
+        else if(rid===searchRoom)status=CW_I18N.t('history_search_partial');
+      } finally {
+        scroll.removeEventListener('wheel',interrupt);scroll.removeEventListener('touchstart',interrupt);
+        document.removeEventListener('keydown',onKey);
+        if(valid()){
+          if(anchor?.el.isConnected)scroll.scrollTop+=anchor.el.getBoundingClientRect().top-offset;
+          else scroll.scrollTop=originalTop;
+        }
+        if(run===token)run=undefined;
+        delete document.documentElement.dataset.cwHistoryLoading;
+        document.dispatchEvent(new Event('cw-history-finished'));
+      }
+    } catch {
+      if(rid===searchRoom)status=CW_I18N.t('history_search_partial');
+    } finally {
+      searchBusy=false;
+      if(controls.search){controls.search.disabled=false;controls.search.textContent=ht(19);}
+      refresh();
+    }
+  }
   function updatePeople() {
     const users = members();
     if (target && !users.has(target)) users.set(target, targetName || target);
@@ -155,11 +236,149 @@
     }, panel);
     button(CW_I18N.t("ui_061"), CW_I18N.t("ui_062"), () => panel.hidden = true, panel);
   }
+  let recentLoading=false,recentLoadStatus='';
+  function updateRecentThreads(header){
+    if(!header)return;
+    if(!recentThreadsEnabled){recentStrip?.remove();recentStrip=null;recentSignature='';return;}
+    const me=identity.id||saved[identity.key]||detected.get(identity.key)||'';
+    for(const m of items){
+      const clone=m.el.cloneNode(true);clone.querySelectorAll('.cw-m-related,.cw-zh-translation').forEach(e=>e.remove());
+      recentRecords.set(m.id,{...m,el:clone});
+    }
+    if(!recentStrip?.isConnected){
+      recentStrip=document.createElement('div');recentStrip.className='cw-recent-threads';recentStrip.setAttribute('aria-label',CW_I18N.t('recent_threads'));
+      const host=header.querySelector('.chatRoomHeader__titleContainer')||header;
+      host.append(recentStrip);recentSignature='';
+    }
+    const cutoff=Date.now()-recentThreadDays*86400000,seen=new Set(),chains=[];
+    for(const chain of core.related([...recentRecords.values()]).values()){
+      const key=chain.map(m=>m.id).join(',');
+      if(seen.has(key)||chain.length<2)continue;seen.add(key);
+      if(!me||!chain.some(m=>!m.missing&&m.time>=cutoff&&m.time<=Date.now()&&(m.sender===me||m.to.has(me)||m.re.has(me))))continue;
+      const known=chain.filter(m=>!m.missing&&!m.deleted).sort((a,b)=>(a.time||0)-(b.time||0)||a.id.localeCompare(b.id));
+      const latest=known.at(-1);if(latest)chains.push({chain,latest});
+    }
+    chains.sort((a,b)=>(b.latest.time||0)-(a.latest.time||0));
+    const readState=me?readStateFor(me):{value:null};
+    for(const entry of chains)entry.unread=threadUnread(entry.chain,me,readState.value);
+    const signature=recentLoading+'|'+recentLoadStatus+'|'+recentThreadDays+'|'+JSON.stringify(chains.map(x=>[x.latest.id,x.unread,x.chain.map(m=>m.id),x.latest.el.querySelector('._speaker img,[data-source="timeline_message_avatar_profile"] img')?.getAttribute('src')]));
+    if(signature===recentSignature)return;recentSignature=signature;recentStrip.replaceChildren();
+    for(const {chain,latest,unread}of chains){
+      const avatar=latest.el.querySelector('._speaker img,[data-source="timeline_message_avatar_profile"] img');
+      const name=avatar?.alt||latest.sender||'Thread';
+      const item=document.createElement('button');item.className='cw-recent-thread';item.title=name+' · Thread ('+chain.length+')';item.setAttribute('aria-label',item.title);
+      if(avatar?.getAttribute('src')){const img=document.createElement('img');img.src=avatar.getAttribute('src');img.alt=name;item.append(img);}else{const fallback=document.createElement('span');fallback.textContent=name.slice(0,1);item.append(fallback);}
+      const badge=document.createElement('span');badge.className='cw-recent-thread-count';badge.textContent=chain.length;item.append(badge);
+      if(unread){const dot=document.createElement('span');dot.className='cw-recent-thread-unread';dot.setAttribute('aria-label',CW_I18N.t('recent_thread_unread'));item.append(dot);item.title+=' · '+CW_I18N.t('recent_thread_unread');item.setAttribute('aria-label',item.title);}
+      item.onclick=()=>{
+        if(!enabled||run)return;
+        openThread(latest.id,item,true);
+        const opened=thread;
+        if(!opened||opened.id!==latest.id)return;
+        const destination=core.messages(document,rid).find(m=>m.id===latest.id&&!m.deleted&&m.el?.isConnected);
+        if(destination)highlight(destination);
+        else if(canOpenMessage(latest))openMessageLink(latest.id);
+        requestAnimationFrame(()=>{
+          if(!opened||thread!==opened||opened.id!==latest.id||document.hidden||!readState.value)return;
+          opened.list.scrollTop=opened.list.scrollHeight;
+          const last=Math.max(readState.value.since,...chain.filter(m=>!m.missing).map(m=>m.time||0));
+          for(const m of chain)readState.value.read[m.id]=last;
+          saveSettings({[readState.key]:readState.value});
+          item.querySelector('.cw-recent-thread-unread')?.remove();
+          recentSignature='';refresh();
+        });
+      };
+      recentStrip.append(item);
+    }
+    const caption=document.createElement('div');caption.className='cw-recent-caption';caption.tabIndex=0;caption.setAttribute('role','button');
+    const first=document.createElement('span');first.textContent=CW_I18N.t('recent_thread_caption',[recentThreadDays]);
+    const second=document.createElement('span');second.className='cw-recent-refresh-text';second.textContent=CW_I18N.t(recentLoading?'recent_thread_stop':'recent_thread_refresh');
+    caption.append(first,second);caption.onclick=()=>recentLoading?stop():loadRecentThreads();
+    caption.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();caption.click();}};
+    const info=document.createElement('button');info.className='cw-recent-info';info.textContent='ⓘ';info.title=CW_I18N.t('recent_thread_help',[recentThreadDays]);info.onclick=()=>{
+      document.getElementById('cw-recent-help')?.remove();
+      const dialog=document.createElement('dialog');dialog.id='cw-recent-help';
+      const message=document.createElement('p');const settingName=document.createElement('strong');settingName.textContent=CW_I18N.t('recent_threads');message.append(CW_I18N.t('recent_thread_help_before',[recentThreadDays]),settingName,CW_I18N.t('recent_thread_help_after'));
+      const actions=document.createElement('div');actions.className='cw-recent-help-actions';
+      const settings=document.createElement('button');settings.textContent=CW_I18N.t('recent_thread_settings');
+      const close=document.createElement('button');close.textContent=ht(11);close.onclick=()=>dialog.close();
+      settings.onclick=async()=>{settings.disabled=true;try{const result=await chrome.runtime.sendMessage({type:'cw-open-thread-settings'});if(!result?.ok)throw Error(result?.error||CW_I18N.t('ui_120'));dialog.close();}catch(e){message.textContent=e.message;settings.disabled=false;}};
+      actions.append(settings,close);dialog.append(message,actions);dialog.addEventListener('close',()=>dialog.remove(),{once:true});document.body.append(dialog);dialog.showModal();
+    };
+    recentStrip.append(caption,info);
+  }
+  async function loadRecentThreads(){
+    if(run||recentLoading||document.documentElement.dataset.cwHistoryLoading)return;
+    const scroll=core.scroller(document);if(!scroll)return;
+    cancelThreadLoad(false);cancelPendingJump();
+    const token={cancelled:false,rid};run=token;recentLoading=true;recentLoadStatus=CW_I18N.t('ui_092');
+    const originalTop=scroll.scrollTop,originalHeight=scroll.scrollHeight;
+    const atBottom=originalHeight-scroll.clientHeight-originalTop<=4;
+    const viewport=scroll.getBoundingClientRect();
+    const visible=core.messages(document,rid).filter(m=>{const rect=m.el.getBoundingClientRect();return rect.bottom>viewport.top&&rect.top<viewport.bottom;});
+    const anchor=visible.at(-1);
+    const anchorBottom=anchor?.el.getBoundingClientRect().bottom;
+    const restorePosition=()=>{
+      if(token.cancelled||core.roomId(document)!==token.rid)return;
+      if(atBottom){scroll.scrollTop=scroll.scrollHeight;return;}
+      const current=anchor&&core.messages(document,token.rid).find(m=>m.id===anchor.id);
+      if(current)scroll.scrollTop+=current.el.getBoundingClientRect().bottom-anchorBottom;
+      else scroll.scrollTop=originalTop+Math.max(0,scroll.scrollHeight-originalHeight);
+      scroll.dispatchEvent(new Event('scroll'));
+    };
+    const cutoff=Date.now()-recentThreadDays*86400000;
+    const valid=()=>!token.cancelled&&enabled&&recentThreadsEnabled&&core.roomId(document)===token.rid;
+    const interrupt=()=>stop(),key=e=>{if(e.key==='Escape')interrupt();};
+    scroll.addEventListener('wheel',interrupt,{passive:true});scroll.addEventListener('touchstart',interrupt,{passive:true});document.addEventListener('keydown',key);
+    document.documentElement.dataset.cwHistoryLoading='1';
+    const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+    const settle=async(edge=false)=>{
+      const signature=()=>core.messages(document,rid).map(m=>m.id+':'+(m.el.querySelector('pre')?.textContent.length||0)).join('|')+'|'+scroll.scrollHeight;
+      const initial=signature();let previous=initial,stable=0;
+      for(let elapsed=0;elapsed<(edge?1200:600)&&valid();elapsed+=60){
+        await wait(60);
+        const current=signature();stable=current===previous?stable+1:0;previous=current;
+        // Existing rows usually paint quickly; a history fetch gets a longer grace period.
+        if(stable>=2&&(!edge||current!==initial)&&elapsed>=120)break;
+      }
+    };
+    try{
+      document.documentElement.dataset.cwThreadRefreshing='1';
+      document.dispatchEvent(new Event('cw-thread-refresh-state'));
+      scroll.scrollTop=scroll.scrollHeight;scroll.dispatchEvent(new Event('scroll'));await settle(true);
+      let lastProgress=Date.now(),lowest=scroll.scrollTop;const seen=new Set();
+      recentLoadStatus=CW_I18N.t('ui_096');
+      for(let step=0;step<2000&&valid();step++){
+        refresh();
+        const current=core.messages(document,rid),view=scroll.getBoundingClientRect();
+        let added=false;
+        for(const m of current)if(!seen.has(m.id)){seen.add(m.id);added=true;}
+        if(added){lastProgress=Date.now();lowest=scroll.scrollTop;}
+        else if(scroll.scrollTop<lowest-1){lastProgress=Date.now();lowest=scroll.scrollTop;}
+        if(current.some(m=>Number.isFinite(m.time)&&m.time<cutoff&&m.el.getBoundingClientRect().bottom>=view.top&&m.el.getBoundingClientRect().top<=view.bottom)){
+          recentLoadStatus=CW_I18N.t('ui_094');break;
+        }
+        if(Date.now()-lastProgress>=10000)break;
+        scroll.scrollTop=Math.max(0,scroll.scrollTop-Math.max(80,scroll.clientHeight*.9));scroll.dispatchEvent(new Event('scroll'));
+        await settle(scroll.scrollTop<=1);
+      }
+      if(!valid())recentLoadStatus=CW_I18N.t('ui_068');
+    }catch(e){recentLoadStatus=CW_I18N.t('ui_098');}
+    finally{
+      scroll.removeEventListener('wheel',interrupt);scroll.removeEventListener('touchstart',interrupt);document.removeEventListener('keydown',key);
+      restorePosition();
+      if(run===token)run=undefined;recentLoading=false;delete document.documentElement.dataset.cwHistoryLoading;
+      delete document.documentElement.dataset.cwThreadRefreshing;
+      document.dispatchEvent(new Event('cw-thread-refresh-state'));
+      document.dispatchEvent(new Event('cw-history-finished'));recentSignature='';refresh();
+    }
+  }
+
   function refresh() {
     const next = core.roomId(document); const header = document.querySelector('#_roomHeader');
     if (pendingJump && (!enabled || (next && next !== pendingJump.room))) cancelPendingJump();
-    if (!enabled || !next || !header) { stop(); bar?.remove(); controls.launch?.remove(); removeRelated(); resizeObserver?.disconnect(); document.querySelectorAll('.cw-m-highlight').forEach(el => el.classList.remove('cw-m-highlight')); clearKeywordHighlights(); return; }
-    if (next !== rid) { stop(); rid = next; coverage = false; status = CW_I18N.t("ui_035"); selected = {}; target = ''; recipient=''; accountKey=''; keyword=''; keywordDraft=''; clearKeywordHighlights(); }
+    if (!enabled || !next || !header) { recentStrip?.remove();recentStrip=null;recentSignature='';stop(); bar?.remove(); controls.launch?.remove(); removeRelated(); resizeObserver?.disconnect(); document.querySelectorAll('.cw-m-highlight').forEach(el => el.classList.remove('cw-m-highlight')); clearKeywordHighlights(); return; }
+    if (next !== rid) { recentRecords.clear();recentSignature='';recentStrip?.remove();recentStrip=null;stop(); rid = next; coverage = false; status = CW_I18N.t("ui_035"); selected = {}; target = ''; recipient=''; accountKey=''; keyword=''; keywordDraft=''; bodyCache.clear(); clearKeywordHighlights(); }
     if (!bar?.isConnected) mount(header);
     observeNativeSidebar();
     identity = core.account(document);
@@ -168,6 +387,7 @@
     aid = target || saved[identity.key] || identity.id || detected.get(identity.key) || '';
     updatePeople(); if (document.activeElement !== controls.days) controls.days.value = days;
     items = core.messages(document, rid);
+    updateRecentThreads(document.querySelector('#_roomHeader'));
     const cutoff=Date.now()-days*86400000;
     const eligible=items.filter(m=>!m.deleted&&m.time>=cutoff&&m.time<=Date.now());
     const hasSender=!!target, hasRecipient=!!recipient;
@@ -182,6 +402,7 @@
       if (hasRecipient) return recipientMatches(m);
       return true;
     });
+    searchCandidates=personFiltered;
     groups.all=keyword?personFiltered.filter(m=>keywordRanges(originalMessageText(m)).length>0):personFiltered;
     updateKeywordHighlights(groups.all);
     groups.send=groups.all.filter(m=>target&&m.sender===target);
@@ -224,16 +445,27 @@
     setTimeout(() => message.el.classList.remove('cw-m-highlight'), 2500);
   }
   function clearKeywordHighlights() {
-    for(const mark of document.querySelectorAll('.cw-keyword-highlight')) { mark.replaceWith(document.createTextNode(mark.textContent||'')); mark.parentNode?.normalize(); }
+    globalThis.CSS?.highlights?.delete('cw-history-keyword');
   }
   function updateKeywordHighlights(messages) {
     clearKeywordHighlights();
-    if(!keyword)return;
-    for(const message of messages) {
-      const walker=document.createTreeWalker(message.el,NodeFilter.SHOW_TEXT,{acceptNode(node){return node.parentElement?.closest('script,style,textarea,input,button,.cw-zh-translation,.cw-m-preview-translation,.cw-m-thread-translation')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT;}});
-      const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
-      for(const node of nodes){const value=node.nodeValue||'',ranges=keywordRanges(value);if(!ranges.length)continue;const fragment=document.createDocumentFragment();let cursor=0;for(const range of ranges){if(range.start>cursor)fragment.append(document.createTextNode(value.slice(cursor,range.start)));const mark=document.createElement('mark');mark.className='cw-keyword-highlight';mark.textContent=value.slice(range.start,range.end);fragment.append(mark);cursor=range.end;}if(cursor<value.length)fragment.append(document.createTextNode(value.slice(cursor)));node.replaceWith(fragment);}
+    if(!keyword || !globalThis.CSS?.highlights || !globalThis.Highlight)return;
+    const ranges=[];
+    for(const message of messages){
+      const source=message.el.querySelector('pre');if(!source)continue;
+      const walker=document.createTreeWalker(source,NodeFilter.SHOW_TEXT,{
+        acceptNode(node){return node.parentElement?.closest('script,style,button,[hidden],[aria-hidden="true"],.cw-zh-translation')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT;}
+      });
+      const nodes=[];let value='';
+      while(walker.nextNode()){const node=walker.currentNode;nodes.push({node,start:value.length});value+=node.nodeValue||'';}
+      for(const match of keywordRanges(value)){
+        const start=nodes.find(n=>n.start+n.node.length>match.start);
+        const end=nodes.find(n=>n.start+n.node.length>=match.end);
+        if(!start||!end)continue;
+        const range=document.createRange();range.setStart(start.node,match.start-start.start);range.setEnd(end.node,match.end-end.start);ranges.push(range);
+      }
     }
+    globalThis.CSS.highlights.set('cw-history-keyword',new Highlight(...ranges));
   }
   function keywordRanges(value) {
     if(!keyword)return [];
@@ -268,7 +500,7 @@
     for (const entry of relatedBars.values()) entry.threadButton.setAttribute('aria-expanded','false');
     if (restoreFocus && current.anchor.isConnected) current.anchor.focus({preventScroll:true});
   }
-  function openThread(id, anchor) {
+  function openThread(id, anchor, latest = false) {
     if (!enabled || run) return;
     cancelPendingJump();
     closeThread();
@@ -287,10 +519,11 @@
       syncThreadView();
       saveSettings({threadTranslationOnly});
     });
-    const close = button('×',CW_I18N.t('thread_close'),() => closeThread(true),head);
+    const close = button('×',CW_I18N.t('thread_close'),() => closeThread(true),head); close.classList.add('cw-thread-close');
     const exportBar = document.createElement('div'); exportBar.className = 'cw-m-thread-export'; head.insertBefore(exportBar,viewToggle);
     const copyImage = button(CW_I18N.t('thread_image_copy'),CW_I18N.t('thread_image_copy'),() => exportThreadImage('copy'),exportBar);
     const saveImage = button(CW_I18N.t('thread_image_save'),CW_I18N.t('thread_image_save'),() => exportThreadImage('save'),exportBar);
+    const actions=document.createElement('div');actions.className='cw-thread-header-actions';actions.append(exportBar,viewToggle);head.append(actions);
     const exportStatus = document.createElement('div'); exportStatus.className = 'cw-m-thread-export-status'; exportStatus.setAttribute('role','status'); box.append(exportStatus);
     const tools = document.createElement('div'); tools.className = 'cw-m-thread-tools'; box.append(tools);
     const status = document.createElement('span'); status.setAttribute('role','status'); tools.append(status);
@@ -298,13 +531,20 @@
     const list = document.createElement('div'); list.className = 'cw-m-thread-list'; list.tabIndex = 0;
     list.setAttribute('aria-label',CW_I18N.t('thread_title')); box.append(list);
     document.body.append(box);
-    thread = {box,title,list,anchor,room:rid,id,records:new Map(),cards:new Map(),tools,status,reload,autoAttempted:false,viewToggle,viewInput,copyImage,saveImage,exportStatus};
+    thread = {box,title,list,anchor,room:rid,id,followLatest:latest,records:new Map(),cards:new Map(),tools,status,reload,autoAttempted:false,viewToggle,viewInput,copyImage,saveImage,exportStatus};
+    const opened=thread;
+    const stopFollowing=()=>{opened.followLatest=false;};
+    list.addEventListener('wheel',stopFollowing,{passive:true});
+    list.addEventListener('touchstart',stopFollowing,{passive:true});
+    list.addEventListener('pointerdown',stopFollowing);
+    list.addEventListener('keydown',stopFollowing);
     syncThreadView();
     installThreadResize(thread);
     if (typeof ResizeObserver !== 'undefined') thread.layoutObserver = new ResizeObserver(positionThread);
     updateThread(); anchor.setAttribute('aria-expanded','true');
     const card = thread?.cards.get(id)?.el;
-    if (card) list.scrollTop = Math.max(0,card.offsetTop-list.offsetTop-12);
+    if (latest) requestAnimationFrame(()=>{if(thread===opened&&opened.followLatest)list.scrollTop=list.scrollHeight;});
+    else if (card) list.scrollTop = Math.max(0,card.offsetTop-list.offsetTop-12);
     close.focus({preventScroll:true});
   }
   function syncThreadView() {
@@ -538,11 +778,61 @@
       label:el.querySelector('.cw-zh-label')?.textContent || CW_I18N.t('ui_076'),
       warning:el.querySelector('.cw-zh-warning')?.textContent || ''};
   }
+  function lookupThreadArchive(state,chain){
+    state.archiveChecked ||= new Set();
+    const ids=chain.filter(m=>!state.records.get(m.id)?.snapshot&&!state.archiveChecked.has(m.id)).map(m=>m.id).slice(0,200);
+    if(!ids.length||state.archivePending)return;
+    ids.forEach(id=>state.archiveChecked.add(id));state.archivePending=true;
+    const account=core.account(document).key;
+    chrome.runtime.sendMessage({type:'cw-thread-archive-lookup',roomId:state.room,accountKey:account,ids}).then(result=>{
+      if(thread!==state||rid!==state.room||core.account(document).key!==account)return;
+      for(const m of result?.records||[]){
+        const existing=state.records.get(m.id);
+        if(existing&&!existing.snapshot)state.records.set(m.id,{...existing,time:m.time,sender:m.sender,replies:m.replies||existing.replies,snapshot:{name:m.senderName||m.sender,avatar:'',time:new Date(m.time).toLocaleString(),body:m.text,translation:null,label:'',warning:''}});
+      }
+    }).catch(()=>{}).finally(()=>{state.archivePending=false;if(thread===state)updateThread();});
+  }
+  async function findThreadMessage(id){
+    if(run||document.documentElement.dataset.cwHistoryLoading)return;
+    const scroll=core.scroller(document);if(!scroll)return;
+    cancelThreadLoad(false);cancelPendingJump();
+    const token={rid,cancelled:false};run=token;
+    const valid=()=>!token.cancelled&&enabled&&core.roomId(document)===token.rid;
+    const interrupt=()=>stop(),onKey=e=>{if(e.key==='Escape')interrupt();};
+    scroll.addEventListener('wheel',interrupt,{passive:true});scroll.addEventListener('touchstart',interrupt,{passive:true});document.addEventListener('keydown',onKey);
+    document.documentElement.dataset.cwHistoryLoading='1';
+    let found;
+    try{
+      document.documentElement.dataset.cwThreadRefreshing='1';document.dispatchEvent(new Event('cw-thread-refresh-state'));
+      let lastProgress=Date.now(),lowest=scroll.scrollTop;const seen=new Set();
+      while(valid()){
+        refresh();
+        const messages=core.messages(document,token.rid);
+        found=messages.find(m=>m.id===id&&!m.deleted&&m.el?.isConnected);
+        if(found)break;
+        let added=false;for(const m of messages)if(!seen.has(m.id)){seen.add(m.id);added=true;}
+        if(added){lastProgress=Date.now();lowest=scroll.scrollTop;}
+        else if(scroll.scrollTop<lowest-1){lastProgress=Date.now();lowest=scroll.scrollTop;}
+        if(Date.now()-lastProgress>=10000)break;
+        scroll.scrollTop=Math.max(0,scroll.scrollTop-Math.max(80,scroll.clientHeight*.9));scroll.dispatchEvent(new Event('scroll'));
+        await new Promise(resolve=>setTimeout(resolve,scroll.scrollTop<=1?600:180));
+      }
+    }catch(e){if(thread&&thread.room===token.rid)thread.loadResult=CW_I18N.t('ui_098');}
+    finally{
+      scroll.removeEventListener('wheel',interrupt);scroll.removeEventListener('touchstart',interrupt);document.removeEventListener('keydown',onKey);
+      if(run===token)run=undefined;
+      delete document.documentElement.dataset.cwHistoryLoading;delete document.documentElement.dataset.cwThreadRefreshing;
+      document.dispatchEvent(new Event('cw-thread-refresh-state'));document.dispatchEvent(new Event('cw-history-finished'));
+      if(found&&valid())highlight(found);
+      else if(thread&&thread.room===token.rid)thread.loadResult=CW_I18N.t('ui_096');
+      refresh();
+    }
+  }
   function updateThread() {
     if (!thread) return;
     if (!enabled || thread.room !== rid || !thread.box.isConnected) { closeThread(); return; }
     // Cache only this open chain, in memory. Virtualized messages must not disappear when the main chat scrolls.
-    const candidates = new Map(thread.records);
+    const candidates = new Map([...recentRecords,...thread.records]);
     for (const m of items) candidates.set(m.id,{...m});
     const chain = core.related([...candidates.values()]).get(thread.id);
     if (!chain) { closeThread(); return; }
@@ -554,7 +844,7 @@
     text(thread.title,CW_I18N.t('thread_count',[chain.length]));
     for (const m of chain) {
       const source = live.get(m.id);
-      const snapshot = source && !source.deleted ? threadSnapshot(source) : thread.records.get(m.id)?.snapshot;
+      const snapshot = source && !source.deleted ? threadSnapshot(source) : thread.records.get(m.id)?.snapshot || (recentRecords.get(m.id)?.el ? threadSnapshot(recentRecords.get(m.id)) : undefined);
       if (source && snapshot) snapshot.names = names;
       // Do not retain detached Chatwork elements or native reply handlers in snapshots.
       thread.records.set(m.id,{id:m.id,index:m.index,time:m.time,sender:m.sender,replies:(m.replies || []).map(ref => ({id:ref.id})),snapshot});
@@ -585,7 +875,7 @@
         const go = button(CW_I18N.t('ui_077'),CW_I18N.t('thread_goto'),() => {
           if (!enabled || run || !thread || thread.loading || thread.room !== rid) return;
           const destination = core.messages(document,rid).find(item => item.id === m.id && !item.deleted);
-          if (destination) highlight(destination); else openMessageLink(m.id);
+          if (destination) highlight(destination); else void findThreadMessage(m.id);
         },card.el);
         go.disabled = !!run || !!thread.loading || !canOpenMessage(m);
       }
@@ -597,6 +887,7 @@
       return snapshot ? [{element:thread.cards.get(m.id).el,text:snapshot.body,names:snapshot.names || names}] : [];
     }));
     positionThread();
+    lookupThreadArchive(thread,chain);
     const missing = [...thread.records.values()].filter(m => !m.snapshot).length;
     thread.tools.hidden = missing === 0;
     if (!missing) thread.loadResult = '';
@@ -606,7 +897,11 @@
     thread.reload.disabled = !!run;
     thread.copyImage.disabled = thread.saveImage.disabled = !!run || !!thread.loading || !!thread.exporting;
     if (thread.exporting) thread.reload.disabled = true;
-    if (!thread.autoAttempted && !thread.loading && !run) {
+    if(thread.followLatest){
+      const current=thread;
+      requestAnimationFrame(()=>{if(thread===current&&current.followLatest)current.list.scrollTop=current.list.scrollHeight;});
+    }
+    if (!thread.archivePending && !thread.autoAttempted && !thread.loading && !run) {
       thread.autoAttempted = true;
       if (missing && chain.length < 10) { const state = thread; queueMicrotask(() => { if (thread === state) loadThread(true); }); }
     }
@@ -700,6 +995,12 @@
   const dateKey = time => { const d=new Date(time); return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`; };
   function safeFile(value) { return String(value||'Chatwork').replace(/[<>:"/\\|?*\x00-\x1f]/g,'_').replace(/[. ]+$/,'').slice(0,120)||'Chatwork'; }
   function originalMessageText(message) {
+    const body=readMessageBody(message);
+    if(message.deleted){bodyCache.delete(message.id);return '';}
+    if(body.trim()){bodyCache.set(message.id,body);return body;}
+    return bodyCache.get(message.id)||'';
+  }
+  function readMessageBody(message) {
     const source=message.el.querySelector('pre');
     if(!source)return '';
     const copy=source.cloneNode(true);
@@ -708,26 +1009,26 @@
   }
   async function saveHistory() {
     if (controls.saveButton?.disabled) return;
-    if (!saveImage&&!saveText) { text(controls.saveStatus,historyLocale.startsWith('en')?'Choose at least one format':historyLocale.startsWith('ja')?'画像またはテキストを選択してください':historyLocale.startsWith('ko')?'이미지 또는 텍스트 형식을 선택하세요':'请至少选择图片或文本格式'); return; }
-    if (!window.showDirectoryPicker) { text(controls.saveStatus,historyLocale.startsWith('en')?'This browser cannot choose a save folder':historyLocale.startsWith('ja')?'保存先フォルダーを選択できません':historyLocale.startsWith('ko')?'저장 폴더를 선택할 수 없습니다':'当前浏览器不支持选择保存目录'); return; }
+    if (!saveImage&&!saveText) { text(controls.saveStatus,CW_I18N.t('history_export_status_0')); return; }
+    if (!window.showDirectoryPicker) { text(controls.saveStatus,CW_I18N.t('history_export_status_1')); return; }
     let directory;
     try { directory=await window.showDirectoryPicker({mode:'readwrite'}); }
     catch(error) { if(error.name!=='AbortError')text(controls.saveStatus,error.message||'无法打开保存目录'); return; }
     const previousLabel=controls.saveButton?.textContent;
     if(controls.saveButton)controls.saveButton.disabled=true;
     const progress=message=>{controls.saveStatus.textContent=message;};
-    const loading=historyLocale.startsWith('en')?'Checking and loading chat history…':historyLocale.startsWith('ja')?'チャット履歴を確認して読み込んでいます…':historyLocale.startsWith('ko')?'채팅 기록을 확인하고 불러오는 중…':'正在检查并加载聊天记录…';
+    const loading=CW_I18N.t('history_export_status_2');
     try {
     progress(loading);
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     if (!coverage || !core.covered(items,Date.now()-days*86400000)) {
       await load();
       refresh();
-      if (!coverage) { progress(historyLocale.startsWith('en')?'Chat history is not fully loaded. Check loading status and try again':historyLocale.startsWith('ja')?'履歴がすべて読み込まれていません。読み込み状況を確認して再試行してください':historyLocale.startsWith('ko')?'채팅 기록이 모두 로드되지 않았습니다. 로드 상태를 확인한 후 다시 시도하세요':'聊天记录尚未完整加载；请查看上方加载状态后重试'); return; }
+      if (!coverage) { progress(CW_I18N.t('history_export_status_3')); return; }
     }
     const cutoff=Date.now()-days*86400000;
     const records=items.filter(m=>!m.deleted&&m.time>=cutoff&&m.time<=Date.now()).filter(m=>saveMode==='all'||groups.all.some(match=>match.id===m.id));
-    if (!records.length) { controls.saveStatus.textContent=historyLocale.startsWith('en')?'No messages match the filters':historyLocale.startsWith('ja')?'条件に一致するメッセージがありません':historyLocale.startsWith('ko')?'필터에 일치하는 메시지가 없습니다':'筛选范围内没有消息'; return; }
+    if (!records.length) { controls.saveStatus.textContent=CW_I18N.t('history_export_status_4'); return; }
     const room=safeFile(document.querySelector('#_roomTitle')?.textContent?.trim()||`Chatwork-${rid}`);
     const from=dateKey(cutoff),to=dateKey(Date.now());
     const batches=perDay?new Map([...new Set(records.map(m=>dateKey(m.time)))].sort().map(day=>[day,records.filter(m=>dateKey(m.time)===day)])) : new Map([[`${from}-${to}`,records]]);
@@ -735,18 +1036,18 @@
     try {
       let completed=0;
       for(const [period,batch] of batches) {
-        progress(historyLocale.startsWith('en')?`Saving ${period}…`:historyLocale.startsWith('ja')?`${period} を保存中…`:historyLocale.startsWith('ko')?`${period} 저장 중…`:`正在保存 ${period}…`);
+        progress(CW_I18N.t('history_export_status_5', [period]));
         await new Promise(resolve=>requestAnimationFrame(resolve));
-        const base=safeFile(saveMode==='all'?`${room} (${period})`:`${room} 指定记录 (${period})`);
+        const base=safeFile(saveMode==='all'?`${room} (${period})`:`${room} ${CW_I18N.t('history_filtered_records')} (${period})`);
         if(saveText) {
-          const output=batch.map(m=>{const body=originalMessageText(m);const avatar=m.el.querySelector('._speaker img,[data-source="timeline_message_avatar_profile"] img');const sender=m.el.querySelector('[data-testid="timeline_user-name"]')?.textContent?.trim()||avatar?.alt||'未知发信人';const recipients=[...m.to].map(id=>`TO:${members().get(id)||id}`).concat([...m.re].map(id=>`RE:${members().get(id)||id}`)).join(' ');return `${sender}  ${new Date(m.time).toLocaleString()}\n${recipients}\n${body}`;}).join('\n\n---------------------------------------\n\n');
+          const output=batch.map(m=>{const body=originalMessageText(m);const avatar=m.el.querySelector('._speaker img,[data-source="timeline_message_avatar_profile"] img');const sender=m.el.querySelector('[data-testid="timeline_user-name"]')?.textContent?.trim()||avatar?.alt||CW_I18N.t('history_unknown_sender');const recipients=[...m.to].map(id=>`TO:${members().get(id)||id}`).concat([...m.re].map(id=>`RE:${members().get(id)||id}`)).join(' ');return `${sender}  ${new Date(m.time).toLocaleString()}\n${recipients}\n${body}`;}).join('\n\n---------------------------------------\n\n');
           await write(`${base}.txt`,new Blob([output],{type:'text/plain;charset=utf-8'}));completed++;
         }
         if(saveImage) {
           const capture=document.createElement('div');capture.className='cw-history-capture';
           const title=document.createElement('h2');title.textContent=`${room} (${period})`;capture.append(title);
           const cards=document.createDocumentFragment();
-          for(const m of batch){const card=document.createElement('article');const avatar=m.el.querySelector('._speaker img,[data-source="timeline_message_avatar_profile"] img');const author=m.el.querySelector('[data-testid="timeline_user-name"]')?.textContent?.trim()||avatar?.alt||'未知发信人';const head=document.createElement('header');head.textContent=`${author}　${new Date(m.time).toLocaleString()}`;card.append(head);const body=document.createElement('pre');body.textContent=originalMessageText(m);card.append(body);cards.append(card);}
+          for(const m of batch){const card=document.createElement('article');const avatar=m.el.querySelector('._speaker img,[data-source="timeline_message_avatar_profile"] img');const author=m.el.querySelector('[data-testid="timeline_user-name"]')?.textContent?.trim()||avatar?.alt||CW_I18N.t('history_unknown_sender');const head=document.createElement('header');head.textContent=`${author}　${new Date(m.time).toLocaleString()}`;card.append(head);const body=document.createElement('pre');body.textContent=originalMessageText(m);card.append(body);cards.append(card);}
           capture.append(cards);
           document.body.append(capture);
           try {
@@ -763,7 +1064,7 @@
               root.querySelectorAll('article header').forEach(el=>el.style.cssText='display:block!important;margin:0 0 8px!important;font-weight:700!important;color:#467398!important;');
               root.querySelectorAll('article pre').forEach(el=>el.style.cssText='display:block!important;box-sizing:border-box!important;width:100%!important;min-height:0!important;margin:0!important;padding:10px!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;background:#eef7f4!important;border-left:3px solid #24a797!important;font:inherit!important;');
             }});
-            const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));canvas.width=canvas.height=0;if(!blob)throw new Error('图片生成失败');await write(`${base}.png`,blob);completed++;
+            const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));canvas.width=canvas.height=0;if(!blob)throw new Error(CW_I18N.t('month_error_6'));await write(`${base}.png`,blob);completed++;
           }
           finally {capture.remove();}
         }
@@ -803,6 +1104,7 @@
       let stalls = 0;
       for (let page = 0; page < 120 && valid(); page++) {
         items = core.messages(document, rid);
+    updateRecentThreads(document.querySelector('#_roomHeader'));
         if (core.covered(items, cutoff)) { coverage = true; status = CW_I18N.t("ui_094"); break; }
         status = CW_I18N.t("ui_095", [items.length]); refresh();
         const before = items.map(m => m.id).join(',');
@@ -826,7 +1128,8 @@
     }
   }
   try { if (!extensionContextAlive()) return; } catch { return; }
-  Promise.resolve().then(() => chrome.storage.local.get(['mentionDays','mentionAccounts','mentionEnabled','threadWidth','threadTranslationOnly','historyWidth','sharedPanelWidth'])).then(data => {
+  Promise.resolve().then(() => chrome.storage.local.get(['recentThreadsEnabled','recentThreadDays','mentionDays','mentionAccounts','mentionEnabled','threadWidth','threadTranslationOnly','historyWidth','sharedPanelWidth'])).then(data => {
+    recentThreadsEnabled=data.recentThreadsEnabled!==false;recentThreadDays=Math.max(1,Math.min(10,Number(data.recentThreadDays)||3));
     threadTranslationOnly = data.threadTranslationOnly === true;
     if (Number.isFinite(data.threadWidth) && data.threadWidth > 0) threadWidth = data.threadWidth;
     if (Number.isFinite(data.historyWidth) && data.historyWidth >= 300) historyWidth = data.historyWidth;
@@ -837,6 +1140,8 @@
     enabled = data.mentionEnabled !== false;
     try { chrome.storage.onChanged?.addListener((changes, area) => {
       if (area !== 'local') return;
+      for(const [key,change]of Object.entries(changes))if(key.startsWith('cwThreadRead:')&&threadReadStates.has(key)){threadReadStates.set(key,change.newValue||null);recentSignature='';}
+      if(changes.recentThreadsEnabled||changes.recentThreadDays){if(changes.recentThreadsEnabled)recentThreadsEnabled=changes.recentThreadsEnabled.newValue!==false;if(changes.recentThreadDays)recentThreadDays=Math.max(1,Math.min(10,Number(changes.recentThreadDays.newValue)||3));recentSignature='';refresh();}
       if (changes.threadTranslationOnly) { threadTranslationOnly = changes.threadTranslationOnly.newValue === true; syncThreadView(); }
       if (changes.mentionEnabled) { enabled = changes.mentionEnabled.newValue !== false; refresh(); }
     }); } catch { /* Extension may have been reloaded while this page was open. */ }
@@ -847,7 +1152,7 @@
     new MutationObserver(records => {
       if (records.every(r => {
         const el = r.target.nodeType === 1 ? r.target : r.target.parentElement;
-        return el?.closest('#cw-mentions, .cw-m-related, .cw-m-preview, .cw-m-thread') || (!thread && el?.closest('.cw-zh-translation'));
+        return el?.closest('#cw-mentions, .cw-m-related, .cw-m-preview, .cw-m-thread, .cw-recent-threads') || (!thread && el?.closest('.cw-zh-translation'));
       })) return;
       scheduleRefresh();
     }).observe(document.body, {childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['data-rid','data-roomid','data-mid','data-index','data-tm','data-deleted','data-cwtag']});
