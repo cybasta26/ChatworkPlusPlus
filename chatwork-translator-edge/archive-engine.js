@@ -1,10 +1,12 @@
+import {visitArchiveSources} from './archive-connections.js';
+import {checkedArchiveDirectory} from './archive-permission.js';
 import {ensureArchiveOwner} from './archive-owner.js';
 import {write,read,list,setting,safeName,roomKey} from './archive-store.js';
 import {t} from './archive-locale.js';
 let root,tabId,cancelled=false,running=false;const workerMode=true;
 const say=archiveStatus=>chrome.storage.local.set({archiveStatus});
 async function rpc(action,args={}){const result=await chrome.tabs.sendMessage(tabId,{type:'cw-archive',action,...args});if(result?.error)throw Error(result.error);if(!result)throw Error(t('noSource'));return result.value;}
-async function permission(){root=await read('settings','directory');if(!root||await root.queryPermission({mode:'readwrite'})!=='granted')throw Error(chrome.i18n.getMessage('archive_authorize'));await ensureArchiveOwner(root);}
+async function permission(){root=await checkedArchiveDirectory();}
 async function subdir(...parts) {let dir=root;for(const part of parts)dir=await dir.getDirectoryHandle(part,{create:true});return dir;}
 async function saveFile(dir,name,data) {const h=await dir.getFileHandle(name,{create:true}),w=await h.createWritable();try{await w.write(data);await w.close();}catch(e){await w.abort().catch(()=>{});throw e;}}
 async function snapshot(room) {
@@ -53,6 +55,7 @@ async function download(room,records) {
 }
 
 const sources=new Set();let timer;
+chrome.tabs.onRemoved.addListener(id=>sources.delete(id));
 async function flush(room,records){
  const old=await read('rooms',room.key);await write('rooms',[{...old,...room,pendingBackup:true}]);
  const changed=await mergeRecords(room,records);
@@ -100,7 +103,7 @@ export async function tick(){
   if(!lock)return;const job=await read('settings','activeArchiveJob');const enabled=(await chrome.storage.local.get('archiveAuto')).archiveAuto;
   if(!job){await chrome.storage.local.set({archiveManualRunning:false});if(!enabled)return;}await permission();
   if(job)await manualStep(job);
-  else for(const id of sources){if(cancelled)break;try{await autoStep(id);}catch(e){await say(t('failed')+': '+e.message);}}
+  else await visitArchiveSources(sources,autoStep,e=>say(t('failed')+': '+e.message),()=>cancelled);
  });}catch(e){
  const job=await read('settings','activeArchiveJob');
  if(job){await chrome.tabs.sendMessage(job.tab,{type:'cw-archive',action:'stop'}).catch(()=>{});await setting('activeArchiveJob',null);}

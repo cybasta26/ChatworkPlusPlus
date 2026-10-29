@@ -18,9 +18,18 @@
     if (current) names[core.roomId(document)] = current;
     return names;
   }
+  function roomTranslations(){
+    const names={};
+    for(const tab of document.querySelectorAll('[role="tab"][data-rid]')){
+      const label=tab.querySelector('.cw-room-translation');if(label?.textContent.trim())names[tab.dataset.rid]=label.textContent.trim();
+    }
+    const label=document.querySelector('.chatRoomHeader__roomTitle .cw-room-translation');
+    if(label?.textContent.trim())names[core.roomId(document)]=label.textContent.trim();
+    return names;
+  }
   const context = () => ({origin:location.origin, roomId:core.roomId(document),
     roomName:originalRoomName(document.querySelector('.chatRoomHeader__roomTitle')),
-    roomNames:roomNames(),
+    roomNames:roomNames(),roomTranslations:roomTranslations(),
     account:core.account(document)});
   function valid(j) {
     const c = context();

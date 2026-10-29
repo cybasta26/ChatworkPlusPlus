@@ -1208,5 +1208,38 @@
   },
   "archive_delete_not_empty": {
     "message": "此聊天已有消息，请刷新列表后再清理。"
+  },
+  "archive_diag_missing": {
+    "message": "未读取到归档目录句柄，请重新选择归档目录。"
+  },
+  "archive_diag_prompt": {
+    "message": "归档目录需要重新授权，请点击“归档目录”授权访问。"
+  },
+  "archive_diag_denied": {
+    "message": "归档目录访问被拒绝，请在选择目录时允许读写访问。"
+  },
+  "archive_diag_failed": {
+    "message": "归档目录检查失败，请查看后面的诊断信息。"
+  },
+  "archive_link_find": {
+    "message": "按消息链接查找"
+  },
+  "archive_link_label": {
+    "message": "Chatwork消息链接"
+  },
+  "archive_link_open": {
+    "message": "打开"
+  },
+  "archive_link_searching": {
+    "message": "正在查找"
+  },
+  "archive_link_missing": {
+    "message": "没有找到"
+  },
+  "archive_link_invalid": {
+    "message": "请输入有效的 Chatwork 消息链接。"
+  },
+  "archive_link_found": {
+    "message": "在聊天“{room}”里找到了该消息，请点击“打开”按钮前往查看。"
   }
 }

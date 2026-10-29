@@ -196,7 +196,7 @@
 5. 点击「开启 Chatwork 自动翻译」，回到 Chatwork 刷新页面。
 6. 如果消息下提示初始化，点击「初始化本地翻译」，在该页面完成初始化。
 
-当前电脑目录：`F:\Projects\DCG\DCG_Doc\ChatworkPlusPlus\chatwork-translator-edge`。分享时发送 ZIP；对方先解压到固定目录，再加载。
+当前电脑目录：`G:\Projects\DCG\DCG_Doc\ChatworkPlusPlus\chatwork-translator-edge`。分享时发送 ZIP；对方先解压到固定目录，再加载。
 
 ## 能力与限制
 

@@ -58,3 +58,11 @@ body > label { padding:8px 12px; }
 
 #auto-direction { display:flex; align-items:center; gap:6px; margin-top:6px; }
 #auto-direction select { min-width:0; width:0; flex:1; padding:4px 6px; border:1px solid #c4d8d2; border-radius:6px; background:white; font-size:12px; color:inherit; }
+
+/* Keep manual translation readable as settings grow; scroll the popup instead. */
+html { overflow-y:auto; overflow-x:hidden; }
+body { overflow:visible; max-height:none; }
+body:has(#manual-panel:not([hidden])) { height:auto; }
+.manual-area, #manual-panel, .translation-card, .output-card { flex:0 0 auto; }
+.translation-card textarea { flex:0 0 auto; height:120px; min-height:120px; }
+.translation-card textarea::placeholder { font-size:18px; }

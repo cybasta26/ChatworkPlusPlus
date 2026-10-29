@@ -182,7 +182,7 @@
 ## 安装与更新
 
 1. Chrome 打开 chrome://extensions，开启「开发者模式」。
-2. 「加载已解压的扩展程序」，选择 F:\Projects\DCG\DCG_Doc\ChatworkPlusPlus\chatwork-translator-chrome。
+2. 「加载已解压的扩展程序」，选择 G:\Projects\DCG\DCG_Doc\ChatworkPlusPlus\chatwork-translator-chrome。
 3. 已安装的用户点击该扩展「重新加载」，再刷新 Chatwork。
 4. 打开插件面板，开启自动翻译。分享 ZIP 时先解压到固定文件夹，再加载。
 

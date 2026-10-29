@@ -1208,5 +1208,38 @@
   },
   "archive_delete_not_empty": {
     "message": "此聊天已有訊息，請重新整理清單後再清理。"
+  },
+  "archive_diag_missing": {
+    "message": "未讀取到封存目錄控制代碼，請重新選擇封存目錄。"
+  },
+  "archive_diag_prompt": {
+    "message": "封存目錄需要重新授權，請點擊「封存目錄」授權存取。"
+  },
+  "archive_diag_denied": {
+    "message": "封存目錄存取被拒絕，請在選擇目錄時允許讀寫存取。"
+  },
+  "archive_diag_failed": {
+    "message": "封存目錄檢查失敗，請查看後面的診斷資訊。"
+  },
+  "archive_link_find": {
+    "message": "依訊息連結查找"
+  },
+  "archive_link_label": {
+    "message": "Chatwork 訊息連結"
+  },
+  "archive_link_open": {
+    "message": "開啟"
+  },
+  "archive_link_searching": {
+    "message": "正在查找"
+  },
+  "archive_link_missing": {
+    "message": "沒有找到"
+  },
+  "archive_link_invalid": {
+    "message": "請輸入有效的 Chatwork 訊息連結。"
+  },
+  "archive_link_found": {
+    "message": "在聊天「{room}」中找到了該訊息，請點擊「開啟」查看。"
   }
 }

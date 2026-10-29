@@ -1208,5 +1208,38 @@
   },
   "archive_delete_not_empty": {
     "message": "이 채팅에 메시지가 있습니다. 목록을 새로 고친 후 정리하세요."
+  },
+  "archive_diag_missing": {
+    "message": "저장된 보관 폴더 핸들이 없습니다. 폴더를 다시 선택하세요."
+  },
+  "archive_diag_prompt": {
+    "message": "보관 폴더에 다시 권한을 부여해야 합니다. 보관 폴더를 눌러 접근을 허용하세요."
+  },
+  "archive_diag_denied": {
+    "message": "보관 폴더 접근이 거부되었습니다. 폴더 선택 시 읽기/쓰기를 허용하세요."
+  },
+  "archive_diag_failed": {
+    "message": "보관 폴더 확인에 실패했습니다. 진단 정보를 확인하세요."
+  },
+  "archive_link_find": {
+    "message": "메시지 링크로 찾기"
+  },
+  "archive_link_label": {
+    "message": "Chatwork 메시지 링크"
+  },
+  "archive_link_open": {
+    "message": "열기"
+  },
+  "archive_link_searching": {
+    "message": "검색 중"
+  },
+  "archive_link_missing": {
+    "message": "찾지 못했습니다"
+  },
+  "archive_link_invalid": {
+    "message": "올바른 Chatwork 메시지 링크를 입력하세요."
+  },
+  "archive_link_found": {
+    "message": "“{room}”에서 메시지를 찾았습니다. “열기”를 눌러 확인하세요."
   }
 }

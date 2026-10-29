@@ -1,3 +1,4 @@
+import {parseMessageLink} from './archive-link.mjs';
 import {recoverArchive} from './archive-recovery.js';
 import {archiveBytes,formatBytes} from './archive-size.js';
 import {cleanBefore,deleteEmptyRoom} from './archive-cleanup.js';
@@ -56,8 +57,16 @@ async function snapshot(room) {
 }
 let roomNameRevision=0;
 const roomNameCache=new Map();
+const titleError=document.createElement('button');titleError.hidden=true;titleError.style.fontSize='12px';$('room').after(titleError);
+titleError.onclick=async()=>{
+ titleError.disabled=true;
+ try{await translateRoomNames();}
+ catch(e){titleError.hidden=false;titleError.textContent=chrome.i18n.getMessage('ui_001')+': '+e.message;}
+ finally{titleError.disabled=false;}
+};
+
 async function translateRoomNames(){
- const revision=++roomNameRevision;
+ const revision=++roomNameRevision;titleError.hidden=true;
  const options=[...$('room').options];
  for(const option of options)option.textContent=option.dataset.roomName;
  const saved=await chrome.storage.local.get([...AutoSettings.keys,'roomTitleTranslationEnabled']);
@@ -71,7 +80,7 @@ async function translateRoomNames(){
   const original=option.dataset.roomName;
   const key=JSON.stringify([settings.sourceLanguage,settings.targetLanguage,original]);
   try{
-   let text=roomNameCache.get(key);
+   let text=roomNameCache.get(key)||option.dataset.translation;
    if(text===undefined){
     const result=await translate(original);
     if(result?.error)throw Error(result.error);
@@ -80,11 +89,11 @@ async function translateRoomNames(){
    }
    if(revision!==roomNameRevision)return;
    if(option.isConnected&&text&&text!==original)option.textContent=original+'（'+text+'）';
-  }catch{/* Keep the original name when a model or translation service is unavailable. */}
+  }catch(e){if(revision===roomNameRevision){titleError.hidden=false;titleError.textContent=chrome.i18n.getMessage('ui_001')+': '+e.message;}}
  }
 }
 chrome.storage.onChanged.addListener((changes,area)=>{
- if(area==='local'&&[...AutoSettings.keys,'roomTitleTranslationEnabled'].some(key=>changes[key]))void translateRoomNames();
+ if(area==='local'&&[...AutoSettings.keys,'roomTitleTranslationEnabled'].some(key=>changes[key])){for(const option of $('room').options)delete option.dataset.translation;void translateRoomNames();}
 });
 
 async function openManagement(){
@@ -161,7 +170,7 @@ async function openManagement(){
 const manage=document.createElement('button');manage.id='archive-manage';manage.textContent=t('manage');manage.onclick=openManagement;$('room').after(manage);
 async function loadRooms(selected) {
   const rooms=await list('rooms');const old=selected||$('room').value||new URLSearchParams(location.search).get('room');$('room').replaceChildren();
-  for(const room of rooms){const option=document.createElement('option');option.value=room.key;const name=source&&source.origin===room.origin&&source.account?.key===room.account?.key ? source.roomNames?.[room.roomId]||room.roomName : room.roomName;option.dataset.roomName=name;option.textContent=name;$('room').append(option);}
+  for(const room of rooms){const option=document.createElement('option');option.value=room.key;const name=source&&source.origin===room.origin&&source.account?.key===room.account?.key ? source.roomNames?.[room.roomId]||room.roomName : room.roomName;option.dataset.roomName=name;if(source&&source.origin===room.origin&&source.account?.key===room.account?.key)option.dataset.translation=source.roomTranslations?.[room.roomId]||'';option.textContent=name;$('room').append(option);}
   if(rooms.some(r=>r.key===old))$('room').value=old;
   void translateRoomNames();
   await search();
@@ -428,3 +437,37 @@ if(embedded){$('messages').before($('more'));$('messages').addEventListener('scr
 if(embedded)document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.querySelector('dialog[open]'))parent.postMessage({type:'cw-archive-close'},'*');});
 
 async function translateArchived(text){return chrome.runtime.sendMessage({type:'translate',text});}
+
+if(new URLSearchParams(location.search).has('find'))openLinkSearch();
+function openLinkSearch(){
+ const text=k=>chrome.i18n.getMessage(k),dialog=document.createElement('dialog');dialog.className='archive-file-dialog';
+ const close=document.createElement('button');close.textContent='×';close.style.cssText='float:right';close.setAttribute('aria-label',t('closePreview'));close.onclick=()=>dialog.close();
+ const status=document.createElement('p');status.setAttribute('role','status');status.style.minHeight='3em';
+ const label=document.createElement('label');label.textContent=text('archive_link_label');
+ const input=document.createElement('input');input.type='url';input.style.cssText='width:100%;box-sizing:border-box;margin:10px 0';label.append(input);
+ const open=document.createElement('button');open.textContent=text('archive_link_open');open.disabled=true;
+ const find=document.createElement('button');find.textContent=t('search');find.disabled=true;
+ let revision=0,timer,result;
+ function reset(){revision++;clearInterval(timer);result=null;open.disabled=true;find.disabled=!input.value.trim();status.textContent='';}
+ input.oninput=reset;
+ find.onclick=async()=>{
+  reset();const current=revision,link=parseMessageLink(input.value);
+  if(!link){status.textContent=text('archive_link_invalid');return;}
+  find.disabled=true;let dots=0;const progress=()=>status.textContent=text('archive_link_searching')+'.'.repeat(dots++%3+1);progress();timer=setInterval(progress,350);
+  try{
+   const rooms=(await list('rooms')).filter(room=>room.roomId===link.roomId&&room.origin===link.origin);
+   let hit;
+   for(const room of rooms){const message=await read('messages',room.key+':'+link.id);if(message&&!message.deleted){hit={room,message};break;}}
+   if(current!==revision||!dialog.open)return;
+   if(!hit){status.textContent=text('archive_link_missing');return;}
+   await translateRoomNames();if(current!==revision||!dialog.open)return;
+   const name=[...$('room').options].find(o=>o.value===hit.room.key)?.textContent||hit.room.roomName;
+   status.textContent=text('archive_link_found').replace('{room}',name);result=hit;open.disabled=false;
+  }catch(e){if(current===revision)status.textContent=t('failed')+': '+e.message;}
+  finally{if(current===revision){clearInterval(timer);find.disabled=!input.value.trim();}}
+ };
+ input.onkeydown=e=>{if(e.key==='Enter'&&!find.disabled)find.click();};
+ open.onclick=async()=>{if(!result)return;open.disabled=true;const hit=result;try{$('room').value=hit.room.key;await search();await jumpRelated(hit.message);dialog.close();}catch(e){status.textContent=t('failed')+': '+e.message;open.disabled=false;}};
+ dialog.addEventListener('close',()=>{revision++;clearInterval(timer);dialog.remove();},{once:true});
+ dialog.append(close,status,label,open,find);document.body.append(dialog);dialog.showModal();input.focus();
+}

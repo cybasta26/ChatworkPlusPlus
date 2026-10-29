@@ -9,7 +9,7 @@
  let state={};
  const daysValue=()=>Math.max(1,Math.min(90,Math.round(Number(state.archiveDays)||3)));
  const dayText=k=>t(k).replace('{days}',String(daysValue()));
- function openViewer(){
+ function openViewer(find=false){
   if(!alive())return;
   document.getElementById('cw-archive-overlay')?.remove();
   const overlay=document.createElement('div');overlay.id='cw-archive-overlay';
@@ -19,7 +19,7 @@
   const escape=e=>{if(e.key==='Escape')dismiss();};close.onclick=dismiss;document.addEventListener('keydown',escape);
   overlay.onclick=e=>{if(e.target===overlay)dismiss();};
   const core=globalThis.ChatworkMentions,room=(state.archiveRooms||[]).find(r=>r.roomId===core.roomId(document)&&r.account===core.account(document)?.key&&r.origin===location.origin);
-  const frame=document.createElement('iframe');frame.title=t('archive_view');frame.setAttribute('allow','translator *; language-detector *');frame.src=chrome.runtime.getURL('archive.html')+'?embed=1&room='+encodeURIComponent(room?.key||'');
+  const frame=document.createElement('iframe');frame.title=t('archive_view');frame.setAttribute('allow','translator *; language-detector *');frame.src=chrome.runtime.getURL('archive.html')+'?embed=1&room='+encodeURIComponent(room?.key||'')+(find===true?'&find=1':'');
   const frameClose=e=>{if(e.source===frame.contentWindow&&e.data?.type==='cw-archive-close')dismiss();};window.addEventListener('message',frameClose);
   panel.append(close,frame);overlay.append(panel);document.body.append(overlay);close.focus();
  }
@@ -42,9 +42,10 @@
   updateRow.append(chooser,update,toggle);
   const stopButton=document.createElement('button');stopButton.textContent=t('archive_stop');stopButton.dataset.archiveStop='';stopButton.hidden=true;stopButton.onclick=()=>send('stop');
   const progress=document.createElement('progress');progress.dataset.archiveProgress='';progress.hidden=true;progress.style.width='100%';progress.max=100;progress.value=0;
-  const view=document.createElement('button');view.textContent=t('archive_view');view.onclick=openViewer;
+  const view=document.createElement('button');view.textContent=t('archive_view');view.onclick=()=>openViewer();const find=document.createElement('button');find.textContent=t('archive_link_find');find.onclick=()=>openViewer(true);
   const status=document.createElement('div');status.dataset.archiveStatus='';status.setAttribute('role','status');
-  box.append(row,label,range,updateRow,stopButton,progress,view,status);
+  const viewRow=document.createElement('div');viewRow.className='cw-archive-view-row';viewRow.append(view,find);
+  box.append(row,label,range,updateRow,stopButton,progress,viewRow,status);
  }render();}
  function render(){if(!alive())return;const set=(q,value)=>document.querySelectorAll(q).forEach(e=>{if(e.textContent!==value)e.textContent=value;});set('[data-archive-name]',state.archiveDirectory||t('archive_no_folder'));document.querySelectorAll('[data-archive-auto]').forEach(e=>e.checked=!!state.archiveAuto);
  const running=state.archiveManualRunning===true;

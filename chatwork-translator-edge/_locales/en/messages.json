@@ -1208,5 +1208,38 @@
   },
   "archive_delete_not_empty": {
     "message": "This chat contains messages again. Refresh the list before cleaning."
+  },
+  "archive_diag_missing": {
+    "message": "Archive folder handle is missing. Choose the archive folder again."
+  },
+  "archive_diag_prompt": {
+    "message": "Archive folder needs authorization again. Click Archive folder to authorize access."
+  },
+  "archive_diag_denied": {
+    "message": "Archive folder access is denied. Allow read/write access when choosing the folder."
+  },
+  "archive_diag_failed": {
+    "message": "Archive folder check failed. See the diagnostic details."
+  },
+  "archive_link_find": {
+    "message": "Find by message link"
+  },
+  "archive_link_label": {
+    "message": "Chatwork message link"
+  },
+  "archive_link_open": {
+    "message": "Open"
+  },
+  "archive_link_searching": {
+    "message": "Searching"
+  },
+  "archive_link_missing": {
+    "message": "Not found"
+  },
+  "archive_link_invalid": {
+    "message": "Enter a valid Chatwork message link."
+  },
+  "archive_link_found": {
+    "message": "Found this message in “{room}”. Click Open to view it."
   }
 }

@@ -1208,5 +1208,38 @@
   },
   "archive_delete_not_empty": {
     "message": "このチャットにはメッセージがあります。一覧を更新してから削除してください。"
+  },
+  "archive_diag_missing": {
+    "message": "保存したアーカイブフォルダーが見つかりません。フォルダーを選び直してください。"
+  },
+  "archive_diag_prompt": {
+    "message": "アーカイブフォルダーへの再承認が必要です。フォルダー選択からアクセスを許可してください。"
+  },
+  "archive_diag_denied": {
+    "message": "アーカイブフォルダーへのアクセスが拒否されました。選択時に読み書きを許可してください。"
+  },
+  "archive_diag_failed": {
+    "message": "アーカイブフォルダーの確認に失敗しました。診断情報を確認してください。"
+  },
+  "archive_link_find": {
+    "message": "メッセージリンクで検索"
+  },
+  "archive_link_label": {
+    "message": "Chatwork メッセージリンク"
+  },
+  "archive_link_open": {
+    "message": "開く"
+  },
+  "archive_link_searching": {
+    "message": "検索中"
+  },
+  "archive_link_missing": {
+    "message": "見つかりませんでした"
+  },
+  "archive_link_invalid": {
+    "message": "有効な Chatwork メッセージリンクを入力してください。"
+  },
+  "archive_link_found": {
+    "message": "「{room}」でメッセージが見つかりました。「開く」をクリックして確認してください。"
   }
 }
